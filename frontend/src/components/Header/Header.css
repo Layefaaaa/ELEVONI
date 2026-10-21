@@ -1,16 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 /* Transparent, full-bleed hero container */
 
 .header-hero {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
     gap: min(5vw, 64px);
     width: 100%;
-    max-width: 1200px;
+    max-width: var(--elevoni-content, 1320px);
     margin: 32px auto 0;
     padding: 24px 16px;
     background: transparent;
     box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* Ensure all elements inside header explicitly inherit Inter */
+
+.header-hero *,
+.header-hero *::before,
+.header-hero *::after {
+    font-family: inherit;
 }
 
 
@@ -25,7 +39,7 @@
 
 .hero-title {
     margin: 0;
-    color: var(--elevoni-ink, #111827);
+    color: var(--elevoni-ink, #191c17);
     font-size: clamp(38px, 4vw, 56px);
     font-weight: 700;
     line-height: 1.05;
@@ -33,13 +47,13 @@
 }
 
 .hero-title-accent {
-    color: var(--elevoni-sage-dark, #235c45);
+    color: var(--elevoni-sage-dark, #626d48);
 }
 
 .hero-description {
     max-width: 480px;
     margin: 20px 0 0;
-    color: var(--elevoni-text, #4b5563);
+    color: var(--elevoni-text, #4e534b);
     font-size: clamp(15px, 1.3vw, 18px);
     line-height: 1.6;
 }
@@ -61,9 +75,9 @@
     height: 52px;
     padding: 0 32px;
     border: none;
-    border-radius: var(--elevoni-radius, 10px);
-    background: var(--elevoni-sage, #2e7559);
-    color: #ffffff;
+    border-radius: var(--elevoni-radius, 6px);
+    background: var(--elevoni-sage, #7c8760);
+    color: var(--elevoni-white, #ffffff);
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
@@ -71,7 +85,7 @@
 }
 
 .btn-primary:hover {
-    background: var(--elevoni-sage-dark, #235c45);
+    background: var(--elevoni-sage-dark, #626d48);
     transform: translateY(-2px);
 }
 
@@ -81,19 +95,19 @@
     justify-content: center;
     height: 52px;
     padding: 0 26px;
-    border: 1px solid var(--elevoni-line, #d1d5db);
-    border-radius: var(--elevoni-radius, 10px);
+    border: 1px solid var(--elevoni-line, #e5e7df);
+    border-radius: var(--elevoni-radius, 6px);
     background: transparent;
-    color: var(--elevoni-ink, #111827);
+    color: var(--elevoni-ink, #191c17);
     font-size: 15px;
     font-weight: 600;
     text-decoration: none;
-    transition: transform 160ms ease, border-color 160ms ease;
+    transition: transform 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .btn-secondary:hover {
-    border-color: var(--elevoni-sage, #2e7559);
-    color: var(--elevoni-sage, #2e7559);
+    border-color: var(--elevoni-sage, #7c8760);
+    color: var(--elevoni-sage, #7c8760);
     transform: translateY(-2px);
 }
 
@@ -104,10 +118,10 @@
     display: flex;
     flex-direction: column;
     padding: 28px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 18px;
-    background: #ffffff;
-    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--elevoni-line, #e5e7df);
+    border-radius: var(--elevoni-radius-lg, 12px);
+    background: var(--elevoni-white, #ffffff);
+    box-shadow: 0 12px 32px -8px rgba(25, 28, 23, 0.05);
 }
 
 .card-header {
@@ -117,9 +131,9 @@
 .card-tag {
     display: inline-block;
     padding: 4px 10px;
-    border-radius: 6px;
-    background: rgba(46, 117, 89, 0.1);
-    color: var(--elevoni-sage-dark, #235c45);
+    border-radius: var(--elevoni-radius, 6px);
+    background: var(--elevoni-sage-soft, #eff1e9);
+    color: var(--elevoni-sage-dark, #626d48);
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
@@ -128,9 +142,9 @@
 
 .card-header h3 {
     margin: 8px 0 0;
-    color: var(--elevoni-ink, #111827);
+    color: var(--elevoni-ink, #191c17);
     font-size: 18px;
-    font-weight: 650;
+    font-weight: 600;
 }
 
 
@@ -147,30 +161,30 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 14px;
-    border-radius: 8px;
-    background: #f9fafb;
+    border-radius: var(--elevoni-radius, 6px);
+    background: var(--elevoni-cream, #f7f7f2);
     transition: background 150ms ease;
 }
 
 .pricing-row.active-tier {
-    border: 1px solid rgba(46, 117, 89, 0.3);
-    background: rgba(46, 117, 89, 0.05);
+    border: 1px solid var(--elevoni-sage, #7c8760);
+    background: var(--elevoni-sage-soft, #eff1e9);
 }
 
 .tier-label {
-    color: #374151;
+    color: var(--elevoni-text, #4e534b);
     font-size: 14px;
-    font-weight: 550;
+    font-weight: 500;
 }
 
 .tier-price {
-    color: var(--elevoni-ink, #111827);
+    color: var(--elevoni-ink, #191c17);
     font-size: 15px;
     font-weight: 700;
 }
 
 .tier-price small {
-    color: #6b7280;
+    color: var(--elevoni-muted, #74796f);
     font-size: 12px;
     font-weight: 400;
 }
@@ -183,15 +197,15 @@
     gap: 8px;
     margin-top: 20px;
     padding-top: 16px;
-    border-top: 1px solid #f3f4f6;
+    border-top: 1px solid var(--elevoni-line, #e5e7df);
     flex-wrap: wrap;
 }
 
 .spec-pill {
     padding: 6px 12px;
     border-radius: 100px;
-    background: #f3f4f6;
-    color: #4b5563;
+    background: var(--elevoni-sage-soft, #eff1e9);
+    color: var(--elevoni-sage-dark, #626d48);
     font-size: 12px;
     font-weight: 500;
 }
