@@ -63,7 +63,7 @@ test("tier parsing accepts multipart JSON and rejects malformed JSON", () => {
 
 test("order snapshots preserve the database tier price and line total", async () => {
     const product = { _id: "fish-1", name: "Smoked Catfish", price: 25000, pricingMode: "tiered", pricingTiers: tiers };
-    const snapshot = await buildOrderSnapshot([{ productId: product._id, quantity: 5 }], { findById: async () => product });
+    const snapshot = await buildOrderSnapshot([{ productId: product._id, quantity: 5 }], { find: async () => [product] });
     assert.equal(snapshot.items[0].unitPrice, 24000);
     assert.equal(snapshot.items[0].lineTotal, 120000);
     assert.equal(snapshot.subtotal, 120000);
@@ -72,7 +72,7 @@ test("order snapshots preserve the database tier price and line total", async ()
 
 test("order snapshots preserve the base price for single-priced products", async () => {
     const product = { _id: "fish-2", name: "Smoked Catfish", price: 25000, pricingMode: "single", pricingTiers: [] };
-    const snapshot = await buildOrderSnapshot([{ productId: product._id, quantity: 5 }], { findById: async () => product });
+    const snapshot = await buildOrderSnapshot([{ productId: product._id, quantity: 5 }], { find: async () => [product] });
     assert.equal(snapshot.items[0].unitPrice, 25000);
     assert.equal(snapshot.items[0].lineTotal, 125000);
     assert.equal(snapshot.totalAmount, 127500);

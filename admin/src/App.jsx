@@ -12,8 +12,9 @@ import Order from "./pages/Orders/Order";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Reviews from "./pages/Reviews/Reviews";
+import { resolveApiBaseUrl } from "./apiBase";
 
-const url = "https://elevoni-backend.vercel.app";
+const url = resolveApiBaseUrl();
 
 const AdminApp = () => {
   const { user, loading } = useAuth();

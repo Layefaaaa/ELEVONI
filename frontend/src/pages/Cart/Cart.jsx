@@ -13,6 +13,7 @@ const Cart = () => {
 
   const [quote, setQuote] = useState(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteError, setQuoteError] = useState("");
 
   const orderItems = useMemo(
     () =>
@@ -31,6 +32,7 @@ const Cart = () => {
       if (!active) return;
       if (!token || orderItems.length === 0) {
         setQuote(null);
+        setQuoteError("");
         setQuoteLoading(false);
         return;
       }
@@ -42,11 +44,21 @@ const Cart = () => {
           { headers: { token } },
         )
         .then((response) => {
-          if (active && response.data.success) setQuote(response.data.data);
-          else if (active) setQuote(null);
+          if (!active) return;
+          if (response.data?.success) {
+            setQuote(response.data.data);
+            setQuoteError("");
+          } else {
+            setQuote(null);
+            setQuoteError(response.data?.message || "The server could not price this order.");
+          }
         })
-        .catch(() => {
-          if (active) setQuote(null);
+        .catch((error) => {
+          if (!active) return;
+          setQuote(null);
+          setQuoteError(
+            error.response?.data?.message || "The server could not price this order.",
+          );
         })
         .finally(() => {
           if (active) setQuoteLoading(false);
@@ -142,7 +154,10 @@ const Cart = () => {
               </div>
             </div>
           ) : (
-            <p>Your delivery fee and order total will be confirmed at checkout.</p>
+            <p>
+              {quoteError ||
+                "Your delivery fee and order total will be confirmed at checkout."}
+            </p>
           )}
 
           <button onClick={() => navigate("/order")}>

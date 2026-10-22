@@ -2,6 +2,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import "./Home.css";
 import Header from "../../components/Header/Header";
+import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
 import FishDisplay from "../../components/FishDisplay/FishDisplay";
 import AppDownload from "../../components/AppDownload/AppDownload";
 import Features from "../../components/Features/Features";
@@ -38,6 +39,8 @@ const Home = () => {
       </Helmet>
 
       <Header />
+
+      <CategoryGrid />
 
       <FishDisplay />
 

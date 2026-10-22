@@ -2,6 +2,7 @@ import React, { useContext, useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import axios from "axios";
 import { StoreContext } from "../../context/StoreContext";
 import "./ItemDetails.css";
 import getProductPrice from "../../utils/pricing";
@@ -13,7 +14,49 @@ const ItemDetails = () => {
   const { fish_list, cartItems, setCartQuantity, updateCartQuantity, url } =
     useContext(StoreContext);
 
-  const item = fish_list.find((fish) => fish._id === id);
+  const [remoteLookup, setRemoteLookup] = useState({
+    id: null,
+    product: null,
+    error: "",
+  });
+
+  const remoteProduct = remoteLookup.id === id ? remoteLookup.product : null;
+  const remoteLookupError = remoteLookup.id === id ? remoteLookup.error : "";
+
+  const item = fish_list.find((fish) => fish._id === id) || remoteProduct;
+
+  useEffect(() => {
+    let active = true;
+    if (!id || fish_list.some((fish) => fish._id === id)) return undefined;
+    axios
+      .get(url + "/api/fish/" + id)
+      .then((response) => {
+        if (!active) return;
+        if (response.data?.success && response.data.data) {
+          setRemoteLookup({ id, product: response.data.data, error: "" });
+        } else {
+          setRemoteLookup({
+            id,
+            product: null,
+            error: response.data?.message || "Product not found",
+          });
+        }
+      })
+      .catch((error) => {
+        if (!active) return;
+        setRemoteLookup({
+          id,
+          product: null,
+          error:
+            error.response?.status === 404
+              ? "Product not found"
+              : "This product could not be loaded. Please try again.",
+        });
+      });
+    return () => {
+      active = false;
+    };
+  }, [id, fish_list, url]);
 
   const [selected, setSelected] = useState(0);
   const [draftQuantity, setDraftQuantity] = useState("0");
@@ -40,7 +83,7 @@ const ItemDetails = () => {
   if (!item) {
     return (
       <div className="item-not-found">
-        <h2>Loading...</h2>
+        <h2>{remoteLookupError || "Loading..."}</h2>
         <button className="back-btn" onClick={() => navigate("/")}>
           Go Back Home
         </button>

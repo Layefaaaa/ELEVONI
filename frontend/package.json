@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --import ./tests/helpers/register.mjs --test \"tests/*.test.js\" \"tests/*.test.jsx\""
   },
   "dependencies": {
     "axios": "^1.18.0",

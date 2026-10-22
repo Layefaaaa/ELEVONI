@@ -1,6 +1,7 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import { buildOrderSnapshot } from "./orderPricing.js";
+import { buildPaginationMeta, countMatching, parsePagination } from "../services/pagination.js";
 
 const ORDER_STATUSES = ["pending_confirmation", "confirmed", "processing", "out_for_delivery", "delivered", "cancelled"];
 
@@ -53,8 +54,15 @@ const createOrderHandlers = ({ OrderModel = orderModel, UserModel = userModel, s
 
     const listOrders = async (req, res) => {
         try {
-            const orders = await OrderModel.find({}).select("-paymentReference").sort({ date: -1 });
-            return res.json({ success: true, data: orders });
+            const { page, limit, skip } = parsePagination(req.query);
+            const orders = await OrderModel.find({}, { paymentReference: 0 }, { skip, limit, sort: { date: -1 } });
+            const returned = Array.isArray(orders) ? orders.length : 0;
+            const total = await countMatching(OrderModel, {});
+            return res.json({
+                success: true,
+                data: orders,
+                pagination: buildPaginationMeta({ page, limit, total: total ?? returned })
+            });
         } catch (error) {
             return res.status(500).json({ success: false, message: "Error retrieving orders" });
         }

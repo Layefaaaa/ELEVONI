@@ -21,6 +21,7 @@ const PlaceOrder = () => {
   });
   const [quote, setQuote] = useState(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteError, setQuoteError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submissionLock = useRef(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -42,6 +43,7 @@ const PlaceOrder = () => {
       if (!active) return;
       if (!token || orderItems.length === 0) {
         setQuote(null);
+        setQuoteError("");
         setQuoteLoading(false);
         return;
       }
@@ -53,11 +55,21 @@ const PlaceOrder = () => {
           { headers: { token } },
         )
         .then((response) => {
-          if (active && response.data.success) setQuote(response.data.data);
-          else if (active) setQuote(null);
+          if (!active) return;
+          if (response.data?.success) {
+            setQuote(response.data.data);
+            setQuoteError("");
+          } else {
+            setQuote(null);
+            setQuoteError(response.data?.message || "The server could not price this order.");
+          }
         })
-        .catch(() => {
-          if (active) setQuote(null);
+        .catch((error) => {
+          if (!active) return;
+          setQuote(null);
+          setQuoteError(
+            error.response?.data?.message || "The server could not price this order.",
+          );
         })
         .finally(() => {
           if (active) setQuoteLoading(false);
@@ -371,8 +383,8 @@ const PlaceOrder = () => {
             </>
           ) : (
             <p>
-              Unable to load a current server quote. Please refresh or try
-              again.
+              {quoteError ||
+                "Unable to load a current server quote. Please refresh or try again."}
             </p>
           )}
           <div className="action-buttons-wrapper">

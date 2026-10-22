@@ -2,6 +2,7 @@ import { useState, useContext, useEffect, useRef, useCallback } from "react";
 import "./LoginPopup.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
+import { persistStoredToken } from "../../utils/authSession";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
@@ -42,7 +43,7 @@ const LoginPopup = ({ setShowLogin, redirectOutcome }) => {
       pendingGoogleCredential.current = null;
       pendingGoogleContinuation.current = null;
       setToken(response.data.token);
-      localStorage.setItem("token", response.data.token);
+      persistStoredToken(localStorage, response.data.token);
       setShowLogin(false);
       toast.success(intent === "sign_up" && response.status === 201 ? "Your Elevoni account is ready!" : "Welcome back to Elevoni!");
     } catch (error) {
@@ -87,7 +88,7 @@ const LoginPopup = ({ setShowLogin, redirectOutcome }) => {
       pendingGoogleCredential.current = null;
       pendingGoogleContinuation.current = null;
       setToken(response.data.token);
-      localStorage.setItem("token", response.data.token);
+      persistStoredToken(localStorage, response.data.token);
       setShowLogin(false);
       toast.success("Your Elevoni account is ready!");
     } catch (error) {
@@ -181,9 +182,9 @@ const LoginPopup = ({ setShowLogin, redirectOutcome }) => {
     try {
       const response = await axios.post(newUrl, data);
 
-      if (response.data.success) {
+      if (response.data.success && response.data.token) {
         setToken(response.data.token);
-        localStorage.setItem("token", response.data.token);
+        persistStoredToken(localStorage, response.data.token);
         setShowLogin(false);
 
         if (currState === "Login") {

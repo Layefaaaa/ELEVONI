@@ -4,4 +4,5 @@
 .fish-display h2 { max-width: 680px; margin: 0; color: var(--elevoni-ink); font-size: clamp(32px, 4.1vw, 52px); font-weight: 500; line-height: 1.1; letter-spacing: -0.055em; }
 .fish-display-intro { max-width: 560px; margin: 15px 0 0; color: var(--elevoni-text); font-size: 15px; line-height: 1.75; }
 .fish-display-list { display: flex; justify-content: center; width: 100%; }
+.fish-display-state { max-width: 560px; margin: 0; color: var(--elevoni-text); font-size: 15px; line-height: 1.75; }
 @media (max-width: 600px) { .fish-display { padding-block: 68px; } .fish-display-heading { margin-bottom: 28px; } .fish-display-intro { font-size: 14px; } }

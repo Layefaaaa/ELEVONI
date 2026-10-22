@@ -1,15 +1,30 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import getProductPrice from "../utils/pricing";
+import { resolveApiBaseUrl } from "../utils/apiBase";
+import {
+  clearStoredToken,
+  isUnauthorizedResponse,
+  persistStoredToken,
+  readStoredToken,
+} from "../utils/authSession";
 
 export const StoreContext = createContext(null);
 
+const url = resolveApiBaseUrl();
+
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-  const url = "https://elevoni-backend.vercel.app";
   const [token, setToken] = useState("");
   const [fish_list, setFishList] = useState([]);
+  const [catalogueLoading, setCatalogueLoading] = useState(true);
+  const [catalogueError, setCatalogueError] = useState(false);
   const cartQuantitySyncTimers = useRef(new Map());
+
+  const invalidateSession = useCallback(() => {
+    clearStoredToken(localStorage);
+    setToken("");
+  }, []);
 
   const addtoCart = async (itemId) => {
     if (!cartItems) {
@@ -150,29 +165,29 @@ const StoreContextProvider = (props) => {
       const response = await axios.get(url + "/api/fish/list");
       const products = Array.isArray(response.data.data) ? response.data.data : [];
       setFishList(products);
+      setCatalogueError(false);
     } catch (error) {
       console.error("Failed to fetch product library listings:", error.message);
+      setCatalogueError(true);
+    } finally {
+      setCatalogueLoading(false);
     }
   };
 
-  const loadCartData = async (token) => {
-    try {
-      const response = await axios.post(
-        url + "/api/cart/get",
-        {},
-        { headers: { token } },
-      );
-      setCartItems((localCart) => ({ ...(response.data.cartData || {}), ...localCart }));
-    } catch (error) {
-      console.error("Failed to retrieve user cart record:", error.message);
-    }
+  const loadCartData = async (cartToken) => {
+    const response = await axios.post(
+      url + "/api/cart/get",
+      {},
+      { headers: { token: cartToken } },
+    );
+    setCartItems((localCart) => ({ ...(response.data.cartData || {}), ...localCart }));
   };
 
   useEffect(() => {
     const hashParams = new URLSearchParams(window.location.hash.slice(1));
     const redirectedToken = hashParams.get("elevoni_google_token");
     if (redirectedToken) {
-      localStorage.setItem("token", redirectedToken);
+      persistStoredToken(localStorage, redirectedToken);
       hashParams.delete("elevoni_google_token");
       const remainingHash = hashParams.toString();
       window.history.replaceState(
@@ -181,21 +196,31 @@ const StoreContextProvider = (props) => {
         `${window.location.pathname}${window.location.search}${remainingHash ? `#${remainingHash}` : ""}`,
       );
     }
-    const storedToken = localStorage.getItem("token");
+    const storedToken = readStoredToken(localStorage);
     if (storedToken) setToken(storedToken);
 
     async function loadData() {
       await fetchFishList();
-      if (localStorage.getItem("token")) {
-        setToken(localStorage.getItem("token"));
-        await loadCartData(localStorage.getItem("token"));
+      const activeToken = readStoredToken(localStorage);
+      if (!activeToken) return;
+      setToken(activeToken);
+      try {
+        await loadCartData(activeToken);
+      } catch (error) {
+        if (isUnauthorizedResponse(error)) {
+          invalidateSession();
+          return;
+        }
+        console.error("Failed to retrieve user cart record:", error.message);
       }
     }
     loadData();
-  }, []);
+  }, [invalidateSession]);
 
   const contextValue = {
     fish_list,
+    catalogueLoading,
+    catalogueError,
     cartItems,
     setCartItems,
     addtoCart,
@@ -206,6 +231,7 @@ const StoreContextProvider = (props) => {
     url,
     token,
     setToken,
+    invalidateSession,
   };
 
   return (

@@ -3,6 +3,7 @@ import "./Navbar.css";
 import { assets } from "../../assets/assets";
 import { Link, useNavigate } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext";
+import { isUnauthorizedResponse } from "../../utils/authSession";
 import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import axios from "axios";
 
@@ -13,7 +14,7 @@ const Navbar = ({ setShowLogin }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [userName, setUserName] = useState("");
 
-  const { getTotalCartAmount, token, setToken, url } = useContext(StoreContext);
+  const { getTotalCartAmount, token, url, invalidateSession } = useContext(StoreContext);
 
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
@@ -61,6 +62,10 @@ const Navbar = ({ setShowLogin }) => {
         if (isCurrentRequest) setUserName(name);
       } catch (error) {
         if (isCurrentRequest) {
+          if (isUnauthorizedResponse(error)) {
+            invalidateSession();
+            return;
+          }
           console.error("Failed to fetch user profile:", error.message);
         }
       }
@@ -70,7 +75,7 @@ const Navbar = ({ setShowLogin }) => {
     return () => {
       isCurrentRequest = false;
     };
-  }, [token, url]);
+  }, [token, url, invalidateSession]);
 
   const getInitial = () => {
     if (!userName) return "?";
@@ -79,8 +84,7 @@ const Navbar = ({ setShowLogin }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setToken("");
+    invalidateSession();
     setUserName("");
     setProfileDropdownOpen(false);
     navigate("/");
@@ -119,6 +123,16 @@ const Navbar = ({ setShowLogin }) => {
           >
             home
           </a>
+        </li>
+
+        <li>
+          <Link
+            to="/#categories"
+            onClick={() => handleNavClick("categories")}
+            className={menu === "categories" ? "active" : ""}
+          >
+            categories
+          </Link>
         </li>
 
         <li>

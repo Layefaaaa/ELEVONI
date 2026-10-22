@@ -1,11 +1,12 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import "./MyOrders.css";
 import { StoreContext } from "../../context/StoreContext";
+import { isUnauthorizedResponse } from "../../utils/authSession";
 import axios from "axios";
 import { assets } from "../../assets/assets";
 
 const MyOrders = () => {
-  const { url, token } = useContext(StoreContext);
+  const { url, token, invalidateSession } = useContext(StoreContext);
   const [data, setData] = useState([]);
 
   const fetchOrders = useCallback(async () => {
@@ -24,9 +25,13 @@ const MyOrders = () => {
       }
     } catch (error) {
       setData([]);
+      if (isUnauthorizedResponse(error)) {
+        invalidateSession();
+        return;
+      }
       console.error("Error fetching orders:", error);
     }
-  }, [url, token]);
+  }, [url, token, invalidateSession]);
 
   useEffect(() => {
     const timer = setTimeout(() => { if (token) fetchOrders(); else setData([]); }, 0);

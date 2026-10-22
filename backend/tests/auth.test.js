@@ -46,6 +46,14 @@ test("expired token is rejected", () => {
   assert.match(res.body.message, /expired/);
 });
 
+test("a token signed with a different secret is rejected", () => {
+  const foreignToken = jwt.sign({ id: customerId, role: "customer" }, "a-different-signing-secret", { algorithm: "HS256" });
+  const { res, continued } = runAuth(makeRequest({ token: foreignToken }));
+  assert.equal(res.statusCode, 401);
+  assert.equal(continued, false);
+  assert.match(res.body.message, /Invalid or expired authentication token/);
+});
+
 test("customer identity comes from the signed token, not request body", () => {
   const req = makeRequest({ token: tokenFor(customerId, "customer") }, { userId: adminId });
   const { continued } = runAuth(req);

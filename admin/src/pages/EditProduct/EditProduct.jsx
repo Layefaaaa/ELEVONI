@@ -15,15 +15,16 @@ const EditProduct = ({ url }) => {
 
   useEffect(() => {
     let active = true;
-    api.get(url + "/api/fish/admin-list")
+    api.get(url + "/api/fish/admin/" + id)
       .then((response) => {
-        const product = response.data.data?.find((item) => item._id === id);
+        const product = response.data?.data;
         if (!product) throw new Error("Product not found");
         if (active) setData({
           name: product.name,
           description: product.description,
           price: String(product.price),
           category: product.category,
+          visible: product.visible !== false,
           pricingMode: product.pricingMode === "tiered" ? "tiered" : "single",
           pricingTiers: (product.pricingTiers || []).map((tier) => ({
             minQuantity: tier.minQuantity,
@@ -40,7 +41,7 @@ const EditProduct = ({ url }) => {
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await api.put(url + "/api/fish/" + id, { ...data, price: Number(data.price), pricingMode: hasTierRows(data.pricingTiers) ? "tiered" : "single" });
+      const response = await api.put(url + "/api/fish/" + id, { ...data, price: Number(data.price), visible: Boolean(data.visible), pricingMode: hasTierRows(data.pricingTiers) ? "tiered" : "single" });
       if (!response.data.success) throw new Error(response.data.message || "Product could not be updated");
       toast.success("Product updated");
       navigate("/list");
@@ -62,6 +63,15 @@ const EditProduct = ({ url }) => {
         <option value="Smoked">Smoked</option>
         <option value="Fresh">Fresh</option>
       </select>
+      <label className="visibility-toggle">
+        <input
+          type="checkbox"
+          name="visible"
+          checked={data.visible}
+          onChange={(event) => setData({ ...data, visible: event.target.checked })}
+        />
+        Listed in the storefront
+      </label>
       <PricingTiersFields tiers={data.pricingTiers} onChange={(pricingTiers) => setData({ ...data, pricingTiers })} />
       <button type="submit">Save Product</button>
       <button type="button" onClick={() => navigate("/list")}>Cancel</button>

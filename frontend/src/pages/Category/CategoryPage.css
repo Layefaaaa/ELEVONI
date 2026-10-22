@@ -1,0 +1,46 @@
+.category-page { width: 100%; max-width: 1180px; margin: 0 auto; padding: 48px 0 var(--elevoni-section-space); }
+.category-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 34px; color: var(--elevoni-muted); font-size: 13px; }
+.category-breadcrumb a { color: var(--elevoni-muted); }
+.category-breadcrumb a:hover { color: var(--elevoni-ink); }
+.category-breadcrumb [aria-current="page"] { color: var(--elevoni-ink); }
+
+.category-page-hero { max-width: 760px; margin-bottom: 46px; }
+.category-page-eyebrow { margin: 0 0 12px; color: var(--elevoni-sage-dark); font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; }
+.category-page-title { margin: 0; color: var(--elevoni-ink); font-size: clamp(30px, 3.8vw, 48px); font-weight: 500; line-height: 1.1; letter-spacing: -0.05em; }
+.category-page-summary { max-width: 620px; margin: 15px 0 0; color: var(--elevoni-text); font-size: 15px; line-height: 1.75; }
+.category-page-status { margin: 18px 0 0; display: inline-flex; align-items: center; gap: 8px; color: var(--elevoni-muted); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+.category-page-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--elevoni-line); }
+.category-page-status.status-live { color: var(--elevoni-sage-dark); }
+.category-page-status.status-live::before { background: var(--elevoni-sage); }
+.category-page-back { display: inline-block; margin-top: 22px; padding-bottom: 2px; border-bottom: 1px solid var(--elevoni-line); font-size: 14px; }
+.category-page-back:hover { color: var(--elevoni-sage-dark); border-color: var(--elevoni-sage); }
+
+.category-empty { max-width: 620px; margin: 0 0 var(--elevoni-section-space); padding: 34px 30px; background: var(--elevoni-cream); border: 1px solid var(--elevoni-line); border-radius: var(--elevoni-radius-lg); }
+.category-empty h2 { margin: 0 0 10px; font-size: 20px; font-weight: 500; letter-spacing: -0.02em; }
+.category-empty p { margin: 0 0 20px; color: var(--elevoni-text); font-size: 14px; line-height: 1.75; }
+.category-empty-enquiry { display: inline-block; padding-bottom: 2px; border-bottom: 1px solid var(--elevoni-sage); color: var(--elevoni-sage-dark); font-size: 14px; font-weight: 500; }
+.category-empty-enquiry:hover { color: var(--elevoni-ink); }
+
+.category-subcategories, .category-siblings { margin-bottom: var(--elevoni-section-space); }
+.category-subcategories h2, .category-siblings h2 { margin: 0 0 26px; font-size: clamp(22px, 2.4vw, 30px); font-weight: 500; letter-spacing: -0.035em; }
+.subcategory-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.subcategory-card { display: flex; flex-direction: column; gap: 8px; padding: 24px 22px; background: var(--elevoni-white); border: 1px solid var(--elevoni-line); border-radius: var(--elevoni-radius-lg); transition: border-color 180ms ease; }
+.subcategory-card:hover { border-color: var(--elevoni-sage); }
+.subcategory-card-eyebrow { margin: 0; color: var(--elevoni-muted); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.subcategory-card-title { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: -0.02em; }
+.subcategory-card-title a:hover { color: var(--elevoni-sage-dark); }
+.subcategory-card-summary { margin: 0; color: var(--elevoni-text); font-size: 14px; line-height: 1.7; }
+.subcategory-card-status { margin: 4px 0 0; display: inline-flex; align-items: center; gap: 8px; color: var(--elevoni-muted); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+.subcategory-card-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--elevoni-line); }
+.subcategory-card-status.status-live { color: var(--elevoni-sage-dark); }
+.subcategory-card-status.status-live::before { background: var(--elevoni-sage); }
+.subcategory-card-link { margin-top: auto; padding-top: 14px; font-size: 14px; font-weight: 500; border-top: 1px solid var(--elevoni-line); }
+.subcategory-card-link:hover { color: var(--elevoni-sage-dark); }
+
+@media (max-width: 980px) { .subcategory-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .category-page { padding-top: 32px; }
+  .category-page-hero { margin-bottom: 32px; }
+  .subcategory-grid { grid-template-columns: 1fr; }
+  .category-empty { padding: 26px 22px; }
+}

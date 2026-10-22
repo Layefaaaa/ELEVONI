@@ -1,33 +1,64 @@
 import api from "../../api";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Pagination from "../../components/Pagination/Pagination";
 import "./Reviews.css";
+
+const PAGE_SIZE = 20;
 
 const Reviews = ({ url }) => {
   const [reviews, setReviews] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const [page, setPage] = useState(1);
 
-  const fetchReviews = async () => {
-    const response = await api.get(`${url}/api/review/admin-list`);
+  const fetchReviews = useCallback(async (targetPage = 1) => {
+    try {
+      const response = await api.get(`${url}/api/review/admin-list`, {
+        params: { page: targetPage, limit: PAGE_SIZE },
+      });
+      if (response.data.success) {
+        setReviews(response.data.data);
+        setPagination(response.data.pagination || null);
+        setPage(targetPage);
+      } else {
+        toast.error(response.data.message || "Unable to load reviews");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to load reviews");
+    }
+  }, [url]);
 
-    if (response.data.success) {
-      setReviews(response.data.data);
+  const approveReview = async (id) => {
+    try {
+      const response = await api.post(`${url}/api/review/approve`, { id });
+      if (response.data.success) {
+        toast.success("Review approved");
+        await fetchReviews(page);
+      } else {
+        toast.error(response.data.message || "Unable to approve review");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to approve review");
     }
   };
 
-  const approveReview = async (id) => {
-    await api.post(`${url}/api/review/approve`, { id });
-
-    fetchReviews();
-  };
-
   const deleteReview = async (id) => {
-    await api.post(`${url}/api/review/delete`, { id });
-
-    fetchReviews();
+    try {
+      const response = await api.post(`${url}/api/review/delete`, { id });
+      if (response.data.success) {
+        toast.success("Review deleted");
+        await fetchReviews(page);
+      } else {
+        toast.error(response.data.message || "Unable to delete review");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Unable to delete review");
+    }
   };
 
   useEffect(() => {
-    fetchReviews();
-  }, []);
+    fetchReviews(1);
+  }, [fetchReviews]);
 
   return (
     <div className="reviews">
@@ -72,6 +103,11 @@ const Reviews = ({ url }) => {
           </div>
         ))}
       </div>
+
+      <Pagination
+        pagination={pagination}
+        onPageChange={(nextPage) => fetchReviews(nextPage)}
+      />
     </div>
   );
 };

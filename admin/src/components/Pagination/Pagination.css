@@ -1,0 +1,29 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid #e5e5e5;
+  margin-top: 16px;
+}
+
+.pagination-status {
+  font-size: 13px;
+  color: #666;
+}
+
+.pagination-btn {
+  background: #ffffff;
+  border: 1px solid #d4d4d4;
+  color: #111111;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.pagination-btn:disabled {
+  color: #a3a3a3;
+  border-color: #e5e5e5;
+  cursor: not-allowed;
+}

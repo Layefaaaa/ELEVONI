@@ -23,7 +23,7 @@ const serverSummary = {
 
 test("the server quote stays authoritative for the delivery fee and total", async () => {
     const product = { _id: "fish-1", name: "Smoked Catfish", price: 25000, pricingMode: "tiered", pricingTiers: tiers };
-    const snapshot = await buildOrderSnapshot([{ productId: product._id, quantity: 5 }], { findById: async () => product });
+    const snapshot = await buildOrderSnapshot([{ productId: product._id, quantity: 5 }], { find: async () => [product] });
     assert.equal(snapshot.subtotal, 120000);
     assert.equal(snapshot.deliveryFee, 2500);
     assert.equal(snapshot.totalAmount, snapshot.subtotal + snapshot.deliveryFee);

@@ -16,6 +16,7 @@ import PrivacyPolicy from "./pages/InfoPages/PrivacyPolicy";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ItemDetails from "./pages/ItemDetails/ItemDetails";
+import CategoryPage from "./pages/Category/CategoryPage";
 import Success from "./components/SuccessPage/Success";
 import ReactGA from "./analytics";
 
@@ -76,6 +77,8 @@ const App = () => {
           <Route path="/myorders" element={<MyOrders />} />
           <Route path="/success" element={<Success />} />
           <Route path="/product/:id" element={<ItemDetails />} />
+          <Route path="/category/:slug" element={<CategoryPage />} />
+          <Route path="/category/:slug/:childSlug" element={<CategoryPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
