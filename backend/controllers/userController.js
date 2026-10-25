@@ -1,10 +1,10 @@
 import userModel from "../models/userModel.js";
 import googleSignupContinuationModel from "../models/GoogleSignupContinuation.js";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import validator from "validator";
 import { createHash, randomBytes } from "node:crypto";
 import { verifyGoogleIdToken } from "../services/googleIdentityService.js";
+import { AccountRegistrationError, escapeRegExp, normaliseEmail, registerCustomerAccount } from "../services/accountRegistration.js";
+import { createSessionToken, publicUser } from "../services/session.js";
 
 const GOOGLE_SIGNUP_CONTINUATION_TTL_MS = 10 * 60 * 1000;
 
@@ -24,18 +24,9 @@ const createGoogleSignupContinuation = async (identity) => {
     return reference;
 };
 
-const createToken = (user) => jwt.sign(
-    { id: user._id.toString(), role: user.role || "customer" },
-    process.env.JWT_SECRET,
-    { algorithm: "HS256", expiresIn: "24h" }
-);
+const createToken = (user) => createSessionToken(user);
 
-const safeUser = (user) => ({
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role || "customer"
-});
+const safeUser = (user) => publicUser(user);
 
 const findByVerifiedEmail = async (email) => {
     const escapedEmail = email.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -50,7 +41,8 @@ const findByVerifiedEmail = async (email) => {
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await userModel.findOne({ email });
+        const normalisedEmail = normaliseEmail(email);
+        const user = await userModel.findOne({ email: { $regex: new RegExp(`^${escapeRegExp(normalisedEmail)}$`, "i") } });
         if (!user || !user.password || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ success: false, message: "Invalid email or password" });
         }
@@ -64,22 +56,12 @@ const loginUser = async (req, res) => {
 const registerUser = async (req, res) => {
     const { name, password, email } = req.body;
     try {
-        if (!name || typeof name !== "string" || !password || typeof password !== "string" || !email) {
-            return res.status(400).json({ success: false, message: "Name, email, and password are required" });
-        }
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({ success: false, message: "Please enter a valid email" });
-        }
-        if (password.length < 8) {
-            return res.status(400).json({ success: false, message: "Please enter a strong password" });
-        }
-        if (await userModel.findOne({ email })) {
-            return res.status(409).json({ success: false, message: "User already exists" });
-        }
-        const hashedPassword = await bcrypt.hash(password, await bcrypt.genSalt(10));
-        const user = await new userModel({ name, email, password: hashedPassword, role: "customer" }).save();
+        const user = await registerCustomerAccount({ name, email, password });
         return res.status(201).json({ success: true, token: createToken(user), user: safeUser(user) });
     } catch (error) {
+        if (error instanceof AccountRegistrationError) {
+            return res.status(error.status).json({ success: false, message: error.message });
+        }
         console.error("Registration error:", error);
         return res.status(error?.code === 11000 ? 409 : 500).json({
             success: false,

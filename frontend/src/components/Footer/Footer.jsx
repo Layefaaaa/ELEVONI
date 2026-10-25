@@ -53,6 +53,9 @@ const Footer = () => {
             <li>
               <Link to="/privacy">Privacy policy</Link>
             </li>
+            <li>
+              <Link to="/sell-with-elevoni">Sell with Elevoni</Link>
+            </li>
           </ul>
         </div>
         <div className="footer-content-right">

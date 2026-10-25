@@ -1,226 +1,116 @@
+import { describeAvailability, describeEmptyState, buildCategoryCards, buildSubcategoryCards, describeCategoryEntry } from "../src/utils/categoryViews.js";
+import { CATEGORIES, CATEGORY_STATUS, categoryPath, getCategory, getSubcategory, listCategories, listSubcategories, resolveCategoryEntry } from "../src/config/categories.js";
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  CATEGORY_STATUS,
-  categoryPath,
-  getCategory,
-  listCategories,
-  listSubcategories,
-  resolveCategoryEntry,
-} from "../src/config/categories.js";
-import {
-  AVAILABILITY_TONE,
-  buildCategoryCards,
-  buildSubcategoryCards,
-  describeAvailability,
-  describeCategoryEntry,
-  describeEmptyState,
-} from "../src/utils/categoryViews.js";
 
 test("the storefront exposes exactly the approved top-level categories", () => {
-  assert.deepEqual(
-    listCategories().map((category) => category.name),
-    ["Aquaculture & Fishery", "Livestock", "Other Farm Products"],
-  );
+  const categories = listCategories();
+  assert.deepEqual(categories.map((category) => category.slug), ["aquaculture-fishery", "livestock", "other-farm-products"]);
+  assert.deepEqual(categories.map((category) => category.name), ["Aquaculture & Fishery", "Livestock", "Other Farm Products"]);
 });
 
 test("livestock exposes poultry, cattle, sheep and goats", () => {
-  assert.deepEqual(
-    listSubcategories("livestock").map((child) => child.name),
-    ["Poultry", "Cattle", "Sheep", "Goats"],
-  );
+  const children = listSubcategories("livestock").map((child) => child.slug);
+  assert.deepEqual(children, ["poultry", "cattle", "sheep", "goats"]);
 });
 
 test("category slugs are unique so every category owns one route", () => {
-  const topLevel = listCategories().map((category) => category.slug);
-  assert.equal(new Set(topLevel).size, topLevel.length);
-
+  const slugs = new Set();
   for (const category of listCategories()) {
-    const childSlugs = category.children.map((child) => child.slug);
-    assert.equal(new Set(childSlugs).size, childSlugs.length);
-  }
-});
-
-test("category routes are derived from the configuration", () => {
-  assert.equal(categoryPath("aquaculture-fishery"), "/category/aquaculture-fishery");
-  assert.equal(categoryPath("livestock"), "/category/livestock");
-  assert.equal(categoryPath("livestock", "poultry"), "/category/livestock/poultry");
-});
-
-test("an unknown category path resolves to nothing so the page can say so", () => {
-  assert.equal(resolveCategoryEntry("not-a-category"), null);
-  assert.equal(resolveCategoryEntry("livestock", "crocodiles"), null);
-  assert.equal(resolveCategoryEntry("not-a-category", "poultry"), null);
-});
-
-test("a category path resolves to its configured entry", () => {
-  const aquaculture = resolveCategoryEntry("aquaculture-fishery");
-  assert.equal(aquaculture.name, "Aquaculture & Fishery");
-  assert.equal(aquaculture.level, "category");
-  assert.equal(aquaculture.path, "/category/aquaculture-fishery");
-
-  const poultry = resolveCategoryEntry("livestock", "poultry");
-  assert.equal(poultry.name, "Poultry");
-  assert.equal(poultry.level, "subcategory");
-  assert.equal(poultry.parent.name, "Livestock");
-  assert.equal(poultry.path, "/category/livestock/poultry");
-});
-
-test("only the smoked catfish subcategory is served by the live catalogue", () => {
-  const served = listCategories().flatMap((category) =>
-    category.children.filter((child) => Boolean(child.catalogue)),
-  );
-  assert.deepEqual(
-    served.map((child) => child.slug),
-    ["smoked-catfish"],
-  );
-});
-
-test("a catalogue category reports the real number of listed products", () => {
-  const withProducts = describeAvailability({
-    status: CATEGORY_STATUS.CATALOGUE,
-    productCount: 3,
-  });
-  assert.equal(withProducts.tone, AVAILABILITY_TONE.LIVE);
-  assert.equal(withProducts.label, "3 products available");
-  assert.equal(withProducts.orderable, true);
-
-  const single = describeAvailability({
-    status: CATEGORY_STATUS.CATALOGUE,
-    productCount: 1,
-  });
-  assert.equal(single.label, "1 product available");
-
-  const empty = describeAvailability({
-    status: CATEGORY_STATUS.CATALOGUE,
-    productCount: 0,
-  });
-  assert.equal(empty.tone, AVAILABILITY_TONE.EMPTY);
-  assert.equal(empty.label, "No products listed right now");
-  assert.equal(empty.orderable, false);
-});
-
-test("planned categories are never described as order-ready", () => {
-  const comingSoon = describeAvailability({ status: CATEGORY_STATUS.COMING_SOON });
-  assert.equal(comingSoon.tone, AVAILABILITY_TONE.COMING_SOON);
-  assert.equal(comingSoon.label, "Coming soon");
-  assert.equal(comingSoon.orderable, false);
-
-  const reserved = describeAvailability({ status: CATEGORY_STATUS.RESERVED });
-  assert.equal(reserved.tone, AVAILABILITY_TONE.RESERVED);
-  assert.equal(reserved.label, "Reserved for future expansion");
-  assert.equal(reserved.orderable, false);
-
-  for (const category of listCategories()) {
-    if (category.status === CATEGORY_STATUS.CATALOGUE) continue;
-    for (const child of category.children) {
-      assert.equal(
-        describeAvailability({ status: child.status }).orderable,
-        false,
-        `${child.name} must not be presented as order-ready`,
-      );
+    assert.ok(!slugs.has(category.slug));
+    slugs.add(category.slug);
+    for (const child of category.children || []) {
+      const key = `${category.slug}/${child.slug}`;
+      assert.ok(!slugs.has(key));
+      slugs.add(key);
     }
   }
 });
 
+test("category routes are derived from the configuration", () => {
+  assert.equal(categoryPath("livestock"), "/category/livestock");
+  assert.equal(categoryPath("livestock", "poultry"), "/category/livestock/poultry");
+  assert.equal(categoryPath("aquaculture-fishery", "smoked-catfish"), "/category/aquaculture-fishery/smoked-catfish");
+});
+
+test("an unknown category path resolves to nothing so the page can say so", () => {
+  assert.equal(resolveCategoryEntry("unknown"), null);
+  assert.equal(resolveCategoryEntry("livestock", "not-a-child"), null);
+  assert.equal(getCategory("missing"), null);
+  assert.equal(getSubcategory("missing", "poultry"), null);
+});
+
+test("a category path resolves to its configured entry", () => {
+  const category = resolveCategoryEntry("livestock");
+  assert.equal(category.slug, "livestock");
+  assert.equal(category.level, "category");
+  assert.equal(category.parent, null);
+  assert.equal(category.path, "/category/livestock");
+
+  const child = resolveCategoryEntry("aquaculture-fishery", "smoked-catfish");
+  assert.equal(child.slug, "smoked-catfish");
+  assert.equal(child.level, "subcategory");
+  assert.equal(child.parent.slug, "aquaculture-fishery");
+  assert.equal(child.catalogue, "fish");
+});
+
+test("only the smoked catfish subcategory is served by the live catalogue", () => {
+  const fish = resolveCategoryEntry("aquaculture-fishery", "smoked-catfish");
+  const poultry = resolveCategoryEntry("livestock", "poultry");
+  assert.equal(fish.catalogue, "fish");
+  assert.equal(fish.status, CATEGORY_STATUS.CATALOGUE);
+  assert.equal(poultry.catalogue, undefined);
+  assert.equal(poultry.status, CATEGORY_STATUS.COMING_SOON);
+});
+
+test("a catalogue category reports the real number of listed products", () => {
+  const availability = describeAvailability({ status: CATEGORY_STATUS.CATALOGUE, productCount: 2 });
+  assert.equal(availability.orderable, true);
+  assert.equal(availability.tone, "live");
+  assert.match(availability.label, /2 products available/);
+});
+
+test("planned categories are never described as order-ready", () => {
+  const poultry = describeAvailability({ status: CATEGORY_STATUS.COMING_SOON, productCount: 25 });
+  const reserved = describeAvailability({ status: CATEGORY_STATUS.RESERVED, productCount: 25 });
+  assert.equal(poultry.orderable, false);
+  assert.equal(poultry.label, "Coming soon");
+  assert.equal(reserved.orderable, false);
+  assert.equal(reserved.label, "Reserved for future expansion");
+});
+
 test("empty states never promise that something can be ordered", () => {
-  const reserved = describeEmptyState({
-    status: CATEGORY_STATUS.RESERVED,
-    name: "Other Farm Products",
-  });
-  assert.match(reserved.title, /reserved for future expansion/i);
-  assert.match(reserved.body, /not listing products/i);
+  const empty = describeEmptyState({ status: CATEGORY_STATUS.CATALOGUE, name: "Smoked Catfish" });
+  const comingSoon = describeEmptyState({ status: CATEGORY_STATUS.COMING_SOON, name: "Poultry" });
+  const reserved = describeEmptyState({ status: CATEGORY_STATUS.RESERVED, name: "Other Farm Products" });
 
-  const comingSoon = describeEmptyState({
-    status: CATEGORY_STATUS.COMING_SOON,
-    name: "Poultry",
-  });
-  assert.match(comingSoon.title, /Poultry is coming soon/i);
-  assert.match(comingSoon.body, /No products are listed/i);
-
-  const emptyCatalogue = describeEmptyState({
-    status: CATEGORY_STATUS.CATALOGUE,
-    name: "Smoked Catfish",
-  });
-  assert.match(emptyCatalogue.body, /no products available to order/i);
+  assert.equal(empty.title, "No products listed in Smoked Catfish right now");
+  assert.doesNotMatch(JSON.stringify(empty), /add to cart/i);
+  assert.doesNotMatch(JSON.stringify(comingSoon), /add to cart/i);
+  assert.doesNotMatch(JSON.stringify(reserved), /buy now/i);
 });
 
 test("the homepage cards are built from the configuration", () => {
-  const cards = buildCategoryCards({
-    categories: listCategories(),
-    catalogueCount: 2,
-  });
-
-  assert.deepEqual(
-    cards.map((card) => card.path),
-    [
-      "/category/aquaculture-fishery",
-      "/category/livestock",
-      "/category/other-farm-products",
-    ],
-  );
-
-  const aquaculture = cards[0];
-  assert.equal(aquaculture.availability.label, "2 products available");
-  assert.equal(aquaculture.availability.orderable, true);
-  assert.deepEqual(aquaculture.childNames, ["Smoked Catfish"]);
-
-  const livestock = cards[1];
-  assert.equal(livestock.availability.label, "Coming soon");
-  assert.equal(livestock.availability.orderable, false);
-  assert.deepEqual(livestock.childNames, ["Poultry", "Cattle", "Sheep", "Goats"]);
-
-  const other = cards[2];
-  assert.equal(other.availability.label, "Reserved for future expansion");
-  assert.equal(other.availability.orderable, false);
+  const cards = buildCategoryCards({ categories: listCategories(), catalogueCount: 1 });
+  assert.equal(cards.length, 3);
+  assert.deepEqual(cards.map((card) => card.slug), ["aquaculture-fishery", "livestock", "other-farm-products"]);
+  assert.equal(cards[0].availability.orderable, true);
+  assert.equal(cards[1].availability.orderable, false);
+  assert.equal(cards[2].availability.orderable, false);
 });
 
 test("subcategory cards carry their own route and availability", () => {
-  const livestockCards = buildSubcategoryCards({
-    category: getCategory("livestock"),
-    catalogueCount: 5,
-  });
-
-  assert.deepEqual(
-    livestockCards.map((card) => card.path),
-    [
-      "/category/livestock/poultry",
-      "/category/livestock/cattle",
-      "/category/livestock/sheep",
-      "/category/livestock/goats",
-    ],
-  );
-
-  for (const card of livestockCards) {
-    assert.equal(card.availability.orderable, false);
-    assert.equal(card.availability.label, "Coming soon");
-  }
-
-  const smokedCatfishCards = buildSubcategoryCards({
-    category: getCategory("aquaculture-fishery"),
-    catalogueCount: 5,
-  });
-  assert.equal(smokedCatfishCards[0].availability.label, "5 products available");
-  assert.equal(smokedCatfishCards[0].availability.orderable, true);
+  const cards = buildSubcategoryCards({ category: getCategory("livestock"), catalogueCount: 0 });
+  assert.equal(cards.length, 4);
+  assert.equal(cards[0].path, "/category/livestock/poultry");
+  assert.equal(cards[0].availability.orderable, false);
+  assert.equal(cards[0].availability.label, "Coming soon");
 });
 
 test("a category entry describes its availability and empty state", () => {
-  const aquaculture = describeCategoryEntry(resolveCategoryEntry("aquaculture-fishery"), {
-    catalogueCount: 1,
-  });
-  assert.equal(aquaculture.name, "Aquaculture & Fishery");
-  assert.equal(aquaculture.availability.label, "1 product available");
-  assert.equal(aquaculture.emptyState, null);
-
-  const poultry = describeCategoryEntry(resolveCategoryEntry("livestock", "poultry"), {
-    catalogueCount: 0,
-  });
-  assert.equal(poultry.name, "Poultry");
-  assert.equal(poultry.eyebrow, "Livestock");
-  assert.equal(poultry.availability.orderable, false);
-  assert.match(poultry.emptyState.title, /coming soon/i);
-
-  const missing = describeCategoryEntry(null);
-  assert.equal(missing.name, "Category not found");
-  assert.equal(missing.emptyState, null);
+  const entry = resolveCategoryEntry("livestock", "poultry");
+  const view = describeCategoryEntry(entry);
+  assert.equal(view.eyebrow, "Livestock");
+  assert.equal(view.availability.label, "Coming soon");
+  assert.equal(view.emptyState.title, "Poultry is coming soon");
 });

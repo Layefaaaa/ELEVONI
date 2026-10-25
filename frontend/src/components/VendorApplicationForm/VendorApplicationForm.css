@@ -1,0 +1,216 @@
+.vendor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: clamp(24px, 3vw, 36px);
+  background: var(--elevoni-white);
+  border: 1px solid var(--elevoni-line);
+  border-radius: var(--elevoni-radius-lg);
+}
+
+.vendor-form h2 {
+  margin: 0;
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+.vendor-form-intro {
+  margin: 0;
+  color: var(--elevoni-text);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.vendor-form-notice {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #e9d3c0;
+  border-radius: var(--elevoni-radius);
+  background: #fbf4ee;
+  color: #7a4423;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.vendor-form-account {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--elevoni-line);
+  border-radius: var(--elevoni-radius);
+  background: var(--elevoni-cream);
+  color: var(--elevoni-text);
+  font-size: 14px;
+}
+
+.vendor-form-account strong {
+  color: var(--elevoni-ink);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.vendor-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.vendor-form-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.vendor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.vendor-field label,
+.vendor-focus legend {
+  color: var(--elevoni-ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.vendor-field-optional {
+  color: var(--elevoni-muted);
+  font-weight: 400;
+}
+
+.vendor-field input,
+.vendor-field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--elevoni-line);
+  border-radius: var(--elevoni-radius);
+  background: var(--elevoni-white);
+  color: var(--elevoni-ink);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.vendor-field input:hover,
+.vendor-field textarea:hover {
+  border-color: #c9cdc1;
+}
+
+.vendor-field input[aria-invalid="true"],
+.vendor-field textarea[aria-invalid="true"] {
+  border-color: #b4463c;
+}
+
+.vendor-field textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.vendor-field-hint {
+  margin: 0;
+  color: var(--elevoni-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.vendor-field-error {
+  margin: 0;
+  color: #a33529;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.vendor-focus {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vendor-focus legend {
+  margin-bottom: 2px;
+}
+
+.vendor-focus-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.vendor-focus-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--elevoni-line);
+  border-radius: 999px;
+  background: var(--elevoni-white);
+  color: var(--elevoni-text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.vendor-focus-option:hover {
+  border-color: var(--elevoni-sage);
+}
+
+.vendor-focus-option.selected {
+  border-color: var(--elevoni-sage-dark);
+  background: var(--elevoni-sage-soft);
+  color: var(--elevoni-ink);
+}
+
+.vendor-focus-option input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--elevoni-sage-dark);
+}
+
+.vendor-submit {
+  align-self: flex-start;
+  padding: 13px 28px;
+  border: 1px solid var(--elevoni-ink);
+  border-radius: var(--elevoni-radius);
+  background: var(--elevoni-ink);
+  color: var(--elevoni-white);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: background 160ms ease, opacity 160ms ease;
+}
+
+.vendor-submit:hover:not(:disabled) {
+  background: #2f342b;
+}
+
+.vendor-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vendor-form-note,
+.vendor-form-privacy {
+  margin: 0;
+  color: var(--elevoni-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.vendor-form-privacy a {
+  color: var(--elevoni-sage-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .vendor-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .vendor-submit {
+    align-self: stretch;
+    width: 100%;
+  }
+}

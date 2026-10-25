@@ -27,7 +27,7 @@ const CategoryCard = ({ card }) => (
     </p>
     <Link className="subcategory-card-link" to={card.path}>
       {card.availability.orderable ? `Browse ${card.name}` : `View ${card.name}`}
-      <span aria-hidden="true"> →</span>
+      <span aria-hidden="true"> ›</span>
     </Link>
   </article>
 );
@@ -126,11 +126,25 @@ const CategoryPage = () => {
         )
       )}
 
+      {entry.slug === "livestock" && (
+        <section className="category-sell-cta" aria-labelledby="category-sell-cta-title">
+          <p className="category-sell-cta-eyebrow">Sell with Elevoni</p>
+          <h2 id="category-sell-cta-title">Are you a livestock farmer?</h2>
+          <p>
+            Approved vendors can submit livestock and other agricultural product listings to the
+            Elevoni marketplace. Vendor applications and individual products are reviewed separately;
+            listings appear publicly only after approval.
+          </p>
+          <div className="category-sell-cta-actions">
+            <Link className="category-sell-cta-link" to="/marketplace">Browse marketplace</Link>
+            <Link className="category-sell-cta-link category-sell-cta-link-secondary" to="/sell-with-elevoni">Apply to sell with Elevoni</Link>
+          </div>
+        </section>
+      )}
+
       {entry.level === "category" && subcategoryCards.length > 0 && (
         <section className="category-subcategories" aria-labelledby="category-subcategories-title">
-          <h2 id="category-subcategories-title">
-            {entry.name} subcategories
-          </h2>
+          <h2 id="category-subcategories-title">{entry.name} subcategories</h2>
           <div className="subcategory-grid">
             {subcategoryCards.map((card) => (
               <CategoryCard key={card.slug} card={card} />
@@ -139,9 +153,7 @@ const CategoryPage = () => {
         </section>
       )}
 
-      {entry.level === "subcategory" &&
-        entry.parent &&
-        subcategoryCards.length > 1 && (
+      {entry.level === "subcategory" && entry.parent && subcategoryCards.length > 1 && (
         <section className="category-siblings" aria-labelledby="category-siblings-title">
           <h2 id="category-siblings-title">More in {entry.parent.name}</h2>
           <div className="subcategory-grid">

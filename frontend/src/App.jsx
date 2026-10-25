@@ -17,6 +17,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ItemDetails from "./pages/ItemDetails/ItemDetails";
 import CategoryPage from "./pages/Category/CategoryPage";
+import SellWithElevoni from "./pages/Vendor/SellWithElevoni";
+import Marketplace from "./pages/Marketplace/Marketplace";
 import Success from "./components/SuccessPage/Success";
 import ReactGA from "./analytics";
 
@@ -79,6 +81,8 @@ const App = () => {
           <Route path="/product/:id" element={<ItemDetails />} />
           <Route path="/category/:slug" element={<CategoryPage />} />
           <Route path="/category/:slug/:childSlug" element={<CategoryPage />} />
+          <Route path="/sell-with-elevoni" element={<SellWithElevoni />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />

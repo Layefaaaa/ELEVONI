@@ -136,6 +136,16 @@ const Navbar = ({ setShowLogin }) => {
         </li>
 
         <li>
+          <Link
+            to="/marketplace"
+            onClick={() => handleNavClick("marketplace")}
+            className={menu === "marketplace" ? "active" : ""}
+          >
+            marketplace
+          </Link>
+        </li>
+
+        <li>
           <a
             href="#shop"
             onClick={() => handleNavClick("shop")}

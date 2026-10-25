@@ -12,6 +12,8 @@ import Order from "./pages/Orders/Order";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Reviews from "./pages/Reviews/Reviews";
+import Vendors from "./pages/Vendors/Vendors";
+import MarketplaceProducts from "./pages/MarketplaceProducts/MarketplaceProducts";
 import { resolveApiBaseUrl } from "./apiBase";
 
 const url = resolveApiBaseUrl();
@@ -31,6 +33,8 @@ const AdminApp = () => {
           <Route path="/list" element={<List url={url} />} />
           <Route path="/orders" element={<Order url={url} />} />
           <Route path="/reviews" element={<Reviews url={url} />} />
+          <Route path="/vendors" element={<Vendors url={url} />} />
+          <Route path="/marketplace-products" element={<MarketplaceProducts url={url} />} />
           <Route path="/add" element={<AddProduct url={url} />} />
           <Route path="/edit/:id" element={<EditProduct url={url} />} />
           <Route path="/add-media/:id" element={<AddMedia url={url} />} />

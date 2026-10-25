@@ -1,0 +1,56 @@
+.vendor-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.vendor-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.vendor-page-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.vendor-page-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.vendor-page-summary {
+  margin: 0;
+  max-width: 720px;
+  color: #374151;
+}
+
+.vendor-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: #ffffff;
+}
+
+.vendor-status-line {
+  margin: 0;
+  font-weight: 500;
+}
+
+.vendor-meta {
+  margin: 0;
+  color: #4b5563;
+  word-break: break-all;
+}
+
+.vendor-note {
+  margin: 0;
+  color: #6b7280;
+}
