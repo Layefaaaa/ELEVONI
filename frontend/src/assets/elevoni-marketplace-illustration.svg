@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 420" role="img" aria-labelledby="title desc">
+  <title id="title">Agricultural products moving from farms to markets</title>
+  <desc id="desc">A simple illustration of green field rows, a sun, crops, and produce crates.</desc>
+  <rect width="620" height="420" rx="24" fill="#f7f8f4"/>
+  <circle cx="484" cy="85" r="39" fill="#e6eadf"/>
+  <circle cx="484" cy="85" r="23" fill="#a9b99a"/>
+  <path d="M0 240 Q120 180 240 232 T480 226 T620 220 V420 H0Z" fill="#dfe7d8"/>
+  <path d="M0 286 Q150 218 300 285 T620 270 V420 H0Z" fill="#c4d3b8"/>
+  <path d="M0 336 Q150 270 310 338 T620 320 V420 H0Z" fill="#9fb58e"/>
+  <g fill="none" stroke="#7d9b6a" stroke-width="5" stroke-linecap="round">
+    <path d="M34 420 Q110 340 205 300"/><path d="M112 420 Q180 350 270 310"/><path d="M200 420 Q250 370 330 328"/>
+    <path d="M385 420 Q430 355 490 320"/><path d="M470 420 Q520 365 580 330"/>
+  </g>
+  <g transform="translate(74 128)">
+    <path d="M42 100 C14 72 17 44 40 28 C59 48 61 75 42 100Z" fill="#789768"/>
+    <path d="M43 102 C69 68 94 70 104 88 C90 109 66 117 43 102Z" fill="#9bb68a"/>
+    <path d="M43 101 L42 143" stroke="#668659" stroke-width="6" stroke-linecap="round"/>
+    <path d="M40 70 C15 55 3 35 13 16 C37 26 47 47 40 70Z" fill="#b7caa9"/>
+  </g>
+  <g transform="translate(375 208)">
+    <rect x="0" y="42" width="94" height="70" rx="7" fill="#ffffff" stroke="#9eaf92" stroke-width="3"/>
+    <path d="M0 61 H94 M22 44 V110 M47 44 V110 M72 44 V110" stroke="#c2cfb8" stroke-width="3"/>
+    <rect x="18" y="0" width="94" height="70" rx="7" fill="#fdfefd" stroke="#9eaf92" stroke-width="3"/>
+    <path d="M18 20 H112 M40 2 V68 M65 2 V68 M90 2 V68" stroke="#c2cfb8" stroke-width="3"/>
+    <path d="M43 6 C32 -5 38 -20 51 -23 C65 -13 59 -1 43 6Z" fill="#789768"/>
+    <path d="M60 6 C69 -8 85 -7 91 2 C82 13 69 14 60 6Z" fill="#a8c099"/>
+  </g>
+  <g fill="#536e46" font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="2">
+    <text x="38" y="54">GROWN WITH CARE</text>
+    <text x="380" y="385">FROM FARM TO MARKET</text>
+  </g>
+</svg>

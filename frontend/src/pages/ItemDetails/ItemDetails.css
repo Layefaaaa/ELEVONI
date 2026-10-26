@@ -50,4 +50,5 @@
 @media (max-width: 420px) {
   .tier-card { flex-direction: column; align-items: flex-start; gap: 3px; }
   .tier-range, .tier-rate { white-space: normal; }
-}
+}.thumb { display:block; flex:0 0 68px; padding:0; }
+.thumb:focus-visible { outline:2px solid var(--elevoni-sage); outline-offset:2px; }

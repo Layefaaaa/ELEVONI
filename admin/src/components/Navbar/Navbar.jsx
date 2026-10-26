@@ -1,15 +1,17 @@
 import "./Navbar.css";
 import { assets } from "../../assets/assets";
 import { useAuth } from "../../context/useAuth";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const { logout, user } = useAuth();
 
   return (
     <header className="navbar">
-      <div className="navbar-logo-wrapper">
-        <img className="logo" src={assets.logo} alt="Elevoni Admin" />
-      </div>
+      <Link to="/list" className="navbar-logo-wrapper" aria-label="Elevoni admin home">
+        <img className="logo" src={assets.logo} alt="Elevoni Farms" />
+        <span className="navbar-brand-caption">Admin workspace</span>
+      </Link>
 
       <div className="admin-account">
         <div className="user-info">

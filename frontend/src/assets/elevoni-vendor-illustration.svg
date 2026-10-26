@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 380" role="img" aria-labelledby="title desc">
+  <title id="title">Vendor application and product review</title>
+  <desc id="desc">An original illustration of a product crate, growing leaves and a checklist with a review mark.</desc>
+  <rect width="520" height="380" rx="24" fill="#f7f8f4"/>
+  <circle cx="408" cy="76" r="44" fill="#e7ece1"/>
+  <path d="M40 310 C118 273 183 291 252 310 S395 337 480 290 V380 H40Z" fill="#e5ebdf"/>
+  <path d="M38 344 C130 310 192 336 274 346 S411 355 484 328 V380 H38Z" fill="#cbd9c1"/>
+  <g transform="translate(60 106)">
+    <path d="M42 127 C8 98 12 59 40 38 C69 60 69 96 42 127Z" fill="#7f9a6e"/>
+    <path d="M43 130 C68 88 106 87 119 110 C102 136 72 147 43 130Z" fill="#a8bd9a"/>
+    <path d="M42 124 L42 178" stroke="#667f58" stroke-width="7" stroke-linecap="round"/>
+    <path d="M39 80 C14 65 4 43 16 22 C38 35 47 55 39 80Z" fill="#b9cbaa"/>
+  </g>
+  <g transform="translate(188 92)">
+    <rect x="0" y="0" width="204" height="225" rx="13" fill="#fff" stroke="#dfe5d8" stroke-width="3"/>
+    <rect x="24" y="24" width="60" height="7" rx="3.5" fill="#d8e1d0"/>
+    <rect x="24" y="44" width="120" height="5" rx="2.5" fill="#ecefe9"/>
+    <g stroke="#c9d5c0" stroke-width="2" fill="none">
+      <rect x="24" y="78" width="18" height="18" rx="4"/><path d="M49 87 H166"/>
+      <rect x="24" y="116" width="18" height="18" rx="4"/><path d="M49 125 H148"/>
+      <rect x="24" y="154" width="18" height="18" rx="4"/><path d="M49 163 H158"/>
+    </g>
+    <path d="M27 85 L33 91 L43 79" fill="none" stroke="#668659" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g transform="translate(330 250)">
+    <rect x="0" y="25" width="130" height="72" rx="8" fill="#fff" stroke="#91a582" stroke-width="3"/>
+    <path d="M0 47 H130 M32 27 V95 M65 27 V95 M98 27 V95" stroke="#c0cfb6" stroke-width="3"/>
+    <path d="M45 25 C26 7 34 -9 49 -17 C66 -3 60 14 45 25Z" fill="#789768"/>
+    <path d="M62 25 C75 4 94 7 99 20 C87 34 72 35 62 25Z" fill="#a6bd98"/>
+  </g>
+  <g fill="#536e46" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="2">
+    <text x="32" y="42">GROW. SHARE. REVIEW.</text>
+  </g>
+</svg>

@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import vendorIllustration from "../../assets/elevoni-vendor-illustration.svg";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { StoreContext } from "../../context/StoreContext";
@@ -259,6 +260,7 @@ const SellWithElevoni = () => {
           Applications are reviewed by a person. Applying does not create a listing, verify stock or
           enable checkout.
         </p>
+        <img className="sell-hero-illustration" src={vendorIllustration} alt="" loading="lazy" />
       </header>
 
       <section className="sell-panel" aria-label="Vendor application">

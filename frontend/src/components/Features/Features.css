@@ -4,4 +4,6 @@
 .feature-card h3 { margin: 0; color: var(--elevoni-ink); font-size: 13px; font-weight: 550; line-height: 1.4; }
 .feature-card p { margin: 5px 0 0; color: var(--elevoni-muted); font-size: 12px; line-height: 1.6; }
 @media (max-width: 800px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; padding-block: 24px; } }
-@media (max-width: 480px) { .features { grid-template-columns: 1fr; gap: 18px; margin-bottom: 68px; } }
+@media (max-width: 480px) { .features { grid-template-columns: 1fr; gap: 18px; margin-bottom: 68px; } }.features { align-items:stretch; }
+.feature-card { min-width:0; }
+.feature-card p { line-height:1.65; }

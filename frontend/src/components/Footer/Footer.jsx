@@ -8,19 +8,11 @@ const Footer = () => {
     <div className="footer" id="footer">
       <div className="footer-content">
         <div className="footer-content-left">
-          <img id="logo" src={assets.logo} alt="" />
+          <img id="logo" src={assets.logo} alt="Elevoni Farms" />
           <p>
-            Elevoni brings premium smoked catfish to homes, restaurants and businesses. We carefully prepare and smoke our catfish, then deliver it with the quality and service our customers expect. Thank you for choosing Elevoni Farms.
+            Elevoni brings its smoked-catfish business online while building a reviewed marketplace for agricultural products. Marketplace listings are enquiries, not completed orders; availability and delivery arrangements must be confirmed.
           </p>
           <div className="footer-social-icons">
-            <a
-              href="https://www.facebook.com/YourPageName"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src={assets.facebook_icon} alt="Facebook" />
-            </a>
-
             <a
               href="https://x.com/feedoh_bala"
               target="_blank"

@@ -440,3 +440,7 @@
         width: 100%;
     }
 }
+.vendors-filter.active { background:#25301f; border-color:#25301f; }
+.vendor-card.selected { border-color:#7c8760; box-shadow:0 0 0 1px #7c8760 inset; }
+.vendors-review { background:#25301f; }
+.vendors-review:hover { background:#3e4b34; }

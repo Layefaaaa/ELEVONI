@@ -35,3 +35,6 @@
 .moderation-state h2, .moderation-state p { margin: 0; }
 .moderation-error { color: #9c3d3d; }
 @media (max-width: 650px) { .marketplace-moderation-header { flex-direction: column; } .moderation-product { grid-template-columns: 74px minmax(0, 1fr); gap: 12px; padding: 12px; } .moderation-product-top { align-items: start; flex-direction: column; } .moderation-product-top h2 { font-size: 15px; } .moderation-product-meta { gap: 6px 10px; } }
+.moderation-filters button.active { border-color:#25301f; background:#25301f; }
+.moderation-actions .moderation-approve { border-color:#25301f; background:#25301f; }
+.moderation-refresh:hover,.moderation-state button:hover { background:#f7f9f4; border-color:#cbd5c1; }

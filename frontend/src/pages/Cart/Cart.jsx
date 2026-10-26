@@ -1,12 +1,12 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import "./Cart.css";
 import { StoreContext } from "../../context/StoreContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import getProductPrice from "../../utils/pricing";
 
 const Cart = () => {
-  const { cartItems, fish_list, removeFromCart, url, token } =
+  const { cartItems, fish_list, removeFromCart, url, token, catalogueLoading } =
     useContext(StoreContext);
 
   const navigate = useNavigate();
@@ -70,8 +70,25 @@ const Cart = () => {
     };
   }, [orderItems, token, url]);
 
+  if (catalogueLoading && fish_list.length === 0) {
+    return <main className="cart"><p className="cart-state" role="status">Loading your cart…</p></main>;
+  }
+
+  if (orderItems.length === 0) {
+    return (
+      <main className="cart">
+        <section className="cart-empty" aria-labelledby="cart-empty-title">
+          <p className="cart-empty-eyebrow">Your cart</p>
+          <h1 id="cart-empty-title">Your cart is empty.</h1>
+          <p>Browse the Elevoni Direct catalogue for smoked catfish, or explore agricultural marketplace listings.</p>
+          <div className="cart-empty-actions"><Link to="/#fish-display">Shop smoked catfish</Link><Link to="/marketplace">Explore marketplace</Link></div>
+        </section>
+      </main>
+    );
+  }
+
   return (
-    <div className="cart">
+    <main className="cart">
       <div className="cart-items">
         <div className="cart-items-title">
           <p>Items</p>
@@ -112,9 +129,9 @@ const Cart = () => {
 
                   <p>₦{itemTotal.toLocaleString()}</p>
 
-                  <p onClick={() => removeFromCart(item._id)} className="cross">
-                    x
-                  </p>
+                  <button type="button" onClick={() => removeFromCart(item._id)} className="cross" aria-label={`Remove ${item.name} from cart`}>
+                    ×
+                  </button>
                 </div>
 
                 <hr />
@@ -165,7 +182,7 @@ const Cart = () => {
           </button>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

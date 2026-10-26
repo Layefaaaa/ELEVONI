@@ -134,4 +134,9 @@
         padding: 6px 16px;
         font-size: 13px;
     }
-}
+}.navbar-logo-wrapper { display:flex; align-items:center; gap:14px; min-width:0; text-decoration:none; }
+.navbar-brand-caption { padding-left:14px; border-left:1px solid #e5e7df; color:#687061; font-size:12px; font-weight:600; white-space:nowrap; }
+.user-avatar { border-color:#dfe4da; background:#f1f4ec; color:#536e46; }
+.logout-btn { border-color:#dfe4da; color:#40483a; }
+.logout-btn:hover { background:#f5f7f1; border-color:#cbd5c1; color:#191c17; }
+@media(max-width:480px) { .navbar-brand-caption { display:none; } }

@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import AdminLogin from "./components/AdminLogin";
 import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./context/useAuth";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AddProduct from "./pages/AddProduct/AddProduct";
 import EditProduct from "./pages/EditProduct/EditProduct";
 import AddMedia from "./pages/AddMedia/AddMedia";
@@ -20,7 +20,7 @@ const url = resolveApiBaseUrl();
 
 const AdminApp = () => {
   const { user, loading } = useAuth();
-  if (loading) return <div role="status">Checking admin access&</div>;
+  if (loading) return <div role="status">Checking admin access…</div>;
   if (!user) return <AdminLogin />;
   return (
     <div>
@@ -30,6 +30,8 @@ const AdminApp = () => {
       <div className="app-content">
         <Sidebar />
         <Routes>
+          <Route path="/" element={<Navigate to="/list" replace />} />
+          <Route path="*" element={<Navigate to="/list" replace />} />
           <Route path="/list" element={<List url={url} />} />
           <Route path="/orders" element={<Order url={url} />} />
           <Route path="/reviews" element={<Reviews url={url} />} />

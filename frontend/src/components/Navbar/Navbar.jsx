@@ -1,14 +1,13 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import "./Navbar.css";
 import { assets } from "../../assets/assets";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { StoreContext } from "../../context/StoreContext";
 import { isUnauthorizedResponse } from "../../utils/authSession";
 import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
 import axios from "axios";
 
 const Navbar = ({ setShowLogin }) => {
-  const [menu, setMenu] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
@@ -17,6 +16,7 @@ const Navbar = ({ setShowLogin }) => {
   const { getTotalCartAmount, token, url, invalidateSession } = useContext(StoreContext);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -90,10 +90,7 @@ const Navbar = ({ setShowLogin }) => {
     navigate("/");
   };
 
-  const handleNavClick = (menuItem) => {
-    setMenu(menuItem);
-    setMobileMenuOpen(false);
-  };
+  const handleNavClick = () => setMobileMenuOpen(false);
 
   return (
     <nav
@@ -108,82 +105,19 @@ const Navbar = ({ setShowLogin }) => {
         <li className="mobile-menu-close">
           <button
             className="close-drawer-btn"
+            type="button"
             onClick={() => setMobileMenuOpen(false)}
             aria-label="Close menu"
           >
             <FaTimes />
           </button>
         </li>
-
-        <li>
-          <a
-            href="/"
-            onClick={() => handleNavClick("home")}
-            className={menu === "home" ? "active" : ""}
-          >
-            home
-          </a>
-        </li>
-
-        <li>
-          <Link
-            to="/#categories"
-            onClick={() => handleNavClick("categories")}
-            className={menu === "categories" ? "active" : ""}
-          >
-            categories
-          </Link>
-        </li>
-
-        <li>
-          <Link
-            to="/marketplace"
-            onClick={() => handleNavClick("marketplace")}
-            className={menu === "marketplace" ? "active" : ""}
-          >
-            marketplace
-          </Link>
-        </li>
-
-        <li>
-          <a
-            href="#shop"
-            onClick={() => handleNavClick("shop")}
-            className={menu === "shop" ? "active" : ""}
-          >
-            shop
-          </a>
-        </li>
-
-        <li>
-          <a
-            href="#reviews"
-            onClick={() => handleNavClick("reviews")}
-            className={menu === "reviews" ? "active" : ""}
-          >
-            reviews
-          </a>
-        </li>
-
-        <li>
-          <a
-            href="#app-download"
-            onClick={() => handleNavClick("mobile-app")}
-            className={menu === "mobile-app" ? "active" : ""}
-          >
-            mobile-app
-          </a>
-        </li>
-
-        <li>
-          <a
-            href="#footer"
-            onClick={() => handleNavClick("contact-us")}
-            className={menu === "contact-us" ? "active" : ""}
-          >
-            contact us
-          </a>
-        </li>
+        <li><Link to="/" onClick={handleNavClick} className={location.pathname === "/" ? "active" : ""}>Home</Link></li>
+        <li><Link to="/#categories" onClick={handleNavClick} className={location.pathname.startsWith("/category/") ? "active" : ""}>Categories</Link></li>
+        <li><Link to="/marketplace" onClick={handleNavClick} className={location.pathname === "/marketplace" ? "active" : ""}>Marketplace</Link></li>
+        <li><Link to="/#fish-display" onClick={handleNavClick}>Smoked catfish</Link></li>
+        <li><Link to="/sell-with-elevoni" onClick={handleNavClick} className={`navbar-sell-link ${location.pathname === "/sell-with-elevoni" ? "active" : ""}`}>Sell with Elevoni <span aria-hidden="true">→</span></Link></li>
+        <li><Link to="/about" onClick={handleNavClick} className={location.pathname === "/about" ? "active" : ""}>About</Link></li>
       </ul>
 
       <div className="navbar-right">

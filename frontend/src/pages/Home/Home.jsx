@@ -7,30 +7,31 @@ import FishDisplay from "../../components/FishDisplay/FishDisplay";
 import AppDownload from "../../components/AppDownload/AppDownload";
 import Features from "../../components/Features/Features";
 import Reviews from "../../components/Reviews/Reviews";
+import VendorInvitation from "../../components/VendorInvitation/VendorInvitation";
 
 const Home = () => {
   return (
     <div>
       <Helmet>
         <title>
-          Elevoni Farms | Premium Smoked Catfish Direct From Our Farm
+          Elevoni Farms | Agricultural Products & Smoked Catfish
         </title>
 
         <meta
           name="description"
-          content="Buy premium smoked catfish from Elevoni Farms. Carefully prepared, richly smoked, and conveniently delivered to your doorstep."
+          content="Explore agricultural marketplace listings and buy Elevoni smoked catfish directly. Confirm availability and delivery before ordering."
         />
 
         <link rel="canonical" href="https://elevonifarms.vercel.app/" />
 
         <meta
           property="og:title"
-          content="Elevoni Farms - Premium Smoked Catfish"
+          content="Elevoni Farms - Agricultural Products and Smoked Catfish"
         />
 
         <meta
           property="og:description"
-          content="Shop premium smoked catfish from Elevoni Farms. Quality smoked fish, conveniently delivered."
+          content="Explore agricultural marketplace listings or shop Elevoni smoked catfish directly."
         />
 
         <meta property="og:type" content="website" />
@@ -41,6 +42,8 @@ const Home = () => {
       <Header />
 
       <CategoryGrid />
+
+      <VendorInvitation />
 
       <FishDisplay />
 
