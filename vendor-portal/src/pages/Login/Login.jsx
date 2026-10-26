@@ -16,7 +16,9 @@ const Login = () => {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      navigate(application ? "/" : "/apply", { replace: true });
+      navigate(application?.status === "approved" ? "/" : "/apply", {
+        replace: true,
+      });
     }
   }, [application, isAuthenticated, loading, navigate]);
 
@@ -43,14 +45,7 @@ const Login = () => {
         setError("We couldn't sign you in. Please try again.");
         return;
       }
-      const session = await signIn(token, user ?? null);
-
-      navigate(session?.application ? "/" : "/apply", {
-        replace: true,
-      });
-
-      // The auth provider verifies the token and loads application status.
-      navigate(user ? "/apply" : "/", { replace: true });
+      await signIn(token, user ?? null);
     } catch (requestError) {
       const status = requestError.response?.status;
 

@@ -1,19 +1,17 @@
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
 import vendorProfileModel from "../models/vendorProfileModel.js";
+import {
+  PUBLIC_CATEGORY_FILTER_KINDS,
+  categoriesForVendor,
+  isProductCategory,
+  resolveProductCategoryFilter,
+} from "../services/categoryNormalization.js";
 
 const escapeRegex = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const validObjectId = (value) => mongoose.Types.ObjectId.isValid(value);
 const currentUserId = (req) => req.auth?.userId || req.auth?.id;
-const PRODUCT_CATEGORIES = ["Catfish & Aquaculture", "Poultry & Eggs", "Grains & Cereals", "Vegetables & Fruits", "Tubers & Starch", "Livestock & Meat", "Processed Agro-Goods"];
 const PRODUCT_UNITS = ["kg", "gram", "piece", "crate", "ton", "bag", "carton", "litre"];
-const categoriesForVendor = (profile) => {
-  const focus = new Set(profile?.productFocus || []);
-  const categories = [];
-  if (focus.has("poultry")) categories.push("Poultry & Eggs");
-  if (["cattle", "sheep", "goats"].some((item) => focus.has(item))) categories.push("Livestock & Meat");
-  return categories;
-};
 const profileForUser = (userId) => vendorProfileModel.findOne({ userId });
 const productOwnerId = (product) => product?.vendorId?._id ? String(product.vendorId._id) : product?.vendorId ? String(product.vendorId) : null;
 
@@ -30,10 +28,14 @@ export const getPublicProducts = async (req, res, next) => {
         (minPrice !== undefined && maxPrice !== undefined && Number(minPrice) > Number(maxPrice))) {
       return res.status(400).json({ success: false, message: "Invalid price range" });
     }
+    const categoryFilter = resolveProductCategoryFilter(category);
+    if (categoryFilter.kind === PUBLIC_CATEGORY_FILTER_KINDS.UNSUPPORTED) {
+      return res.status(200).json({ success: true, count: 0, total: 0, page: pageNumber, pages: 0, data: [] });
+    }
     const approvedProfiles = await vendorProfileModel.find({ status: "approved" }, "_id");
     const approvedIds = approvedProfiles.map((profile) => profile._id);
     const filter = { status: "approved", isAvailable: true, vendorId: { $in: approvedIds } };
-    if (category) filter.category = category;
+    if (categoryFilter.kind === PUBLIC_CATEGORY_FILTER_KINDS.FILTER) filter.category = categoryFilter.category;
     if (vendorId) {
       if (!validObjectId(vendorId) || !approvedIds.some((id) => String(id) === String(vendorId))) {
         return res.status(200).json({ success: true, count: 0, total: 0, page: pageNumber, pages: 0, data: [] });
@@ -73,7 +75,7 @@ export const getProductById = async (req, res, next) => {
 export const createVendorProduct = async (req, res, next) => {
   try {
     const { name, description = "", price, category, unitOfMeasure = "kg", stockQuantity = 0, images = [], originLocation = {} } = req.body || {};
-    if (typeof name !== "string" || name.trim().length < 2 || name.trim().length > 160 || price === undefined || !Number.isFinite(Number(price)) || Number(price) <= 0 || !PRODUCT_CATEGORIES.includes(category)) {
+    if (typeof name !== "string" || name.trim().length < 2 || name.trim().length > 160 || price === undefined || !Number.isFinite(Number(price)) || Number(price) <= 0 || !isProductCategory(category)) {
       return res.status(400).json({ success: false, message: "Provide a product name, positive price, and valid category" });
     }
     if (!PRODUCT_UNITS.includes(unitOfMeasure) || !Array.isArray(images) || images.some((image) => typeof image !== "string" || !/^https?:\/\//i.test(image)) || !Number.isFinite(Number(stockQuantity)) || Number(stockQuantity) < 0) {
@@ -117,7 +119,7 @@ export const updateVendorProduct = async (req, res, next) => {
     }
     if (req.body.name !== undefined && (typeof req.body.name !== "string" || req.body.name.trim().length < 2 || req.body.name.trim().length > 160)) return res.status(400).json({ success: false, message: "Product name must be between 2 and 160 characters" });
     if (req.body.price !== undefined && (!Number.isFinite(Number(req.body.price)) || Number(req.body.price) <= 0)) return res.status(400).json({ success: false, message: "Product price must be greater than zero" });
-    if (req.body.category !== undefined && !PRODUCT_CATEGORIES.includes(req.body.category)) return res.status(400).json({ success: false, message: "Invalid product category" });
+    if (req.body.category !== undefined && !isProductCategory(req.body.category)) return res.status(400).json({ success: false, message: "Invalid product category" });
     if (req.body.unitOfMeasure !== undefined && !PRODUCT_UNITS.includes(req.body.unitOfMeasure)) return res.status(400).json({ success: false, message: "Invalid unit of measure" });
     if (req.body.stockQuantity !== undefined && (!Number.isFinite(Number(req.body.stockQuantity)) || Number(req.body.stockQuantity) < 0)) return res.status(400).json({ success: false, message: "Stock quantity cannot be negative" });
     if (req.body.images !== undefined && (!Array.isArray(req.body.images) || req.body.images.some((image) => typeof image !== "string" || !/^https?:\/\//i.test(image)))) return res.status(400).json({ success: false, message: "Images must be valid HTTP or HTTPS URLs" });

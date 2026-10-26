@@ -1,44 +1,27 @@
-import React from "react";
 import "./Sidebar.css";
-import { assets } from "../../assets/assets";
 import { NavLink } from "react-router-dom";
 
-const Sidebar = () => {
-  return (
-    <aside className="sidebar">
-      <div className="sidebar-options">
-        <NavLink to="/add" className="sidebar-option">
-          <img src={assets.add_icon} alt="Add" className="sidebar-icon" />
-          <p>Add Items</p>
-        </NavLink>
+const NAV_ITEMS = [
+  { to: "/add", label: "Add direct product", icon: "+" },
+  { to: "/list", label: "Direct catalogue", icon: "▦" },
+  { to: "/orders", label: "Orders", icon: "↗" },
+  { to: "/reviews", label: "Reviews", icon: "☆" },
+  { to: "/marketplace-products", label: "Marketplace listings", icon: "◈" },
+  { to: "/vendors", label: "Vendor applications", icon: "♙" },
+];
 
-        <NavLink to="/list" className="sidebar-option">
-          <img src={assets.order_icon} alt="List" className="sidebar-icon" />
-          <p>List Items</p>
+const Sidebar = () => (
+  <aside className="sidebar">
+    <p className="sidebar-heading">Operations</p>
+    <nav className="sidebar-options" aria-label="Admin navigation">
+      {NAV_ITEMS.map((item) => (
+        <NavLink key={item.to} to={item.to} className={({ isActive }) => `sidebar-option${isActive ? " active" : ""}`}>
+          <span className="sidebar-icon-glyph" aria-hidden="true">{item.icon}</span>
+          <span className="sidebar-option-label">{item.label}</span>
         </NavLink>
-
-        <NavLink to="/orders" className="sidebar-option">
-          <img src={assets.order_icon} alt="Orders" className="sidebar-icon" />
-          <p>Orders</p>
-        </NavLink>
-
-        <NavLink to="/reviews" className="sidebar-option">
-          <img src={assets.order_icon} alt="Reviews" className="sidebar-icon" />
-          <p>Reviews</p>
-        </NavLink>
-
-        <NavLink to="/marketplace-products" className="sidebar-option">
-          <img src={assets.order_icon} alt="" className="sidebar-icon" />
-          <p>Marketplace Products</p>
-        </NavLink>
-
-        <NavLink to="/vendors" className="sidebar-option">
-          <img src={assets.order_icon} alt="Vendors" className="sidebar-icon" />
-          <p>Vendors</p>
-        </NavLink>
-      </div>
-    </aside>
-  );
-};
+      ))}
+    </nav>
+  </aside>
+);
 
 export default Sidebar;

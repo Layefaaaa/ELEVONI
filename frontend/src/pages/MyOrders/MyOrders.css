@@ -24,4 +24,6 @@
     overflow-wrap: anywhere;
   }
   .my-orders-order button { grid-column: 2; grid-row: auto; }
-}
+}.orders-state { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:22px 0; color:#8e3434; font-size:13px; }
+.orders-state button { min-height:36px; padding:0 12px; border:1px solid var(--elevoni-line); border-radius:5px; background:#fff; color:var(--elevoni-ink); cursor:pointer; }
+@media(max-width:560px) { .orders-state { align-items:flex-start; flex-direction:column; } }

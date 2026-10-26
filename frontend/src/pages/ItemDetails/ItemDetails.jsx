@@ -153,7 +153,6 @@ const ItemDetails = () => {
       priceCurrency: "NGN",
       price: currentPrice,
       itemCondition: "https://schema.org/NewCondition",
-      availability: "https://schema.org/InStock",
     },
   };
 
@@ -163,7 +162,7 @@ const ItemDetails = () => {
         <title>{item.name} | Smoked Catfish from Elevoni</title>
         <meta
           name="description"
-          content={`Purchase ${item.name}, carefully prepared and smoked by Elevoni Farms. ₦${currentPrice.toLocaleString()} per kg.`}
+          content={`View details and quantity-based pricing for ${item.name} from Elevoni Farms.`}
         />
         <link
           rel="canonical"
@@ -214,10 +213,13 @@ const ItemDetails = () => {
 
           <div className="thumbnail-row">
             {gallery.map((media, index) => (
-              <div
+              <button
                 key={index}
+                type="button"
                 className={`thumb ${safeIndex === index ? "active" : ""}`}
                 onClick={() => setSelected(index)}
+                aria-label={`Show ${media.type} ${index + 1}`}
+                aria-pressed={safeIndex === index}
               >
                 {media.type === "video" ? (
                   <div className="video-thumb-container">
@@ -233,7 +235,7 @@ const ItemDetails = () => {
                 ) : (
                   <img src={media.src} alt="" />
                 )}
-              </div>
+              </button>
             ))}
           </div>
         </div>

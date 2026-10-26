@@ -37,15 +37,18 @@ However, the current business must always be distinguished from the long-term vi
 
 ## Current reality
 
-* Elevoni is currently a single-vendor business.
-* Elevoni itself is the current vendor.
-* Smoked catfish is the primary/current product.
-* Real customers, orders, payments, and deliveries exist.
-* The website is a real commerce system.
-* The current product is not a functioning multi-vendor marketplace.
+* Elevoni is a real agricultural business; the existing smoked-catfish operation remains part of the product.
+* Elevoni is transitioning from a sole-vendor smoked-catfish storefront toward a multi-vendor agricultural marketplace.
+* The marketplace and vendor portal are part of the current COUCH product direction.
+* The existing catfish catalogue and commerce flow remain part of Elevoni.
+* Real customers, orders, payments, and deliveries exist for the existing smoked-catfish business.
+* The website is a real commerce system for that existing operation.
+* The marketplace is under active development and is not yet a complete transaction system.
+* Marketplace capabilities must not be described as implemented unless they exist in the code, are integrated, and have been tested.
+* Do not invent active vendors, vendor orders, sales, reviews, stock, or delivery capabilities.
+* Nationwide marketplace participation does not automatically establish nationwide delivery coverage.
+* Marketplace checkout and fulfilment must not be assumed to work until verified.
 * AI capabilities must not be claimed as implemented unless they actually exist in the code and have been tested.
-* External vendors are NOT part of the current product.
-* A broader agricultural marketplace is a future direction, not current traction.
 
 Never create fake vendors, fake farms, fake customers, fake orders, fake revenue, or fake AI results to make a demo look better.
 
@@ -55,7 +58,7 @@ Never create fake vendors, fake farms, fake customers, fake orders, fake revenue
 
 Elevoni is being developed for the Coderina University Challenge (COUCH).
 
-The competition deadline/demo day is November 20, 2026.
+The COUCH Grand Finale is scheduled for November 17, 2026.
 
 The product and pitch must both be taken seriously.
 
@@ -122,6 +125,7 @@ There are currently separate applications for:
 
 * customer frontend
 * admin frontend
+* vendor portal
 * backend API
 
 Do not migrate the stack without explicit approval.
@@ -371,26 +375,18 @@ For example, product pricing logic should preferably live in a pricing service r
 
 # 12. CURRENT PRODUCT SCOPE
 
-The current product is primarily:
+The current product includes:
 
-**Smoked Catfish**
+* Elevoni's existing smoked-catfish commerce.
+* The multi-vendor agricultural marketplace and vendor portal, which are part of the current COUCH product direction.
 
-Elevoni may expand its OWN catalogue later.
+The marketplace is under active development. Do not describe it as fully implemented, and do not assume marketplace checkout or fulfilment works until verified.
 
-Do NOT implement external vendor onboarding or a multi-vendor marketplace unless explicitly requested.
+Do NOT create vendor commissions, vendor wallets, vendor payouts, or marketplace seller accounts beyond the existing vendor application and listing workflow unless explicitly approved.
 
-Do NOT create:
+Do not expand vendor onboarding or dashboards beyond the existing workflow without explicit approval.
 
-* vendor commissions
-* vendor dashboards
-* vendor wallets
-* vendor payouts
-* vendor onboarding
-* marketplace seller accounts
-
-unless specifically approved.
-
-The broader multi-vendor agricultural marketplace is a future strategic direction.
+Do not invent active vendors, orders, sales, reviews, stock, or delivery capabilities.
 
 ---
 

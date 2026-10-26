@@ -93,4 +93,6 @@
         padding: 10px;
         font-size: 13px;
     }
-}
+}.order-item { border-color:#e5e7df; background:#fff; }
+.order-item select { border-color:#dfe4da; background:#f8f9f6; color:#191c17; }
+.order-item select:focus { border-color:#7c8760; outline:2px solid #e5ebde; }

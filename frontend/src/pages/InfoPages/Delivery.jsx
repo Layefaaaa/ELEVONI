@@ -1,68 +1,42 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import "./InfoPages.css";
 
-const Delivery = () => {
-  return (
-    <div className="info-page-container">
-      <h1>Wholesale Delivery Policy</h1>
-      <p className="info-page-subtitle">
-        Scheduled delivery details and operational coverage for commercial
-        accounts across Abuja.
-      </p>
+const Delivery = () => (
+  <main className="info-page-container">
+    <Helmet>
+      <title>Delivery & Fulfilment | Elevoni Farms</title>
+      <meta name="description" content="Learn how to confirm availability, price and delivery arrangements with Elevoni before ordering." />
+    </Helmet>
+    <p className="info-page-eyebrow">Delivery & fulfilment</p>
+    <h1>Confirm the details before you order.</h1>
+    <p className="info-page-subtitle">
+      Delivery availability, timing and cost depend on the product, quantity and destination. Contact Elevoni to confirm the arrangements for your specific request before making payment.
+    </p>
 
-      <h2>Coverage Areas</h2>
+    <div className="info-callout-box">
+      <h3>Marketplace enquiries are not completed orders</h3>
       <p>
-        We provide scheduled delivery services directly to hotels, restaurants,
-        caterers, and food vendors within major Abuja hubs:
+        A listing does not by itself confirm stock, a final price, payment terms or delivery. Elevoni and the buyer must confirm these details before treating a marketplace enquiry as an order.
       </p>
-      <ul>
-        <li>Wuse & Wuse II</li>
-        <li>Maitama & Asokoro</li>
-        <li>Central Business District (CBD)</li>
-        <li>Mabushi</li>
-        <li>Garki & Durumi</li>
-        <li>
-          Special arrangements available for bulk orders outside primary zones
-        </li>
-      </ul>
-
-      <div className="info-callout-box">
-        <h3>Order & Dispatch Timelines</h3>
-        <ul>
-          <li>
-            <strong>Standard Wholesale Orders:</strong> Orders confirmed before
-            12:00 PM are scheduled for next-day business delivery.
-          </li>
-          <li>
-            <strong>Kitchen Trial Orders:</strong> First-time trial quantities
-            (1–5 kg) are dispatched according to custom kitchen inspection
-            schedules.
-          </li>
-        </ul>
-      </div>
-
-      <h2>Handover & Order Verification</h2>
-      <p>
-        To ensure strict quality control, we follow a simple direct handover
-        process:
-      </p>
-      <ul>
-        <li>
-          <strong>Kitchen Inspection:</strong> Upon delivery, your receiving
-          officer or kitchen manager is requested to inspect product weight and
-          seals.
-        </li>
-        <li>
-          <strong>Sign-Off:</strong> Once verified, delivery sign-off is
-          completed digitally or via paper invoice.
-        </li>
-        <li>
-          <strong>Immediate Reporting:</strong> Any discrepancies in quantity or
-          order specification must be noted at the time of handover.
-        </li>
-      </ul>
     </div>
-  );
-};
+
+    <h2>For smoked catfish orders</h2>
+    <ol>
+      <li>Choose the quantity you need from the direct catalogue.</li>
+      <li>Provide the destination and any timing requirements when contacting Elevoni.</li>
+      <li>Confirm availability, final price, delivery cost and expected timing with the team.</li>
+      <li>At handover, check the product and quantity against the agreed order and report any concern promptly.</li>
+    </ol>
+
+    <h2>For marketplace listings</h2>
+    <p>
+      Use the listing enquiry option to ask about current stock and fulfilment. Do not assume that an advertised stock quantity means the item has been independently checked or reserved for you. Do not pay a vendor based solely on a listing; confirm the agreed process with Elevoni first.
+    </p>
+
+    <h2>Need to confirm an arrangement?</h2>
+    <p>Contact Elevoni with the product, quantity and delivery location so the team can respond to your specific request.</p>
+  </main>
+);
 
 export default Delivery;

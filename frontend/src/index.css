@@ -34,4 +34,4 @@ img, video { max-width: 100%; }
 .app { width: 100%; max-width: var(--elevoni-content); margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
-@media (max-width: 600px) { html { scroll-padding-top: 76px; } body { font-size: 14px; } .app { padding-inline: 18px; } }
+@media (max-width: 600px) { html { scroll-padding-top: 76px; } body { font-size: 14px; } .app { padding-inline: 18px; } }.sr-only { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }

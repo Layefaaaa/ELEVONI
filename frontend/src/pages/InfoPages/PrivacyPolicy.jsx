@@ -1,75 +1,54 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import "./InfoPages.css";
 
-const PrivacyPolicy = () => {
-  return (
-    <div className="info-page-container">
-      <h1>Privacy Policy</h1>
-      <p className="info-page-subtitle">Effective Date: September 2026</p>
+const PrivacyPolicy = () => (
+  <main className="info-page-container">
+    <Helmet>
+      <title>Privacy Policy | Elevoni Farms</title>
+      <meta name="description" content="How Elevoni Farms handles account, order, application and website information." />
+    </Helmet>
+    <p className="info-page-eyebrow">Privacy</p>
+    <h1>Privacy Policy</h1>
+    <p className="info-page-subtitle">Last updated: October 2026</p>
+    <p>
+      This policy explains the kinds of information Elevoni Farms may handle when you use the website, contact the team, place a direct order or submit a vendor application. Information handled depends on the feature you use.
+    </p>
 
-      <p>
-        Elevoni Farms ("Elevoni", "we", "us", or "our") respects your business
-        privacy and is committed to protecting the personal and operational data
-        collected through our digital platforms.
-      </p>
+    <h2>1. Information we may collect</h2>
+    <ul>
+      <li><strong>Account details:</strong> name, email address and information needed to manage your account.</li>
+      <li><strong>Order details:</strong> products, quantities, order totals, delivery information, payment references and order status.</li>
+      <li><strong>Vendor application details:</strong> business name, contact person, phone number, location, product focus and any description you submit.</li>
+      <li><strong>Website information:</strong> technical and usage information that may be collected by analytics tools configured on the site.</li>
+      <li><strong>Messages:</strong> information you choose to provide when contacting Elevoni or making an enquiry.</li>
+    </ul>
 
-      <h2>1. Information We Collect</h2>
-      <p>
-        We collect information necessary to process commercial orders and
-        maintain customer accounts, including:
-      </p>
-      <ul>
-        <li>
-          <strong>Contact Data:</strong> Name, business name, phone number, and
-          official email address.
-        </li>
-        <li>
-          <strong>Logistics Data:</strong> Physical address, kitchen contact
-          person, and delivery instructions.
-        </li>
-        <li>
-          <strong>Transaction Data:</strong> Quantities ordered, transaction
-          dates, and order history.
-        </li>
-      </ul>
+    <h2>2. How information is used</h2>
+    <p>Information may be used to manage accounts, respond to enquiries, process and verify direct orders and payments, review vendor applications and listings, communicate about fulfilment, maintain security, and improve the website and its workflows.</p>
 
-      <div className="info-callout-box">
-        <h3>2. Payment Security</h3>
-        <p>
-          All digital card transactions, transfer confirmations, and electronic
-          payments are processed securely through <strong>Paystack</strong>.
-          Elevoni does not store, capture, or handle sensitive banking PINs or
-          credit card numbers on our local servers.
-        </p>
-      </div>
+    <h2>3. Payments and service providers</h2>
+    <p>
+      Where Paystack is used, payment processing is handled through its payment service. Elevoni's system may retain order records, payment references and payment status so the transaction can be reconciled. Never share a card PIN, banking password or one-time passcode with Elevoni staff or another user.
+    </p>
+    <p>
+      The website may use hosting, analytics, image storage, authentication or communication providers to operate its features. Those providers may process information needed to deliver their services under their own terms and policies.
+    </p>
 
-      <h2>3. How Information Is Used</h2>
-      <p>Collected data is strictly utilized to:</p>
-      <ul>
-        <li>Process, package, and deliver your wholesale orders.</li>
-        <li>
-          Issue invoice confirmations and manage repeat delivery schedules.
-        </li>
-        <li>
-          Analyze platform usage via analytics tools (Google Analytics) to
-          improve ordering convenience.
-        </li>
-      </ul>
+    <h2>4. Sharing and retention</h2>
+    <p>
+      Information may be accessed by authorised people who operate Elevoni and by service providers where needed for the purposes described above. We aim to limit access to information needed for the relevant task and retain records for operational, security or legal needs. The exact retention period can depend on the type of record.
+    </p>
 
-      <h2>4. Third-Party Sharing</h2>
-      <p>
-        We do not sell, rent, or monetize your business information. Third-party
-        data sharing is strictly limited to verified fulfillment or logistics
-        partners directly involved in completing your delivery.
-      </p>
+    <h2>5. Your choices and requests</h2>
+    <p>
+      Do not submit information that is not requested or needed for your enquiry or application. To ask about your account information or request a correction, contact Elevoni using the contact details on the website. We may need to verify your request before making changes.
+    </p>
 
-      <h2>5. Contact Information</h2>
-      <p>
-        For inquiries regarding data policy or account updates, contact our
-        administrative team at <strong>ahashimbala01@gmail.com</strong>.
-      </p>
-    </div>
-  );
-};
+    <h2>6. Contact</h2>
+    <p>For privacy questions, contact <strong>ahashimbala01@gmail.com</strong>.</p>
+    <p>This page is a practical summary and should be reviewed by the business for completeness and compliance before being treated as legal advice.</p>
+  </main>
+);
 
 export default PrivacyPolicy;

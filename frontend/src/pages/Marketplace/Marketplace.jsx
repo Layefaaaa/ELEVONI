@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useContext } from "react";
 import { StoreContext } from "../../context/StoreContext";
 import "./Marketplace.css";
@@ -18,16 +18,18 @@ const CATEGORIES = [
 ];
 const money = (value) => `₦${Number(value || 0).toLocaleString("en-NG")}`;
 const enquiryUrl = (product) => {
-  const vendor = product.vendorId?.businessName || "the listed farm";
+  const vendor = product.vendorId?.businessName || "the listed business";
   const message = `Hello Elevoni Farms, I would like to enquire about ${product.name} from ${vendor}. Is it available, and what are the delivery arrangements?`;
   return `https://wa.me/2348135738991?text=${encodeURIComponent(message)}`;
 };
 
 const Marketplace = () => {
   const { url } = useContext(StoreContext);
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
   const [products, setProducts] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState(initialSearch);
+  const [search, setSearch] = useState(initialSearch.trim());
   const [category, setCategory] = useState("All categories");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -35,6 +37,17 @@ const Marketplace = () => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(0);
   const [refresh, setRefresh] = useState(0);
+
+  useEffect(() => {
+    const value = searchParams.get("search") || "";
+    // Sync when a new search URL is opened or the user navigates back/forward.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSearchInput(value);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSearch(value.trim());
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPage(1);
+  }, [searchParams]);
 
   useEffect(() => {
     const timer = setTimeout(() => setSearch(searchInput.trim()), 250);
@@ -76,14 +89,14 @@ const Marketplace = () => {
     <main className="marketplace-page">
       <Helmet>
         <title>Farm Marketplace | Elevoni Farms</title>
-        <meta name="description" content="Discover agricultural products from approved farms and vendors on Elevoni Farms." />
+        <meta name="description" content="Explore marketplace listings from approved farms. Confirm availability, price and delivery before ordering." />
       </Helmet>
 
       <section className="marketplace-hero">
         <div className="marketplace-hero-copy">
           <p className="marketplace-eyebrow">Beyond the Elevoni catalogue</p>
-          <h1>Discover produce from approved farms.</h1>
-          <p>Explore listed products from approved vendors. Listings are reviewed before they appear here; availability and delivery details are confirmed with Elevoni before you order.</p>
+          <h1>Discover agricultural products from reviewed vendors.</h1>
+          <p>Explore products listed by vendors whose applications and products have passed the relevant review steps. Confirm availability, final price and delivery arrangements with Elevoni before ordering.</p>
           <Link to="/sell-with-elevoni" className="marketplace-sell-link">Are you a farmer? Apply to sell <span aria-hidden="true">→</span></Link>
         </div>
         <div className="marketplace-hero-mark" aria-hidden="true">
@@ -136,7 +149,7 @@ const Marketplace = () => {
                   <span className="marketplace-product-category">{product.category}</span>
                 </div>
                 <div className="marketplace-product-content">
-                  <p className="marketplace-vendor-name">{product.vendorId?.businessName || "Approved farm"}</p>
+                  <p className="marketplace-vendor-name">{product.vendorId?.businessName || "Vendor details unavailable"}</p>
                   <h3>{product.name}</h3>
                   {product.description && <p className="marketplace-product-description">{product.description}</p>}
                   <div className="marketplace-product-bottom">

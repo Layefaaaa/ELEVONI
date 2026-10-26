@@ -59,3 +59,29 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+
+  vendor-portal:
+    name: Vendor portal build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vendor-portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: vendor-portal/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  shared-taxonomy:
+    name: Shared taxonomy and adapter tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test shared/categories.test.mjs shared/categoryAdapter.test.mjs

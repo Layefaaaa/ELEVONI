@@ -8,8 +8,12 @@ import { assets } from "../../assets/assets";
 const MyOrders = () => {
   const { url, token, invalidateSession } = useContext(StoreContext);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(Boolean(token));
+  const [loadError, setLoadError] = useState("");
 
   const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    setLoadError("");
     try {
       const response = await axios.post(
         url + "/api/order/userorders",
@@ -21,7 +25,7 @@ const MyOrders = () => {
         setData(Array.isArray(response.data.data) ? response.data.data : []);
       } else {
         setData([]);
-        console.error("Failed to fetch orders:", response.data.message);
+        setLoadError(response.data?.message || "Your orders could not be loaded.");
       }
     } catch (error) {
       setData([]);
@@ -29,12 +33,14 @@ const MyOrders = () => {
         invalidateSession();
         return;
       }
-      console.error("Error fetching orders:", error);
+      setLoadError(error.response?.data?.message || "Your orders could not be loaded. Check your connection and try again.");
+    } finally {
+      setLoading(false);
     }
   }, [url, token, invalidateSession]);
 
   useEffect(() => {
-    const timer = setTimeout(() => { if (token) fetchOrders(); else setData([]); }, 0);
+    const timer = setTimeout(() => { if (token) fetchOrders(); else { setData([]); setLoading(false); setLoadError(""); } }, 0);
     return () => clearTimeout(timer);
   }, [token, fetchOrders]);
 
@@ -68,8 +74,12 @@ const MyOrders = () => {
       <h2>My Orders</h2>
 
       <div className="container">
-        {data.length === 0 ? (
-          <p>You haven't placed any orders yet.</p>
+        {loading ? (
+          <p role="status">Loading your orders…</p>
+        ) : loadError ? (
+          <div className="orders-state" role="alert"><p>{loadError}</p><button type="button" onClick={fetchOrders}>Try again</button></div>
+        ) : data.length === 0 ? (
+          <p>You haven't placed any direct-catalogue orders yet.</p>
         ) : (
           data.map((order, index) => {
             const items = Array.isArray(order.items) ? order.items : [];

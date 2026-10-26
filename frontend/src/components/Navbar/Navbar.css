@@ -199,4 +199,7 @@
   .navbar .navbar-avatar { flex-basis: 44px; width: 44px; min-width: 44px; height: 44px; }
   .navbar .mobile-toggle-btn { width: 44px; min-height: 44px; height: 44px; }
   .navbar button:not(.navbar-avatar):not(.mobile-toggle-btn) { min-height: 44px; }
-}
+}.navbar-menu .navbar-sell-link { display:inline-flex; align-items:center; gap:7px; padding:9px 12px; border:1px solid #dce3d5; border-radius:7px; color:var(--elevoni-sage-dark); font-weight:650; white-space:nowrap; }
+.navbar-menu .navbar-sell-link::after { display:none; }
+.navbar-menu .navbar-sell-link:hover,.navbar-menu .navbar-sell-link.active { background:var(--elevoni-sage-soft); color:var(--elevoni-ink); }
+@media(max-width:750px) { .navbar-menu .navbar-sell-link { padding:11px 13px; } }

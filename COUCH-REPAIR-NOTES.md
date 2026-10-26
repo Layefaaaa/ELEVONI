@@ -47,3 +47,31 @@ This document describes the integration repair pass made against the uploaded so
 5. Confirm production CORS origin values and all required environment variables in the hosting dashboards. Never put real secrets in this archive or commit them.
 6. Check existing MongoDB collections before any migration. If marketplace products already point to the separate `Vendor` collection, they will need a deliberate data migration to `vendorProfile` IDs before this refactor is deployed.
 7. Do not deploy until the above checks pass.
+
+
+## Customer, admin and vendor UI pass — 26 October 2026
+
+### Customer storefront
+
+- Reframed the homepage around agricultural-product discovery while preserving the direct smoked-catfish catalogue and its existing cart/checkout path.
+- Added a homepage marketplace search that opens the marketplace with the query in the URL, plus clearer category discovery and a prominent vendor application section.
+- Added two original, lightweight SVG illustrations using Elevoni's sage/white/gray palette.
+- Replaced the repeated hard-coded wholesale price table in the homepage hero with a direct-catalogue product card so the hero does not introduce another copy of business pricing rules. Existing pricing and payment logic were not changed.
+- Made navigation route-aware, added a clear vendor CTA, and corrected the direct catalogue anchor target.
+- Clarified that marketplace enquiries are not completed orders and that availability, final price and fulfilment must be confirmed. Removed unsupported nationwide-delivery and app-store availability messaging. Removed the placeholder Facebook page link.
+- Updated About, Delivery and Privacy content to distinguish current direct commerce from marketplace development and avoid unsupported delivery promises.
+- Added explicit loading/error states for reviews and order history, an empty-cart state, accessible cart removal controls and keyboard-operable product gallery thumbnails.
+
+### Admin and vendor portal
+
+- Refined admin navigation hierarchy, active states, labels and mobile bottom navigation while preserving the existing route/API workflows.
+- Updated vendor portal navigation to use the existing Elevoni brand image and added a responsive header/footer, clearer application/workspace labels and a link to the public marketplace.
+- Kept vendor application approval separate from product-listing approval. No marketplace order, wallet, commission or payout feature was invented.
+
+### Verification performed for this pass
+
+- 99 pure Node tests passed across category taxonomy/adapter, storefront API/auth/category/vendor-application utilities, and admin API/vendor-review utilities.
+- 133 JavaScript/JSX modules were parsed with the TypeScript transpiler for syntax errors: none found.
+- Backend/shared JavaScript syntax checks passed. Relative import existence checks passed. Both new SVGs and the vendor favicon passed XML parsing.
+- `npm ci` for the frontend timed out in this environment before dependencies were installed. Therefore production builds, ESLint, React-rendering tests and browser-based mobile/critical-workflow testing remain unverified. Do not treat this archive as deployment-ready until those checks are run in an environment with dependencies installed.
+- No deployment or Git push was performed by this pass.

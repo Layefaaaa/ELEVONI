@@ -1,42 +1,13 @@
 import "./Features.css";
 import { FaLeaf, FaShieldAlt, FaTruck, FaAward } from "react-icons/fa";
 
-const Features = () => {
-  return (
-    <div className="features">
-      <div className="feature-card">
-        <FaLeaf />
-        <div>
-          <h3>Farm Raised</h3>
-          <p>Healthy and naturally fed</p>
-        </div>
-      </div>
-
-      <div className="feature-card">
-        <FaShieldAlt />
-        <div>
-          <h3>Hygienically Processed</h3>
-          <p>Cleaned and handled with care</p>
-        </div>
-      </div>
-
-      <div className="feature-card">
-        <FaTruck />
-        <div>
-          <h3>Fast Delivery</h3>
-          <p>Delivering Nationwide</p>
-        </div>
-      </div>
-
-      <div className="feature-card">
-        <FaAward />
-        <div>
-          <h3>Premium Quality</h3>
-          <p>You can trust every order</p>
-        </div>
-      </div>
-    </div>
-  );
-};
+const Features = () => (
+  <section className="features" aria-label="Elevoni service principles">
+    <article className="feature-card"><FaLeaf aria-hidden="true" /><div><h3>Agricultural focus</h3><p>Starting with smoked catfish, with more categories under development.</p></div></article>
+    <article className="feature-card"><FaShieldAlt aria-hidden="true" /><div><h3>Clear product details</h3><p>Review the product information and ask questions before ordering.</p></div></article>
+    <article className="feature-card"><FaTruck aria-hidden="true" /><div><h3>Delivery by arrangement</h3><p>Confirm location, timing and cost before placing an order.</p></div></article>
+    <article className="feature-card"><FaAward aria-hidden="true" /><div><h3>Careful handling</h3><p>Check the agreed quantity and packaging at handover.</p></div></article>
+  </section>
+);
 
 export default Features;

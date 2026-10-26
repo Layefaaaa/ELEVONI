@@ -178,3 +178,7 @@
     margin-bottom: 30px;
   }
 }
+.sell-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,.55fr); align-items:center; gap:24px; max-width:100%; }
+.sell-hero > .sell-eyebrow,.sell-hero > h1,.sell-hero > .sell-summary,.sell-hero > .sell-summary-note { grid-column:1; }
+.sell-hero-illustration { grid-column:2; grid-row:1 / span 4; display:block; width:100%; max-width:350px; justify-self:end; border-radius:12px; }
+@media(max-width:700px) { .sell-hero { grid-template-columns:1fr; gap:0; } .sell-hero-illustration { grid-column:1; grid-row:auto; width:min(100%,420px); max-width:none; margin-top:24px; } }
