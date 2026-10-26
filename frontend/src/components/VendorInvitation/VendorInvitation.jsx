@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
-import illustration from "../../assets/elevoni-marketplace-illustration.svg";
+import illustration from "../../assets/Gemini_Generated_Image_euq6oxeuq6oxeuq6.jfif";
 import "./VendorInvitation.css";
 
 const VendorInvitation = () => (
