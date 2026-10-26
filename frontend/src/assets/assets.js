@@ -4,6 +4,10 @@ import smoked_catfish_img3 from './WhatsApp Image 2026-05-04 at 17.01.06 (2).jpe
 
 import smoked_catfish_img4 from './WhatsApp Image 2026-05-04 at 17.01.06.jpeg';
 
+import livestockCategory from "./livestock.jfif";
+
+import other from "./other.jfif";
+
 import logo from './ChatGPT Image May 4, 2026, 06_06_45 PM.png';
 
 import search_icon from './search_icon.png';
@@ -48,6 +52,7 @@ export const assets = {
     twitter_icon,
     search_icon,
     basket_icon,
+    other,
 
     smoked_catfish_img2,
     smoked_catfish_img3,
@@ -63,7 +68,8 @@ export const assets = {
     facebook_icon,
     profile_icon,
     logout_icon,
-    bag_icon
+    bag_icon,
+    livestockCategory
 };
 
 
@@ -75,7 +81,7 @@ export const shop_list = [{
 export const fish_list = [{
     _id: "2",
     name: "Smoked Catfish (1kg)",
-    image: smoked_catfish_img2,
+    image: smoked_catfish_img4,
     price: 25000,
     description: "Carefully smoked catfish with a rich, traditional flavor. Perfect for soups, stews and special dishes.",
     category: "Smoked"

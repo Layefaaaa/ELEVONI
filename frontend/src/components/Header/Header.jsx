@@ -48,7 +48,7 @@ const Header = () => {
 
       <aside className="hero-pricing-card" aria-label="Elevoni Direct smoked catfish">
         <div className="hero-product-image">
-          <img src={assets.smoked_catfish_img2} alt="Elevoni smoked catfish" loading="eager" />
+          <img src={assets.smoked_catfish_img4} alt="Elevoni smoked catfish" loading="eager" />
           <span>Elevoni Direct</span>
         </div>
         <div className="hero-product-content">
