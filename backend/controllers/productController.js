@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Product from "../models/productModel.js";
+import Product from "../models/Product.js";
 import vendorProfileModel from "../models/vendorProfileModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
