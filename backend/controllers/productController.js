@@ -392,14 +392,15 @@ const adminModerateProduct = async(req, res) => {
 
         await product.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
-            message: "Product " + status + " successfully.",
-            product: product
+            message: "Product status updated to '" + status + "'.",
+            data: product
         });
     } catch (error) {
         console.error("Admin moderation error:", error);
-        res.status(500).json({
+
+        return res.status(500).json({
             success: false,
             message: "Failed to moderate product."
         });
