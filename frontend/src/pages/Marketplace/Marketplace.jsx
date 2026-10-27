@@ -152,10 +152,29 @@ const Marketplace = () => {
                 </Link>
                 <div className="marketplace-product-content">
                   <p className="marketplace-vendor-name">{product.vendorId?.businessName || "Vendor details unavailable"}</p>
-                  <h3><Link to={`/product/${product._id}`}>{product.name}</Link></h3>
-                  {product.subcategory && <p className="marketplace-product-description">Type: {product.subcategory}</p>}
-                  {product.description && <p className="marketplace-product-description">{product.description}</p>}
-                  <div className="marketplace-product-bottom">
+                <h3>
+  <Link to={`/product/${product._id}`}>{product.name}</Link>
+</h3>
+
+{product.subcategory && (
+  <p className="marketplace-product-description">
+    Type: {product.subcategory}
+  </p>
+)}
+
+{product.description && (
+  <p className="marketplace-product-description">
+    {product.description}
+  </p>
+)}
+
+<Link
+  to={`/product/${product._id}`}
+  className="marketplace-view-details"
+  aria-label={`View details for ${product.name}`}
+>
+  View details <span aria-hidden="true">→</span>
+</Link> <div className="marketplace-product-bottom">
                     <div><strong>{money(product.price)}</strong><span> / {product.unitOfMeasure || "unit"}</span></div>
                     <a href={enquiryUrl(product)} target="_blank" rel="noopener noreferrer" className="marketplace-enquire">Enquire <span aria-hidden="true">↗</span></a>
                   </div>
