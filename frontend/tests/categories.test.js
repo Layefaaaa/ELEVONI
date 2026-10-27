@@ -1,12 +1,12 @@
 import { describeAvailability, describeEmptyState, buildCategoryCards, buildSubcategoryCards, describeCategoryEntry } from "../src/utils/categoryViews.js";
-import { CATEGORIES, CATEGORY_STATUS, categoryPath, getCategory, getSubcategory, listCategories, listSubcategories, resolveCategoryEntry } from "../src/config/categories.js";
+import { CATEGORY_STATUS, categoryPath, getCategory, getSubcategory, listCategories, listSubcategories, resolveCategoryEntry } from "../src/config/categories.js";
 import test from "node:test";
 import assert from "node:assert/strict";
 
 test("the storefront exposes exactly the approved top-level categories", () => {
   const categories = listCategories();
-  assert.deepEqual(categories.map((category) => category.slug), ["aquaculture-fishery", "livestock", "other-farm-products"]);
-  assert.deepEqual(categories.map((category) => category.name), ["Aquaculture & Fishery", "Livestock", "Other Farm Products"]);
+  assert.deepEqual(categories.map((category) => category.slug), ["aquaculture-fishery", "livestock"]);
+  assert.deepEqual(categories.map((category) => category.name), ["Aquaculture & Fishery", "Livestock"]);
 });
 
 test("livestock exposes poultry, cattle, sheep and goats", () => {
@@ -60,7 +60,7 @@ test("only the smoked catfish subcategory is served by the live catalogue", () =
   assert.equal(fish.catalogue, "fish");
   assert.equal(fish.status, CATEGORY_STATUS.CATALOGUE);
   assert.equal(poultry.catalogue, undefined);
-  assert.equal(poultry.status, CATEGORY_STATUS.COMING_SOON);
+  assert.equal(poultry.status, CATEGORY_STATUS.CATALOGUE);
 });
 
 test("a catalogue category reports the real number of listed products", () => {
@@ -92,11 +92,10 @@ test("empty states never promise that something can be ordered", () => {
 
 test("the homepage cards are built from the configuration", () => {
   const cards = buildCategoryCards({ categories: listCategories(), catalogueCount: 1 });
-  assert.equal(cards.length, 3);
-  assert.deepEqual(cards.map((card) => card.slug), ["aquaculture-fishery", "livestock", "other-farm-products"]);
+  assert.equal(cards.length, 2);
+  assert.deepEqual(cards.map((card) => card.slug), ["aquaculture-fishery", "livestock"]);
   assert.equal(cards[0].availability.orderable, true);
   assert.equal(cards[1].availability.orderable, false);
-  assert.equal(cards[2].availability.orderable, false);
 });
 
 test("subcategory cards carry their own route and availability", () => {
@@ -104,13 +103,13 @@ test("subcategory cards carry their own route and availability", () => {
   assert.equal(cards.length, 4);
   assert.equal(cards[0].path, "/category/livestock/poultry");
   assert.equal(cards[0].availability.orderable, false);
-  assert.equal(cards[0].availability.label, "Coming soon");
+  assert.equal(cards[0].availability.label, "No products listed right now");
 });
 
 test("a category entry describes its availability and empty state", () => {
   const entry = resolveCategoryEntry("livestock", "poultry");
   const view = describeCategoryEntry(entry);
   assert.equal(view.eyebrow, "Livestock");
-  assert.equal(view.availability.label, "Coming soon");
-  assert.equal(view.emptyState.title, "Poultry is coming soon");
+  assert.equal(view.availability.label, "No products listed right now");
+  assert.equal(view.emptyState.title, "No products listed in Poultry right now");
 });

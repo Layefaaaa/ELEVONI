@@ -6,6 +6,7 @@ const AdminLogin = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -53,14 +54,17 @@ const AdminLogin = () => {
             <label htmlFor="admin-password">Password</label>
             <input
               id="admin-password"
-              type="password"
+              type={passwordVisible ? "text" : "password"}
               autoComplete="current-password"
               placeholder="••••••••"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               required
             />
+            <button type="button" className="password-visibility-toggle" aria-label={passwordVisible ? "Hide password" : "Show password"} aria-pressed={passwordVisible} onClick={() => setPasswordVisible((value) => !value)}>{passwordVisible ? "Hide password" : "Show password"}</button>
           </div>
+
+         
 
           {error && (
             <div className="admin-login-error" role="alert">

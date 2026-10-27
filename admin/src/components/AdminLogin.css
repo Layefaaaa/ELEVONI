@@ -185,3 +185,6 @@
         font-size: 14px;
     }
 }
+.password-visibility-toggle { min-height: 36px; padding: 5px 10px; border: 1px solid #d7dbd4; border-radius: 8px; background: #fff; color: #252922; font: inherit; font-size: 13px; cursor: pointer; }
+.password-visibility-toggle:focus-visible { outline: 3px solid #8aa77b; outline-offset: 2px; }
+.login-recovery-link { margin: 0 0 12px; text-align: right; font-size: 13px; }

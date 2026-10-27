@@ -113,6 +113,7 @@ const Apply = () => {
     signIn,
   } = useContext(AuthContext);
 
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [form, setForm] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -122,7 +123,12 @@ const Apply = () => {
     const { name, value } = event.target;
 
     setForm((current) => ({ ...current, [name]: value }));
-    setErrors((current) => ({ ...current, [name]: "" }));
+    setErrors((current) => {
+      if (!current[name]) return current;
+      const next = { ...current };
+      delete next[name];
+      return next;
+    });
     setMessage("");
   };
 
@@ -134,7 +140,12 @@ const Apply = () => {
         : [...current.productFocus, value],
     }));
 
-    setErrors((current) => ({ ...current, productFocus: "" }));
+    setErrors((current) => {
+      if (!current.productFocus) return current;
+      const next = { ...current };
+      delete next.productFocus;
+      return next;
+    });
   };
 
   const handleSubmit = async (event) => {
@@ -145,7 +156,12 @@ const Apply = () => {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
-      setMessage("Please correct the highlighted fields.");
+      setMessage(`Please review ${Object.keys(validationErrors).length} highlighted ${Object.keys(validationErrors).length === 1 ? "field" : "fields"} below.`);
+      window.requestAnimationFrame(() => {
+        const firstInvalid = document.querySelector('.vendor-application-form [aria-invalid="true"]');
+        firstInvalid?.focus();
+        firstInvalid?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
       return;
     }
 
@@ -281,7 +297,20 @@ const Apply = () => {
       </header>
 
       <article className="vendor-card">
-        <form onSubmit={handleSubmit} noValidate>
+        <form className="vendor-application-form" onSubmit={handleSubmit} noValidate>
+          {Object.keys(errors).length > 0 && (
+            <div className="vendor-form-error-summary" role="alert" aria-labelledby="vendor-application-errors-title">
+              <h2 id="vendor-application-errors-title">Please review these fields</h2>
+              <p>{Object.keys(errors).length} {Object.keys(errors).length === 1 ? "field needs" : "fields need"} attention. Select an item below to jump to it.</p>
+              <ul>
+                {Object.entries(errors).map(([key, error]) => {
+                  const labels = { name: "Full name", email: "Email address", password: "Password", businessName: "Business or farm name", contactName: "Contact person's name", phone: "Phone number", location: "Business location", productFocus: "Product categories", description: "Business description" };
+                  const target = key === "productFocus" ? "productFocus-first" : key;
+                  return <li key={key}><a href={`#${target}`} onClick={(event) => { event.preventDefault(); const field = document.getElementById(target); field?.focus(); field?.scrollIntoView({ behavior: "smooth", block: "center" }); }}>{labels[key] || key}: {error}</a></li>;
+                })}
+              </ul>
+            </div>
+          )}
           {!isAuthenticated && (
             <>
               <h2>Create your account</h2>
@@ -290,6 +319,8 @@ const Apply = () => {
                 <label htmlFor="name">Full name</label>
                 <input
                   id="name"
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={errors.name ? "name-error" : undefined}
                   name="name"
                   autoComplete="name"
                   value={form.name}
@@ -297,7 +328,7 @@ const Apply = () => {
                   required
                 />
                 {errors.name && (
-                  <p className="vendor-form-error">{errors.name}</p>
+                  <p className="vendor-form-error" id="name-error">{errors.name}</p>
                 )}
               </div>
 
@@ -305,6 +336,8 @@ const Apply = () => {
                 <label htmlFor="email">Email address</label>
                 <input
                   id="email"
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -313,7 +346,7 @@ const Apply = () => {
                   required
                 />
                 {errors.email && (
-                  <p className="vendor-form-error">{errors.email}</p>
+                  <p className="vendor-form-error" id="email-error">{errors.email}</p>
                 )}
               </div>
 
@@ -321,16 +354,19 @@ const Apply = () => {
                 <label htmlFor="password">Password</label>
                 <input
                   id="password"
+                  aria-invalid={Boolean(errors.password)}
+                  aria-describedby={errors.password ? "password-error" : undefined}
                   name="password"
-                  type="password"
+                  type={passwordVisible ? "text" : "password"}
                   autoComplete="new-password"
                   minLength={8}
                   value={form.password}
                   onChange={updateField}
                   required
                 />
+                <button type="button" className="password-visibility-toggle" aria-label={passwordVisible ? "Hide password" : "Show password"} aria-pressed={passwordVisible} onClick={() => setPasswordVisible((value) => !value)}>{passwordVisible ? "Hide password" : "Show password"}</button>
                 {errors.password && (
-                  <p className="vendor-form-error">{errors.password}</p>
+                  <p className="vendor-form-error" id="password-error">{errors.password}</p>
                 )}
               </div>
 
@@ -353,6 +389,8 @@ const Apply = () => {
             <label htmlFor="businessName">Business or farm name</label>
             <input
               id="businessName"
+              aria-invalid={Boolean(errors.businessName)}
+              aria-describedby={errors.businessName ? "businessName-error" : undefined}
               name="businessName"
               autoComplete="organization"
               value={form.businessName}
@@ -360,7 +398,7 @@ const Apply = () => {
               required
             />
             {errors.businessName && (
-              <p className="vendor-form-error">{errors.businessName}</p>
+              <p className="vendor-form-error" id="businessName-error">{errors.businessName}</p>
             )}
           </div>
 
@@ -368,6 +406,8 @@ const Apply = () => {
             <label htmlFor="contactName">Contact person's name</label>
             <input
               id="contactName"
+              aria-invalid={Boolean(errors.contactName)}
+              aria-describedby={errors.contactName ? "contactName-error" : undefined}
               name="contactName"
               autoComplete="name"
               value={form.contactName}
@@ -375,7 +415,7 @@ const Apply = () => {
               required
             />
             {errors.contactName && (
-              <p className="vendor-form-error">{errors.contactName}</p>
+              <p className="vendor-form-error" id="contactName-error">{errors.contactName}</p>
             )}
           </div>
 
@@ -383,6 +423,8 @@ const Apply = () => {
             <label htmlFor="phone">Phone number</label>
             <input
               id="phone"
+              aria-invalid={Boolean(errors.phone)}
+              aria-describedby={errors.phone ? "phone-error" : undefined}
               name="phone"
               type="tel"
               autoComplete="tel"
@@ -391,7 +433,7 @@ const Apply = () => {
               required
             />
             {errors.phone && (
-              <p className="vendor-form-error">{errors.phone}</p>
+              <p className="vendor-form-error" id="phone-error">{errors.phone}</p>
             )}
           </div>
 
@@ -399,6 +441,8 @@ const Apply = () => {
             <label htmlFor="location">Business location</label>
             <input
               id="location"
+              aria-invalid={Boolean(errors.location)}
+              aria-describedby={errors.location ? "location-error" : undefined}
               name="location"
               autoComplete="street-address"
               value={form.location}
@@ -406,15 +450,18 @@ const Apply = () => {
               required
             />
             {errors.location && (
-              <p className="vendor-form-error">{errors.location}</p>
+              <p className="vendor-form-error" id="location-error">{errors.location}</p>
             )}
           </div>
 
-          <fieldset className="vendor-form-field vendor-product-options">
+          <fieldset className="vendor-form-field vendor-product-options" aria-invalid={Boolean(errors.productFocus)} aria-describedby={errors.productFocus ? "productFocus-error" : undefined}>
             <legend>What products does your business focus on?</legend>
             {PRODUCT_OPTIONS.map((option) => (
               <label key={option.value} className="vendor-checkbox-option">
                 <input
+                  id={option.value === PRODUCT_OPTIONS[0].value ? "productFocus-first" : undefined}
+                  aria-invalid={Boolean(errors.productFocus)}
+                  aria-describedby={errors.productFocus ? "productFocus-error" : undefined}
                   type="checkbox"
                   checked={form.productFocus.includes(option.value)}
                   onChange={() => toggleProduct(option.value)}
@@ -423,7 +470,7 @@ const Apply = () => {
               </label>
             ))}
             {errors.productFocus && (
-              <p className="vendor-form-error">{errors.productFocus}</p>
+              <p className="vendor-form-error" id="productFocus-error">{errors.productFocus}</p>
             )}
           </fieldset>
 
@@ -431,6 +478,8 @@ const Apply = () => {
             <label htmlFor="description">Business description (optional)</label>
             <textarea
               id="description"
+              aria-invalid={Boolean(errors.description)}
+              aria-describedby={errors.description ? "description-error" : undefined}
               name="description"
               rows={4}
               maxLength={1000}
@@ -441,7 +490,7 @@ const Apply = () => {
               {form.description.length}/1000 characters
             </p>
             {errors.description && (
-              <p className="vendor-form-error">{errors.description}</p>
+              <p className="vendor-form-error" id="description-error">{errors.description}</p>
             )}
           </div>
 

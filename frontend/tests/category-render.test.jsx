@@ -52,11 +52,10 @@ test("the homepage category section lists every configured category", () => {
 
   assert.match(markup, /Aquaculture &amp; Fishery/);
   assert.match(markup, /Livestock/);
-  assert.match(markup, /Other Farm Products/);
+  assert.doesNotMatch(markup, /Other Farm Products/);
 
   assert.match(markup, /href="\/category\/aquaculture-fishery"/);
   assert.match(markup, /href="\/category\/livestock"/);
-  assert.match(markup, /href="\/category\/other-farm-products"/);
 });
 
 test("the homepage category section uses existing project imagery where it exists", () => {
@@ -76,8 +75,7 @@ test("the homepage category section reports the real catalogue count", () => {  
 test("the homepage never presents a planned category as order-ready", () => {
   const markup = renderCategoryGrid([CATALOGUE_PRODUCT]);
 
-  assert.match(markup, /Coming soon/);
-  assert.match(markup, /Reserved for future expansion/);
+  assert.match(markup, /No products listed right now/);
   assert.doesNotMatch(markup, /Poultry is available/);
 });
 
@@ -98,8 +96,8 @@ test("the livestock landing page exposes poultry, cattle, sheep and goats", () =
 test("a livestock subcategory never shows invented inventory", () => {
   const markup = renderCategoryPage("/category/livestock/poultry");
 
-  assert.match(markup, /Poultry is coming soon/);
-  assert.match(markup, /No products are listed in this category yet/);
+  assert.match(markup, /Browse Poultry listings/);
+  assert.match(markup, /Only approved listings are shown/);
   assert.doesNotMatch(markup, /Add to cart/);
   assert.doesNotMatch(markup, /₦/);
   assert.doesNotMatch(markup, /kg/);

@@ -101,6 +101,14 @@ const CategoryPage = () => {
         </p>
       </section>
 
+      {entry.level === "subcategory" && entry.parent?.slug === "livestock" && (
+        <section className="category-empty">
+          <h2>Browse {entry.name} listings</h2>
+          <p>Only approved listings are shown. If there are no listings yet, the marketplace will say so rather than displaying sample products.</p>
+          <Link className="category-empty-enquiry" to={`/marketplace?subcategory=${encodeURIComponent(entry.name)}`}>View {entry.name} listings</Link>
+        </section>
+      )}
+
       {showsCatalogue ? (
         <FishDisplay
           eyebrow={entry.name}
@@ -110,7 +118,7 @@ const CategoryPage = () => {
         />
       ) : (
         view.emptyState &&
-        !isParentCategory && (
+        !isParentCategory && entry.parent?.slug !== "livestock" && (
           <section className="category-empty" aria-labelledby="category-empty-title">
             <h2 id="category-empty-title">{view.emptyState.title}</h2>
             <p>{view.emptyState.body}</p>

@@ -30,28 +30,32 @@ const ItemDetails = () => {
     if (!id || fish_list.some((fish) => fish._id === id)) return undefined;
     axios
       .get(url + "/api/fish/" + id)
-      .then((response) => {
+      .then(async (response) => {
         if (!active) return;
         if (response.data?.success && response.data.data) {
           setRemoteLookup({ id, product: response.data.data, error: "" });
+          return;
+        }
+        const marketplace = await axios.get(url + "/api/products/" + id);
+        if (!active) return;
+        if (marketplace.data?.success && marketplace.data.data) {
+          setRemoteLookup({ id, product: { ...marketplace.data.data, _source: "marketplace" }, error: "" });
         } else {
-          setRemoteLookup({
-            id,
-            product: null,
-            error: response.data?.message || "Product not found",
-          });
+          setRemoteLookup({ id, product: null, error: "Product not found" });
         }
       })
-      .catch((error) => {
+      .catch(async (error) => {
         if (!active) return;
-        setRemoteLookup({
-          id,
-          product: null,
-          error:
-            error.response?.status === 404
-              ? "Product not found"
-              : "This product could not be loaded. Please try again.",
-        });
+        try {
+          const marketplace = await axios.get(url + "/api/products/" + id);
+          if (!active) return;
+          if (marketplace.data?.success && marketplace.data.data) {
+            setRemoteLookup({ id, product: { ...marketplace.data.data, _source: "marketplace" }, error: "" });
+            return;
+          }
+        } catch { /* fall through to a user-safe loading error */ }
+        if (!active) return;
+        setRemoteLookup({ id, product: null, error: error.response?.status === 404 ? "Product not found" : "This product could not be loaded. Please try again." });
       });
     return () => {
       active = false;
@@ -66,12 +70,9 @@ const ItemDetails = () => {
   const isValidQuantity = Number.isSafeInteger(parsedQuantity) && parsedQuantity >= 0;
   const previewQuantity = isValidQuantity ? parsedQuantity : 0;
   const hasQuantity = previewQuantity > 0;
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [failedMedia, setFailedMedia] = useState({});
   const videoRef = useRef(null);
-
-  useEffect(() => {
-    setIsPlaying(false);
-  }, [selected]);
+  const touchStartX = useRef(null);
 
   useEffect(() => {
     if (previousQuantity.current !== quantity) {
@@ -91,39 +92,25 @@ const ItemDetails = () => {
     );
   }
 
-  const currentPrice = getProductPrice(item, Math.max(1, previewQuantity));
-  const gallery = [
-    {
-      type: "image",
-      src:
-        item.image && item.image.startsWith("http")
-          ? item.image
-          : `${url}/images/${item.image}`,
-    },
-    ...(item.media?.map((file) => {
-      const isVideo = file.match(/\.(mp4|webm|ogg)$/i);
-      let srcPath =
-        file && file.startsWith("http") ? file : `${url}/images/${file}`;
+  const isMarketplaceProduct = item._source === "marketplace";
+  const unit = item.unitOfMeasure || "kg";
+  const currentPrice = isMarketplaceProduct ? Number(item.price || 0) : getProductPrice(item, Math.max(1, previewQuantity));
+  const gallery = item._source === "marketplace"
+    ? (Array.isArray(item.media) && item.media.length
+        ? item.media.map((media) => ({ type: media.type === "video" ? "video" : "image", src: media.url }))
+        : (item.images || []).map((src) => ({ type: "image", src })))
+    : [
+        ...(item.image ? [{ type: "image", src: item.image.startsWith("http") ? item.image : `${url}/images/${item.image}` }] : []),
+        ...(item.media?.map((file) => {
+          if (file && typeof file === "object" && file.url) return { type: file.type === "video" ? "video" : "image", src: file.url };
+          const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(file);
+          let srcPath = file && file.startsWith("http") ? file : `${url}/images/${file}`;
+          if (isVideo) srcPath = `${srcPath}#t=0.001`;
+          return { type: isVideo ? "video" : "image", src: srcPath };
+        }) || []),
+      ];
 
-      if (isVideo) {
-        srcPath = `${srcPath}#t=0.001`;
-      }
-
-      return {
-        type: isVideo ? "video" : "image",
-        src: srcPath,
-      };
-    }) || []),
-  ];
-
-  if (!gallery.length) {
-    return (
-      <div className="item-not-found">
-        <h2>No media available</h2>
-        <button onClick={() => navigate(-1)}>Go Back</button>
-      </div>
-    );
-  }
+  if (!gallery.length) gallery.push({ type: "placeholder", src: "" });
 
   const safeIndex = Math.min(selected, gallery.length - 1);
 
@@ -159,10 +146,10 @@ const ItemDetails = () => {
   return (
     <div className="item-details">
       <Helmet>
-        <title>{item.name} | Smoked Catfish from Elevoni</title>
+        <title>{item.name} | Elevoni Farms</title>
         <meta
           name="description"
-          content={`View details and quantity-based pricing for ${item.name} from Elevoni Farms.`}
+          content={`View product details, media and availability information for ${item.name} from Elevoni Farms.`}
         />
         <link
           rel="canonical"
@@ -191,8 +178,16 @@ const ItemDetails = () => {
 
       <div className="item-details-container">
         <div className="item-details-left">
-          <div className="main-media">
-            {gallery[safeIndex].type === "video" ? (
+          <div className="main-media" onTouchStart={(event) => { touchStartX.current = event.changedTouches[0]?.clientX ?? null; }} onTouchEnd={(event) => {
+            const endX = event.changedTouches[0]?.clientX;
+            if (touchStartX.current == null || typeof endX !== "number" || gallery.length < 2) return;
+            const delta = endX - touchStartX.current;
+            if (Math.abs(delta) > 45) setSelected((value) => (value + (delta < 0 ? 1 : -1) + gallery.length) % gallery.length);
+            touchStartX.current = null;
+          }}>
+            {failedMedia[safeIndex] ? (
+              <div className="product-media-placeholder" role="img" aria-label={`Product media unavailable for ${item.name}`}>Product media unavailable</div>
+            ) : gallery[safeIndex].type === "video" ? (
               <div className="main-video-wrapper">
                 <video
                   ref={videoRef}
@@ -201,17 +196,18 @@ const ItemDetails = () => {
                   controls
                   playsInline
                   preload="metadata"
-                  onPlay={() => setIsPlaying(true)}
-                  onPause={() => setIsPlaying(false)}
-                  onEnded={() => setIsPlaying(false)}
+                  onError={() => setFailedMedia((current) => ({ ...current, [safeIndex]: true }))}
                 />
               </div>
+            ) : gallery[safeIndex].type === "placeholder" ? (
+              <div className="product-media-placeholder" role="img" aria-label={`Product media unavailable for ${item.name}`}>Product media unavailable</div>
             ) : (
-              <img src={gallery[safeIndex].src} alt={item.name} />
+              <img src={gallery[safeIndex].src} alt={item.name} onError={() => setFailedMedia((current) => ({ ...current, [safeIndex]: true }))} />
             )}
           </div>
 
-          <div className="thumbnail-row">
+          {gallery.length > 1 && <div className="gallery-navigation"><button type="button" onClick={() => setSelected((value) => (value - 1 + gallery.length) % gallery.length)} aria-label="Previous media">‹</button><span>{safeIndex + 1} / {gallery.length}</span><button type="button" onClick={() => setSelected((value) => (value + 1) % gallery.length)} aria-label="Next media">›</button></div>}
+          {gallery.length > 1 && <div className="thumbnail-row">
             {gallery.map((media, index) => (
               <button
                 key={index}
@@ -237,7 +233,7 @@ const ItemDetails = () => {
                 )}
               </button>
             ))}
-          </div>
+          </div>}
         </div>
 
         <div className="item-details-right">
@@ -249,16 +245,10 @@ const ItemDetails = () => {
 
           <div className="price-header-block">
             <p className="item-details-price">
-              {hasQuantity ? "₦" + currentPrice.toLocaleString() : "Enter a quantity to see pricing"}
-              {hasQuantity && <span className="price-unit"> per kg</span>}
+              {isMarketplaceProduct ? `₦${currentPrice.toLocaleString("en-NG")}` : hasQuantity ? "₦" + currentPrice.toLocaleString("en-NG") : "Enter a quantity to see pricing"}
+              {(isMarketplaceProduct || hasQuantity) && <span className="price-unit"> / {unit}</span>}
             </p>
-
-            {hasQuantity && (
-              <p className="selected-price">
-                {previewQuantity} kg × ₦{currentPrice.toLocaleString()} = ₦
-                {(previewQuantity * currentPrice).toLocaleString()}
-              </p>
-            )}
+            {!isMarketplaceProduct && hasQuantity && <p className="selected-price">{previewQuantity} kg × ₦{currentPrice.toLocaleString()} = ₦{(previewQuantity * currentPrice).toLocaleString()}</p>}
           </div>
 
           {item.pricingTiers?.length > 0 && (
@@ -283,8 +273,9 @@ const ItemDetails = () => {
           )}
 
           <p className="item-details-desc">{item.description}</p>
+          {isMarketplaceProduct && item.vendorId && <section className="product-vendor-panel" aria-labelledby="product-vendor-title"><h2 id="product-vendor-title">Listed by {item.vendorId.businessName || "Approved vendor"}</h2>{item.vendorId.location && <p><strong>Location:</strong> {item.vendorId.location}</p>}{item.vendorId.description && <p>{item.vendorId.description}</p>}<p className="vendor-verification-note">{item.vendorId.status === "approved" ? "Vendor application approved by Elevoni" : "Vendor status not available"}</p><p className="marketplace-disclaimer">Marketplace listings are enquiries, not confirmed orders. Confirm availability, final price, payment and delivery arrangements before paying.</p><a className="add-to-cart-btn primary-btn marketplace-detail-enquire" href={`https://wa.me/2348135738991?text=${encodeURIComponent(`Hello Elevoni Farms, I would like to enquire about ${item.name}. Please confirm availability, final price and delivery arrangements.`)}`} target="_blank" rel="noopener noreferrer">Enquire with Elevoni</a></section>}
 
-          <form className="item-quantity-form" onSubmit={saveQuantity}>
+          {!isMarketplaceProduct && <form className="item-quantity-form" onSubmit={saveQuantity}>
             <label htmlFor={`detail-quantity-${item._id}`}>Choose quantity <span>(kilograms)</span></label>
             <div className="item-quantity-controls">
               <div className="item-quantity-field">
@@ -317,8 +308,8 @@ const ItemDetails = () => {
               </button>
             </div>
             {quantity > 0 && <p className="item-quantity-note">Currently in your cart: {quantity} kg</p>}
-          </form>
-          {quantity > 0 && (
+          </form>}
+          {!isMarketplaceProduct && quantity > 0 && (
             <button className="go-to-cart-btn" type="button" onClick={() => navigate("/cart")}>Go to cart</button>
           )}
 

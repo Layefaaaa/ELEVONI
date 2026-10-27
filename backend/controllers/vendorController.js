@@ -195,10 +195,10 @@ export const getAllApprovedVendors = async (req, res) => {
             filter.$or = [{ businessName: new RegExp(escaped, "i") }, { description: new RegExp(escaped, "i") }, { location: new RegExp(escaped, "i") }];
         }
         if (req.query.state) filter.location = new RegExp(String(req.query.state).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
-        const profiles = await vendorProfileModel.find(filter, "businessName contactName location productFocus description status createdAt", { sort: { createdAt: -1 } });
+        const profiles = await vendorProfileModel.find(filter, "businessName location productFocus description status createdAt", { sort: { createdAt: -1 } });
         return res.status(200).json({ success: true, count: profiles.length, data: profiles.map((profile) => ({
-            id: profile._id, businessName: profile.businessName, contactName: profile.contactName,
-            location: profile.location, productFocus: profile.productFocus || [], description: profile.description || ""
+            id: profile._id, businessName: profile.businessName,
+            location: profile.location, productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
         })) });
     } catch {
         return sendServerError(res, "Unable to load approved vendors");
@@ -211,8 +211,8 @@ export const getApprovedVendorById = async (req, res) => {
         const profile = await vendorProfileModel.findOne({ _id: req.params.id, status: "approved" });
         if (!profile) return res.status(404).json({ success: false, message: "Approved farm/vendor profile not found" });
         return res.status(200).json({ success: true, data: {
-            id: profile._id, businessName: profile.businessName, contactName: profile.contactName,
-            location: profile.location, productFocus: profile.productFocus || [], description: profile.description || ""
+            id: profile._id, businessName: profile.businessName,
+            location: profile.location, productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
         } });
     } catch {
         return sendServerError(res, "Unable to load approved vendor");

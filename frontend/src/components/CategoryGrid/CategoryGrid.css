@@ -32,3 +32,6 @@
   .category-grid { grid-template-columns: 1fr; gap: 18px; }
   .category-card-body { padding: 20px 18px 22px; }
 }
+
+.category-card-media { display: block; color: inherit; text-decoration: none; cursor: pointer; }
+.category-card-media:focus-visible { outline: 3px solid #779566; outline-offset: 3px; }

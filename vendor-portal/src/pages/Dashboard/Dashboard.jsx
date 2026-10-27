@@ -5,9 +5,9 @@ import api from "../../api";
 import { AuthContext } from "../../context/auth-context";
 import "./Dashboard.css";
 
-const CATEGORIES = ["Catfish & Aquaculture", "Poultry & Eggs", "Grains & Cereals", "Vegetables & Fruits", "Tubers & Starch", "Livestock & Meat", "Processed Agro-Goods"];
+const CATEGORIES = ["Poultry & Eggs", "Livestock & Meat"];
 const UNITS = ["kg", "gram", "piece", "crate", "ton", "bag", "carton", "litre"];
-const blankForm = { name: "", description: "", price: "", category: CATEGORIES[1], unitOfMeasure: "kg", stockQuantity: "", images: "" };
+const blankForm = { name: "", description: "", price: "", category: "Livestock & Meat", subcategory: "Poultry", unitOfMeasure: "kg", stockQuantity: "", images: "", media: [] };
 const categoriesForFocus = (focus = []) => {
   const categories = [];
   if (focus.includes("poultry")) categories.push("Poultry & Eggs");
@@ -25,6 +25,9 @@ const Dashboard = () => {
   const [form, setForm] = useState(blankForm);
   const [editingId, setEditingId] = useState("");
   const [saving, setSaving] = useState(false);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [mediaError, setMediaError] = useState("");
+  const [mediaProgress, setMediaProgress] = useState(0);
   const [refresh, setRefresh] = useState(0);
   const allowedCategories = categoriesForFocus(application?.productFocus);
 
@@ -59,10 +62,44 @@ const Dashboard = () => {
     setEditingId(product._id);
     setForm({
       name: product.name || "", description: product.description || "", price: String(product.price ?? ""),
-      category: product.category || allowedCategories[0] || CATEGORIES[0], unitOfMeasure: product.unitOfMeasure || "kg",
-      stockQuantity: String(product.stockQuantity ?? ""), images: Array.isArray(product.images) ? product.images.join("\n") : ""
+      category: product.category || allowedCategories[0] || CATEGORIES[0], subcategory: product.subcategory || "Poultry", unitOfMeasure: product.unitOfMeasure || "kg",
+      stockQuantity: String(product.stockQuantity ?? ""), images: Array.isArray(product.images) ? product.images.join("\n") : "", media: Array.isArray(product.media) ? product.media : (product.images || []).map((url) => ({ url, type: "image", alt: "" }))
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const uploadMedia = async (event) => {
+    const files = Array.from(event.target.files || []);
+    event.target.value = "";
+    if (!files.length) return;
+    const valid = files.filter((file) => {
+      const okType = file.type.startsWith("image/") || file.type.startsWith("video/");
+      const maxBytes = file.type.startsWith("video/") ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+      if (!okType || file.size > maxBytes) {
+        setMediaError(`${file.name}: ${!okType ? "choose an image or video file" : `file exceeds ${file.type.startsWith("video/") ? "50 MB" : "10 MB"}`}.`);
+        return false;
+      }
+      return true;
+    });
+    if (!valid.length) return;
+    if (form.media.length + valid.length > 10) { setMediaError("A listing can contain up to 10 media files."); return; }
+    setMediaError(""); setUploadingMedia(true); setMediaProgress(0);
+    try {
+      const body = new FormData(); valid.forEach((file) => body.append("media", file));
+      const response = await api.post("/api/products/vendor/media", body, {
+        onUploadProgress: (event) => { if (event.total) setMediaProgress(Math.round(event.loaded / event.total * 100)); }
+      });
+      const uploaded = Array.isArray(response.data?.data) ? response.data.data : [];
+      setForm((current) => {
+        const media = [...current.media, ...uploaded].slice(0, 10);
+        if (!current.media.some((item) => item.type === "image")) {
+          const firstImageIndex = media.findIndex((item) => item.type === "image");
+          if (firstImageIndex > 0) { const [primary] = media.splice(firstImageIndex, 1); media.unshift(primary); }
+        }
+        return { ...current, media };
+      });
+    } catch (error) { setMediaError(error.response?.data?.message || "Media upload failed. Please try again."); }
+    finally { setUploadingMedia(false); setMediaProgress(0); }
   };
 
   const submitProduct = async (event) => {
@@ -79,9 +116,9 @@ const Dashboard = () => {
       return;
     }
     const payload = {
-      name: form.name.trim(), description: form.description.trim(), price, category: form.category,
+      name: form.name.trim(), description: form.description.trim(), price, category: form.category, subcategory: form.subcategory,
       unitOfMeasure: form.unitOfMeasure, stockQuantity,
-      images: form.images.split("\n").map((value) => value.trim()).filter(Boolean).slice(0, 8)
+      images: form.media.filter((item) => item.type === "image").map((item) => item.url), media: form.media.slice(0, 10)
     };
     setSaving(true);
     try {
@@ -145,8 +182,15 @@ const Dashboard = () => {
                 <label>Product name<input name="name" value={form.name} onChange={updateField} required maxLength={160} placeholder="e.g. Fresh eggs" /></label>
                 <label>Description<textarea name="description" value={form.description} onChange={updateField} rows="3" maxLength={1500} placeholder="Describe the product, quality and packaging" /></label>
                 <div className="vendor-form-row"><label>Price (₦)<input name="price" type="number" min="1" step="0.01" value={form.price} onChange={updateField} required /></label><label>Unit<select name="unitOfMeasure" value={form.unitOfMeasure} onChange={updateField}>{UNITS.map((unit) => <option key={unit}>{unit}</option>)}</select></label></div>
-                <div className="vendor-form-row"><label>Category<select name="category" value={form.category} onChange={updateField}>{allowedCategories.map((category) => <option key={category}>{category}</option>)}</select></label><label>Stock quantity<input name="stockQuantity" type="number" min="0" step="any" value={form.stockQuantity} onChange={updateField} /></label></div>
-                <label>Image URLs <span className="vendor-label-note">(one per line; optional)</span><textarea name="images" value={form.images} onChange={updateField} rows="2" placeholder="https://…" /></label>
+                <div className="vendor-form-row"><label>Sector<select name="category" value={form.category} onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))}>{allowedCategories.map((category) => <option key={category}>{category}</option>)}</select></label><label>Livestock type<select name="subcategory" value={form.subcategory} onChange={updateField}>{["Poultry", "Cattle", "Sheep", "Goats"].filter((item) => application?.productFocus?.includes(item.toLowerCase())).map((item) => <option key={item}>{item}</option>)}</select></label></div>
+                <label>Available stock<input name="stockQuantity" type="number" min="0" step="any" value={form.stockQuantity} onChange={updateField} /></label>
+                <div className="vendor-media-field">
+                  <label htmlFor="vendor-product-media">Product photos and videos <span className="vendor-label-note">(up to 10 files; images 10 MB, videos 50 MB each)</span></label>
+                  <input id="vendor-product-media" type="file" accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,video/quicktime" multiple onChange={uploadMedia} disabled={uploadingMedia || form.media.length >= 10} />
+                  {uploadingMedia && <p role="status">Uploading media… {mediaProgress}%</p>}
+                  {mediaError && <p className="vendor-media-error" role="alert">{mediaError}</p>}
+                  {form.media.length > 0 && <div className="vendor-media-previews">{form.media.map((item, index) => <div className="vendor-media-preview" key={`${item.url}-${index}`}>{item.type === "video" ? <video src={item.url} controls playsInline preload="metadata" /> : <img src={item.url} alt={item.alt || `Product media ${index + 1}`} />}{item.type === "image" && form.media.findIndex((mediaItem) => mediaItem.type === "image") === index && <span>Primary image</span>}<div>{item.type === "image" && <button type="button" disabled={index === 0} onClick={() => setForm((current) => { const media = [...current.media]; const [primary] = media.splice(index, 1); media.unshift(primary); return { ...current, media }; })}>Make primary</button>}<button type="button" disabled={index === 0} onClick={() => setForm((current) => { const media = [...current.media]; [media[index - 1], media[index]] = [media[index], media[index - 1]]; return { ...current, media }; })}>Move up</button><button type="button" disabled={index === current.media.length - 1} onClick={() => setForm((current) => { const media = [...current.media]; [media[index + 1], media[index]] = [media[index], media[index + 1]]; return { ...current, media }; })}>Move down</button><button type="button" onClick={() => setForm((current) => ({ ...current, media: current.media.filter((_, mediaIndex) => mediaIndex !== index) }))}>Remove</button></div></div>)}</div>}
+                </div>
                 <button className="vendor-button-primary" type="submit" disabled={saving}>{saving ? "Saving…" : editingId ? "Save changes" : "Submit for review"}</button>
                 <p className="vendor-form-note">New listings start as pending. Product approval is separate from vendor approval. Do not list stock you cannot reasonably supply.</p>
               </form>
@@ -157,7 +201,7 @@ const Dashboard = () => {
               {productsLoading && <p role="status" className="vendor-inline-state">Loading your listings…</p>}
               {!productsLoading && productsError && <div className="vendor-inline-state vendor-inline-error"><p>{productsError}</p><button type="button" className="vendor-button-secondary" onClick={() => setRefresh((value) => value + 1)}>Try again</button></div>}
               {!productsLoading && !productsError && products.length === 0 && <div className="vendor-inline-state"><h3>No listings yet</h3><p>Add your first product. It will stay private until the product review is complete.</p></div>}
-              {!productsLoading && !productsError && products.length > 0 && <div className="vendor-listings">{products.map((product) => <article className="vendor-listing-row" key={product._id}><div className="vendor-listing-thumb">{product.images?.[0] ? <img src={product.images[0]} alt="" loading="lazy" /> : <span aria-hidden="true">✳</span>}</div><div className="vendor-listing-main"><h3>{product.name}</h3><p>{formatMoney(product.price)} / {product.unitOfMeasure || "unit"} · Stock: {product.stockQuantity ?? 0}</p><span className={`vendor-product-status vendor-product-status-${product.status}`}>{statusLabel(product.status)}</span></div><div className="vendor-listing-actions"><button type="button" onClick={() => startEdit(product)}>Edit</button><button type="button" className="vendor-delete-action" onClick={() => deleteProduct(product)}>Delete</button></div></article>)}</div>}
+              {!productsLoading && !productsError && products.length > 0 && <div className="vendor-listings">{products.map((product) => <article className="vendor-listing-row" key={product._id}><button type="button" className="vendor-listing-thumb" onClick={() => startEdit(product)} aria-label={`Edit ${product.name}`}>{product.media?.find((item) => item.type === "image")?.url || product.images?.[0] ? <img src={product.media?.find((item) => item.type === "image")?.url || product.images?.[0]} alt="" loading="lazy" /> : <span aria-hidden="true">✳</span>}</button><div className="vendor-listing-main"><h3>{product.name}</h3><p>{formatMoney(product.price)} / {product.unitOfMeasure || "unit"} · Stock: {product.stockQuantity ?? 0}</p><span className={`vendor-product-status vendor-product-status-${product.status}`}>{statusLabel(product.status)}</span></div><div className="vendor-listing-actions"><button type="button" onClick={() => startEdit(product)}>Edit</button><button type="button" className="vendor-delete-action" onClick={() => deleteProduct(product)}>Delete</button></div></article>)}</div>}
             </section>
           </div>
         </>

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import "./CategoryGrid.css";
 import { assets } from "../../assets/assets";
@@ -16,26 +16,28 @@ const initialsOf = (name) =>
 
 const CategoryCard = ({ card }) => {
   const mediaUrl = card.media?.key ? assets[card.media.key] : null;
+  const [imageFailed, setImageFailed] = useState(false);
   const linkLabel = card.availability.orderable
     ? `Browse ${card.name}`
     : `View ${card.name}`;
 
   return (
     <article className="category-card">
-      <div className="category-card-media">
-        {mediaUrl ? (
+      <Link className="category-card-media" to={card.path} aria-label={linkLabel}>
+        {mediaUrl && !imageFailed ? (
           <img
             className="category-card-image"
             src={mediaUrl}
             alt={card.media.alt || ""}
             loading="lazy"
+            onError={() => setImageFailed(true)}
           />
         ) : (
           <span className="category-card-monogram" aria-hidden="true">
             {initialsOf(card.name)}
           </span>
         )}
-      </div>
+      </Link>
 
       <div className="category-card-body">
         <p className="category-card-eyebrow">{card.eyebrow}</p>

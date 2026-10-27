@@ -6,16 +6,8 @@ import { useContext } from "react";
 import { StoreContext } from "../../context/StoreContext";
 import "./Marketplace.css";
 
-const CATEGORIES = [
-  "All categories",
-  "Catfish & Aquaculture",
-  "Poultry & Eggs",
-  "Grains & Cereals",
-  "Vegetables & Fruits",
-  "Tubers & Starch",
-  "Livestock & Meat",
-  "Processed Agro-Goods",
-];
+const CATEGORIES = ["All sectors", "Poultry & Eggs", "Livestock & Meat"];
+const SUBCATEGORIES = ["All livestock", "Poultry", "Cattle", "Sheep", "Goats"];
 const money = (value) => `₦${Number(value || 0).toLocaleString("en-NG")}`;
 const enquiryUrl = (product) => {
   const vendor = product.vendorId?.businessName || "the listed business";
@@ -30,7 +22,8 @@ const Marketplace = () => {
   const [products, setProducts] = useState([]);
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [search, setSearch] = useState(initialSearch.trim());
-  const [category, setCategory] = useState("All categories");
+  const [category, setCategory] = useState("All sectors");
+  const [subcategory, setSubcategory] = useState(searchParams.get("subcategory") || "All livestock");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [total, setTotal] = useState(0);
@@ -45,6 +38,8 @@ const Marketplace = () => {
     setSearchInput(value);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearch(value.trim());
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSubcategory(searchParams.get("subcategory") || "All livestock");
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(1);
   }, [searchParams]);
@@ -62,7 +57,8 @@ const Marketplace = () => {
       try {
         const params = { limit: 12, page };
         if (search) params.search = search;
-        if (category !== "All categories") params.category = category;
+        if (category !== "All sectors") params.category = category;
+        if (subcategory !== "All livestock") params.subcategory = subcategory;
         const response = await axios.get(`${url}/api/products`, { params });
         if (!current) return;
         if (response.data?.success !== true || !Array.isArray(response.data.data)) {
@@ -83,7 +79,7 @@ const Marketplace = () => {
     };
     loadProducts();
     return () => { current = false; };
-  }, [url, search, category, page, refresh]);
+  }, [url, search, category, subcategory, page, refresh]);
 
   return (
     <main className="marketplace-page">
@@ -119,12 +115,18 @@ const Marketplace = () => {
         <div className="marketplace-filters">
           <label className="marketplace-search-label">
             <span>Search products</span>
-            <input value={searchInput} onChange={(event) => { setSearchInput(event.target.value); setPage(1); }} placeholder="Try poultry, grains, vegetables…" type="search" />
+            <input value={searchInput} onChange={(event) => { setSearchInput(event.target.value); setPage(1); }} placeholder="Try poultry, cattle, sheep, goats…" type="search" />
           </label>
           <label className="marketplace-category-label">
-            <span>Category</span>
+            <span>Sector</span>
             <select value={category} onChange={(event) => { setCategory(event.target.value); setPage(1); }}>
               {CATEGORIES.map((item) => <option key={item} value={item}>{item}</option>)}
+            </select>
+          </label>
+          <label className="marketplace-category-label">
+            <span>Livestock type</span>
+            <select value={subcategory} onChange={(event) => { setSubcategory(event.target.value); setPage(1); }}>
+              {SUBCATEGORIES.map((item) => <option key={item} value={item}>{item}</option>)}
             </select>
           </label>
         </div>
@@ -136,7 +138,7 @@ const Marketplace = () => {
             <span className="marketplace-empty-icon" aria-hidden="true">✳</span>
             <h3>No listings match this search yet.</h3>
             <p>Try another search or category. New listings appear after the vendor and product review steps are complete.</p>
-            <button type="button" onClick={() => { setSearchInput(""); setCategory("All categories"); setPage(1); }}>Clear filters</button>
+            <button type="button" onClick={() => { setSearchInput(""); setCategory("All sectors"); setSubcategory("All livestock"); setPage(1); }}>Clear filters</button>
           </div>
         )}
 
@@ -144,13 +146,14 @@ const Marketplace = () => {
           <div className="marketplace-grid">
             {products.map((product) => (
               <article className="marketplace-product-card" key={product._id}>
-                <div className="marketplace-product-image">
-                  {product.images?.[0] ? <img src={product.images[0]} alt={product.name} loading="lazy" /> : <div className="marketplace-image-placeholder" aria-label="No product image provided"><span aria-hidden="true">✳</span></div>}
+                <Link to={`/product/${product._id}`} className="marketplace-product-image" aria-label={`View details for ${product.name}`}>
+                  {product.media?.find((media) => media.type === "image")?.url || product.images?.[0] ? <img src={product.media?.find((media) => media.type === "image")?.url || product.images?.[0]} alt={product.name} loading="lazy" /> : <div className="marketplace-image-placeholder" aria-label="No product image provided"><span aria-hidden="true">✳</span></div>}
                   <span className="marketplace-product-category">{product.category}</span>
-                </div>
+                </Link>
                 <div className="marketplace-product-content">
                   <p className="marketplace-vendor-name">{product.vendorId?.businessName || "Vendor details unavailable"}</p>
-                  <h3>{product.name}</h3>
+                  <h3><Link to={`/product/${product._id}`}>{product.name}</Link></h3>
+                  {product.subcategory && <p className="marketplace-product-description">Type: {product.subcategory}</p>}
                   {product.description && <p className="marketplace-product-description">{product.description}</p>}
                   <div className="marketplace-product-bottom">
                     <div><strong>{money(product.price)}</strong><span> / {product.unitOfMeasure || "unit"}</span></div>

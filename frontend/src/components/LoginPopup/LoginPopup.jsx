@@ -27,6 +27,7 @@ const LoginPopup = ({ setShowLogin, redirectOutcome }) => {
   const [googleConsentStep, setGoogleConsentStep] = useState(() => redirectOutcome?.code === "CONSENT_REQUIRED" || Boolean(redirectOutcome?.continuation));
 
   const [currState, setCurrState] = useState(redirectOutcome?.intent === "sign_up" ? "Sign Up" : "Login");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const submitGoogleCredential = useCallback(async (credential, accepted) => {
     setGoogleBusy(true);
     setGoogleError("");
@@ -270,11 +271,13 @@ const LoginPopup = ({ setShowLogin, redirectOutcome }) => {
                 name="password"
                 onChange={onChangeHandler}
                 value={data.password}
-                type="password"
+                type={passwordVisible ? "text" : "password"}
                 placeholder="Password"
                 required
               />
+              <button type="button" className="password-visibility-toggle" aria-label={passwordVisible ? "Hide password" : "Show password"} aria-pressed={passwordVisible} onClick={() => setPasswordVisible((value) => !value)}>{passwordVisible ? "Hide password" : "Show password"}</button>
             </div>
+          
             <button type="submit">
               {currState === "Sign Up" ? "Create account" : "Login"}
             </button>

@@ -1,5 +1,7 @@
 .fish-item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr); width: 100%; max-width: 1180px; min-height: 0; overflow: hidden; border: 1px solid var(--elevoni-line); border-radius: var(--elevoni-radius-lg); background: white; box-shadow: none; animation: fadeIn 350ms ease-out; }
 .fish-item-media { position: relative; min-height: 100%; overflow: hidden; background: var(--elevoni-cream); }
+.fish-item-image-button { display: block; width: 100%; height: 100%; min-height: 560px; padding: 0; border: 0; background: transparent; text-align: left; cursor: pointer; }
+.fish-item-image-button:focus-visible { outline: 3px solid var(--elevoni-sage); outline-offset: -3px; }
 .fish-item-image { display: block; width: 100%; height: 100%; min-height: 560px; object-fit: cover; object-position: center; cursor: pointer; transition: transform 400ms ease; }
 .fish-item:hover .fish-item-image { transform: scale(1.015); }
 .fish-item-image-label { position: absolute; left: 20px; bottom: 20px; padding: 7px 10px; border: 1px solid rgba(255,255,255,.6); border-radius: 3px; background: rgba(25,28,23,.72); color: white; font-size: 11px; font-weight: 500; }
@@ -36,11 +38,12 @@
 .fish-item-cart-note { margin: 0; color: var(--elevoni-muted); font-size: 11px; }
 .details-btn { min-height: 32px; align-self: flex-start; padding: 0; border: 0; background: transparent; color: var(--elevoni-text); text-decoration: underline; text-underline-offset: 4px; }
 .details-btn:hover { color: var(--elevoni-sage-dark); }
-@media (max-width: 850px) { .fish-item { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); } .fish-item-image { min-height: 520px; } .fish-item-info { gap: 18px; padding: 28px; } }
-@media (max-width: 680px) { .fish-item { grid-template-columns: 1fr; border-radius: var(--elevoni-radius); } .fish-item-media { height: clamp(250px, 72vw, 440px); min-height: 0; } .fish-item-image { min-height: 0; } .fish-item-info { gap: 18px; padding: 24px 20px; } }
+@media (max-width: 850px) { .fish-item { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); } .fish-item-image-button { min-height: 520px; } .fish-item-image { min-height: 520px; } .fish-item-info { gap: 18px; padding: 28px; } }
+@media (max-width: 680px) { .fish-item { grid-template-columns: 1fr; border-radius: var(--elevoni-radius); } .fish-item-media { height: clamp(250px, 72vw, 440px); min-height: 0; } .fish-item-image-button { min-height: 0; } .fish-item-image { min-height: 0; } .fish-item-info { gap: 18px; padding: 24px 20px; } }
 @media (max-width: 390px) { .fish-item-cart-controls { grid-template-columns: 1fr; } .fish-item-add-button { width: 100%; } }
 .fish-item-go-to-cart { justify-self: start; padding: 0; border: 0; background: transparent; color: var(--elevoni-text); font: inherit; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 @media (max-width: 420px) {
   .tier-card { flex-direction: column; align-items: flex-start; gap: 3px; }
   .tier-range, .tier-rate { white-space: normal; }
 }
+.fish-item-image-placeholder { display: grid; place-items: center; width: 100%; height: 100%; min-height: inherit; padding: 24px; background: var(--elevoni-cream); color: var(--elevoni-muted); text-align: center; }

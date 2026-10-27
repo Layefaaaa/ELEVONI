@@ -48,8 +48,8 @@ const CATEGORIES = Object.freeze([
         slug: "livestock",
         name: "Livestock",
         eyebrow: "Category 02",
-        summary: "Poultry, cattle, sheep and goats. These categories are being prepared and are not open for orders yet.",
-        status: CATEGORY_STATUS.COMING_SOON,
+        summary: "Explore poultry, cattle, sheep and goat listings from reviewed vendors. Availability reflects actual approved listings.",
+        status: CATEGORY_STATUS.CATALOGUE,
         media: {
             key: "livestockCategory",
             alt: "Cattle and goats grazing on a Nigerian farm",
@@ -59,44 +59,33 @@ const CATEGORIES = Object.freeze([
                 slug: "poultry",
                 name: "Poultry",
                 summary: "Chicken and other table birds.",
-                status: CATEGORY_STATUS.COMING_SOON,
+                status: CATEGORY_STATUS.CATALOGUE,
                 media: null,
             }),
             Object.freeze({
                 slug: "cattle",
                 name: "Cattle",
                 summary: "Beef and other cattle products.",
-                status: CATEGORY_STATUS.COMING_SOON,
+                status: CATEGORY_STATUS.CATALOGUE,
                 media: null,
             }),
             Object.freeze({
                 slug: "sheep",
                 name: "Sheep",
                 summary: "Mutton and other sheep products.",
-                status: CATEGORY_STATUS.COMING_SOON,
+                status: CATEGORY_STATUS.CATALOGUE,
                 media: null,
             }),
             Object.freeze({
                 slug: "goats",
                 name: "Goats",
                 summary: "Goat meat and other goat products.",
-                status: CATEGORY_STATUS.COMING_SOON,
+                status: CATEGORY_STATUS.CATALOGUE,
                 media: null,
             }),
         ]),
     }),
-    Object.freeze({
-        slug: "other-farm-products",
-        name: "Other Farm Products",
-        eyebrow: "Category 03",
-        summary: "Reserved for the farm products we will add as our supply grows.",
-        status: CATEGORY_STATUS.RESERVED,
-        media: {
-            key: "other",
-            alt: "other farm products",
-        },
-        children: Object.freeze([]),
-    }),
+
 ]);
 
 const CATEGORY_PATH_PREFIX = "/category";

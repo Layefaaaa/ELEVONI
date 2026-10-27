@@ -114,16 +114,12 @@ test("third-party fish remains a planned marketplace category", () => {
   assert.deepEqual(otherFish.vendorFocus, []);
 });
 
-test("marketplace listings are planned until verified", () => {
-  const marketplaceListings = listListingCategories().filter(
-    (category) => category.channel === CATEGORY_CHANNELS.MARKETPLACE,
-  );
-
-  assert.ok(marketplaceListings.length > 0);
-
-  for (const category of marketplaceListings) {
-    assert.equal(category.launchStatus, CATEGORY_LAUNCH_STATUSES.PLANNED);
+test("livestock categories are active while unlaunched aquaculture marketplace remains planned", () => {
+  for (const id of ["poultry-eggs", "cattle", "sheep", "goats"]) {
+    assert.equal(getCategoryById(id).launchStatus, CATEGORY_LAUNCH_STATUSES.LIVE);
+    assert.equal(getCategoryById(id).channel, CATEGORY_CHANNELS.MARKETPLACE);
   }
+  assert.equal(getCategoryById("other-fish-aquaculture").launchStatus, CATEGORY_LAUNCH_STATUSES.PLANNED);
 });
 
 test("other farm products is reserved and has no active sales channel", () => {

@@ -1,23 +1,28 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import {
   MAX_DESCRIPTION_LENGTH,
   VENDOR_PRODUCT_FOCUS,
 } from "../../utils/vendorApplication";
 import "./VendorApplicationForm.css";
 
-const Field = ({ name, label, type = "text", value, error, onChange, autoComplete, hint }) => (
+const Field = ({ name, label, type = "text", value, error, onChange, autoComplete, hint }) => {
+  const [visible, setVisible] = useState(false);
+  const inputType = type === "password" && visible ? "text" : type;
+  return (
   <div className="vendor-field">
     <label htmlFor={`vendor-${name}`}>{label}</label>
     <input
       id={`vendor-${name}`}
       name={name}
-      type={type}
+      type={inputType}
       value={value}
       autoComplete={autoComplete}
       aria-invalid={Boolean(error)}
       aria-describedby={error ? `vendor-${name}-error` : undefined}
       onChange={onChange}
     />
+    {type === "password" && <button type="button" className="password-visibility-toggle" aria-label={visible ? "Hide password" : "Show password"} aria-pressed={visible} onClick={() => setVisible((value) => !value)}>{visible ? "Hide" : "Show"}</button>}
     {hint && <p className="vendor-field-hint">{hint}</p>}
     {error && (
       <p className="vendor-field-error" id={`vendor-${name}-error`} role="alert">
@@ -25,7 +30,8 @@ const Field = ({ name, label, type = "text", value, error, onChange, autoComplet
       </p>
     )}
   </div>
-);
+  );
+};
 
 const VendorApplicationForm = ({
   mode,
@@ -51,9 +57,23 @@ const VendorApplicationForm = ({
       </p>
 
       {notice && (
-        <p className="vendor-form-notice" role="alert">
+        <p className="vendor-form-notice" role="status" aria-live="polite">
           {notice}
         </p>
+      )}
+
+      {Object.keys(errors).length > 0 && (
+        <div className="vendor-form-error-summary" role="alert" aria-labelledby="vendor-form-error-title">
+          <h3 id="vendor-form-error-title">Please review these fields</h3>
+          <p>{Object.keys(errors).length} {Object.keys(errors).length === 1 ? "issue needs" : "issues need"} your attention before you can continue:</p>
+          <ul>
+            {Object.entries(errors).map(([key, message]) => {
+              const labels = { name: "Your full name", email: "Email address", password: "Password", businessName: "Business or farm name", contactName: "Contact name", phone: "Phone number", location: "Location", productFocus: "Livestock focus", description: "Business description" };
+              const target = key === "productFocus" ? "vendor-productFocus-poultry" : `vendor-${key}`;
+              return <li key={key}><a href={`#${target}`} onClick={(event) => { event.preventDefault(); document.getElementById(target)?.focus(); document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "center" }); }}>{labels[key] || key}: {message}</a></li>;
+            })}
+          </ul>
+        </div>
       )}
 
       {!isRegister && accountEmail && (
@@ -140,8 +160,11 @@ const VendorApplicationForm = ({
               className={`vendor-focus-option ${focus.includes(option.value) ? "selected" : ""}`}
             >
               <input
+                id={`vendor-productFocus-${option.value}`}
                 type="checkbox"
                 name="productFocus"
+                aria-invalid={Boolean(errors.productFocus)}
+                aria-describedby={errors.productFocus ? "vendor-productFocus-error" : undefined}
                 value={option.value}
                 checked={focus.includes(option.value)}
                 onChange={() => onToggleFocus(option.value)}

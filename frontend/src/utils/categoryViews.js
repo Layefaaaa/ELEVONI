@@ -94,7 +94,7 @@ const buildCategoryCards = ({ categories = [], catalogueCount = 0 } = {}) =>
     childNames: childNames(category),
     availability: describeAvailability({
       status: category.status,
-      productCount: category.status === CATEGORY_STATUS.CATALOGUE ? catalogueCount : 0,
+      productCount: category.status === CATEGORY_STATUS.CATALOGUE && category.slug === "aquaculture-fishery" ? catalogueCount : 0,
     }),
   }));
 
@@ -110,7 +110,7 @@ const buildSubcategoryCards = ({ category, catalogueCount = 0 } = {}) =>
     childNames: [],
     availability: describeAvailability({
       status: child.status,
-      productCount: child.status === CATEGORY_STATUS.CATALOGUE ? catalogueCount : 0,
+      productCount: child.status === CATEGORY_STATUS.CATALOGUE && child.catalogue === "fish" ? catalogueCount : 0,
     }),
   }));
 

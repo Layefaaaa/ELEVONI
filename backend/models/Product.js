@@ -22,6 +22,7 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Product price is required'],
       min: [0, 'Price must be greater than or equal to 0']
     },
+    subcategory: { type: String, enum: ["", "Poultry", "Cattle", "Sheep", "Goats", "Smoked Catfish", "Other Aquaculture"], default: "", trim: true },
     category: {
       type: String,
       required: [true, 'Category is required'],
@@ -50,6 +51,16 @@ const productSchema = new mongoose.Schema(
     images: {
       type: [String],
       default: []
+    },
+    media: {
+      type: [{
+        url: { type: String, required: true, trim: true },
+        type: { type: String, enum: ["image", "video"], required: true },
+        publicId: { type: String, default: "" },
+        alt: { type: String, default: "", trim: true, maxlength: 180 },
+      }],
+      default: [],
+      validate: { validator: (items) => items.length <= 10, message: "A listing can contain up to 10 media items" }
     },
     vendorId: {
       type: mongoose.Schema.Types.ObjectId,

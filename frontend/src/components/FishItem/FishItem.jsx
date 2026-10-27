@@ -9,6 +9,7 @@ const FishItem = ({ id, name, image, price, description, pricingMode, pricingTie
   const { cartItems, setCartQuantity, updateCartQuantity, url } = useContext(StoreContext);
   const navigate = useNavigate();
   const quantity = Number(cartItems?.[id] || 0);
+  const [imageFailed, setImageFailed] = useState(false);
   const [draftQuantity, setDraftQuantity] = useState(String(quantity));
   const previousQuantity = useRef(quantity);
   const parsedQuantity = Number(draftQuantity);
@@ -46,13 +47,9 @@ const currentPrice = getProductPrice({ name, price, pricingMode, pricingTiers },
   return (
     <article className="fish-item">
       <div className="fish-item-media">
-        <img
-          className="fish-item-image"
-          src={imageUrl}
-          alt={`${name} - Premium smoked catfish from Elevoni Farms`}
-          loading="lazy"
-          onClick={() => navigate(`/product/${id}`)}
-        />
+        <button className="fish-item-image-button" type="button" onClick={() => navigate(`/product/${id}`)} aria-label={`View details for ${name}`}>
+          {imageFailed ? <span className="fish-item-image-placeholder" role="img" aria-label={`Image unavailable for ${name}`}>Product image unavailable</span> : <img className="fish-item-image" src={imageUrl} alt={`${name} - Premium smoked catfish from Elevoni Farms`} loading="lazy" onError={() => setImageFailed(true)} />}
+        </button>
         <span className="fish-item-image-label">Carefully smoked</span>
       </div>
 
