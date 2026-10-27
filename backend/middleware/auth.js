@@ -2,10 +2,43 @@ import jwt from "jsonwebtoken";
 import requireApprovedVendorProfile from "./vendor.js";
 
 const readToken = (req) => {
-    const authorization = req.get ? .("authorization") || req.headers ? .authorization;
-    const bearerToken = authorization ? .match(/^Bearer\s+(.+)$/i) ? .[1];
+    let authorization = null;
 
-    return bearerToken || req.get ? .("token") || req.headers ? .token || null;
+    if (typeof req.get === "function") {
+        authorization = req.get("authorization");
+    }
+
+    if (!authorization && req.headers) {
+        authorization = req.headers.authorization;
+    }
+
+    let bearerToken = null;
+
+    if (authorization) {
+        const match = authorization.match(/^Bearer\s+(.+)$/i);
+
+        if (match) {
+            bearerToken = match[1];
+        }
+    }
+
+    if (bearerToken) {
+        return bearerToken;
+    }
+
+    if (typeof req.get === "function") {
+        const token = req.get("token");
+
+        if (token) {
+            return token;
+        }
+    }
+
+    if (req.headers && req.headers.token) {
+        return req.headers.token;
+    }
+
+    return null;
 };
 
 const authMiddleware = (req, res, next) => {
@@ -46,13 +79,15 @@ const authMiddleware = (req, res, next) => {
         req.auth = Object.freeze({
             id: decoded.id,
             userId: decoded.id,
-            email: typeof decoded.email === "string" ? decoded.email : undefined,
+            email: typeof decoded.email === "string" ?
+                decoded.email :
+                undefined,
             role: decoded.role
         });
 
         return next();
     } catch (error) {
-        const expired = error ? .name === "TokenExpiredError";
+        const expired = error && error.name === "TokenExpiredError";
 
         return res.status(401).json({
             success: false,
@@ -88,7 +123,7 @@ export const requireRole = (...roles) => (req, res, next) => {
 const approvedVendorGuard = requireApprovedVendorProfile();
 
 const approvedVendorOrAdmin = (req, res, next) => {
-    if (req.auth ? .role === "admin") {
+    if (req.auth && req.auth.role === "admin") {
         return next();
     }
 
@@ -108,18 +143,24 @@ export const verifyOwnership = (fetchResourceFn, ownerField = "vendorId") => asy
             });
         }
 
-        if (req.auth ? .role === "admin") {
+        if (req.auth && req.auth.role === "admin") {
             req.resource = resource;
             return next();
         }
 
-        const ownerId = resource[ownerField] ?
-            String(resource[ownerField]._id || resource[ownerField]) :
-            null;
+        let ownerId = null;
 
-        const ownVendorId = req.vendor ? .profileId ?
-            String(req.vendor.profileId) :
-            null;
+        if (resource[ownerField]) {
+            ownerId = String(
+                resource[ownerField]._id || resource[ownerField]
+            );
+        }
+
+        let ownVendorId = null;
+
+        if (req.vendor && req.vendor.profileId) {
+            ownVendorId = String(req.vendor.profileId);
+        }
 
         if (!ownerId || !ownVendorId || ownerId !== ownVendorId) {
             return res.status(403).json({
