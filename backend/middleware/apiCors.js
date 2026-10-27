@@ -11,6 +11,7 @@ const allowedOrigins = [
     "http://localhost:5176",
     "http://localhost:5177",
     "http://localhost:5000",
+    "https://elevonifarms-3j01tqzop-elevoni.vercel.app",
     "https://elevonifarms-hw4ay5yvw-elevoni.vercel.app",
     ...(process.env.FRONTEND_URL ?
         process.env.FRONTEND_URL.split(",").map((origin) => origin.trim()).filter(Boolean) : []),
