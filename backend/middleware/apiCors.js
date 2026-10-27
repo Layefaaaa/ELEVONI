@@ -11,15 +11,13 @@ const allowedOrigins = [
     "http://localhost:5176",
     "http://localhost:5177",
     "http://localhost:5000",
+    "https://elevonifarms-hw4ay5yvw-elevoni.vercel.app",
     ...(process.env.FRONTEND_URL ?
-        process.env.FRONTEND_URL.split(",").map((origin) => origin.trim()).filter(Boolean) :
-        []),
+        process.env.FRONTEND_URL.split(",").map((origin) => origin.trim()).filter(Boolean) : []),
     ...(process.env.ADMIN_URL ?
-        process.env.ADMIN_URL.split(",").map((origin) => origin.trim()).filter(Boolean) :
-        []),
+        process.env.ADMIN_URL.split(",").map((origin) => origin.trim()).filter(Boolean) : []),
     ...(process.env.VENDOR_PORTAL_URL ?
-        process.env.VENDOR_PORTAL_URL.split(",").map((origin) => origin.trim()).filter(Boolean) :
-        [])
+        process.env.VENDOR_PORTAL_URL.split(",").map((origin) => origin.trim()).filter(Boolean) : [])
 ];
 
 const corsOptions = {
