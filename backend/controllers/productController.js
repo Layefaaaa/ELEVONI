@@ -8,7 +8,7 @@ import {
     categoriesForVendor,
     isProductCategory,
     resolveProductCategoryFilter
-} from "../utils/categoryNormalization.js";
+} from "../services/categoryNormalization.js";
 
 // Get public products
 const getPublicProducts = async(req, res) => {
