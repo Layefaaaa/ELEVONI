@@ -22,23 +22,22 @@ const router = express.Router();
 
 // Public product routes
 router.get("/", getPublicProducts);
-router.get("/:id", getProductById);
 
 // Vendor media upload signature
-// The actual media file will be uploaded directly to Cloudinary.
+// The actual media file is uploaded directly to Cloudinary.
 router.post(
     "/vendor/media/signature",
     verifyToken,
-    requireRole("vendor"),
     ...requireApprovedVendor,
     getVendorMediaUploadSignature
 );
 
 // Vendor product management
+// Vendor access is determined by the authenticated user's approved vendor
+// profile, not by requiring the user's general account role to be "vendor".
 router.post(
     "/vendor",
     verifyToken,
-    requireRole("vendor"),
     ...requireApprovedVendor,
     createVendorProduct
 );
@@ -46,7 +45,6 @@ router.post(
 router.get(
     "/vendor/me",
     verifyToken,
-    requireRole("vendor"),
     ...requireApprovedVendor,
     getMyVendorProducts
 );
@@ -54,7 +52,6 @@ router.get(
 router.put(
     "/vendor/:id",
     verifyToken,
-    requireRole("vendor"),
     ...requireApprovedVendor,
     updateVendorProduct
 );
@@ -62,7 +59,6 @@ router.put(
 router.delete(
     "/vendor/:id",
     verifyToken,
-    requireRole("vendor"),
     ...requireApprovedVendor,
     deleteVendorProduct
 );
@@ -81,5 +77,9 @@ router.patch(
     requireRole("admin"),
     adminModerateProduct
 );
+
+// Keep the generic ID route after specific routes so it cannot intercept
+// requests intended for vendor or admin endpoints.
+router.get("/:id", getProductById);
 
 export default router;
