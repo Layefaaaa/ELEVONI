@@ -24,12 +24,15 @@ const allowedOrigins = [
 
 const corsOptions = {
     origin: function(origin, callback) {
-        if (!origin) return callback(null, true);
+        if (!origin) {
+            return callback(null, true);
+        }
 
         if (allowedOrigins.indexOf(origin) !== -1) {
             return callback(null, true);
         }
 
+        console.error("CORS blocked origin:", origin);
         return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
@@ -45,17 +48,25 @@ const apiCorsGate = (req, res, next) => {
         req.path === "/api/user/google" &&
         req.is("application/x-www-form-urlencoded");
 
-    if (isGoogleRedirectPost) return next();
+    if (isGoogleRedirectPost) {
+        return next();
+    }
 
     apiCors(req, res, (err) => {
         if (err) {
             return res.status(403).json({
+                success: false,
                 message: "Origin not allowed by CORS",
                 origin: req.headers.origin || null
             });
         }
 
-        next();
+        // Explicitly finish successful browser preflight requests.
+        if (req.method === "OPTIONS") {
+            return res.status(204).end();
+        }
+
+        return next();
     });
 };
 
