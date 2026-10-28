@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import "./CategoryGrid.css";
 import { assets } from "../../assets/assets";
 import { StoreContext } from "../../context/StoreContext";
 import { listCategories } from "../../config/categories.js";
-import { buildCategoryCards } from "../../utils/categoryViews.js";
+import { COUNT_STATUS, buildCategoryCards } from "../../utils/categoryViews.js";
+import { fetchLivestockParentCount } from "../../utils/marketplace.js";
 
 const initialsOf = (name) =>
   name
@@ -68,28 +68,31 @@ const CategoryGrid = () => {
   const { fish_list, url } = useContext(StoreContext);
   const catalogueCount = Array.isArray(fish_list) ? fish_list.length : 0;
 
-  const [livestockCount, setLivestockCount] = useState(null);
+  const [livestock, setLivestock] = useState({
+    count: null,
+    status: COUNT_STATUS.LOADING,
+  });
 
   useEffect(() => {
     let cancelled = false;
+    const controller = new AbortController();
 
     const fetchLivestockCount = async () => {
+      setLivestock({ count: null, status: COUNT_STATUS.LOADING });
+
       try {
-        const response = await axios.get(`${url}/api/products`, {
-          params: {
-            category: "Livestock & Meat",
-            limit: 1,
-            page: 1,
-          },
+        const count = await fetchLivestockParentCount({
+          url,
+          signal: controller.signal,
         });
 
-        if (!cancelled && response.data?.success === true) {
-          setLivestockCount(Number(response.data.total) || 0);
+        if (!cancelled) {
+          setLivestock({ count, status: COUNT_STATUS.READY });
         }
       } catch (error) {
         if (!cancelled) {
           console.error("Failed to fetch livestock listing count:", error);
-          setLivestockCount(0);
+          setLivestock({ count: null, status: COUNT_STATUS.ERROR });
         }
       }
     };
@@ -98,6 +101,7 @@ const CategoryGrid = () => {
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, [url]);
 
@@ -105,7 +109,8 @@ const CategoryGrid = () => {
   const cards = buildCategoryCards({
     categories,
     catalogueCount,
-    livestockCount: livestockCount ?? 0,
+    livestockCount: livestock.count ?? 0,
+    livestockCountStatus: livestock.status,
   });
 
   return (

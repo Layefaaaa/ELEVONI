@@ -23,6 +23,8 @@
 
 .category-subcategories, .category-siblings { margin-bottom: var(--elevoni-section-space); }
 .category-subcategories h2, .category-siblings h2 { margin: 0 0 26px; font-size: clamp(22px, 2.4vw, 30px); font-weight: 500; letter-spacing: -0.035em; }
+.category-listings { min-height: 0; margin: 0 0 var(--elevoni-section-space); }
+.category-listings .marketplace-empty { background: var(--elevoni-white); }
 .subcategory-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .subcategory-card { display: flex; flex-direction: column; gap: 8px; padding: 24px 22px; background: var(--elevoni-white); border: 1px solid var(--elevoni-line); border-radius: var(--elevoni-radius-lg); transition: border-color 180ms ease; }
 .subcategory-card:hover { border-color: var(--elevoni-sage); }

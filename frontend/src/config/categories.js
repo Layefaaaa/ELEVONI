@@ -60,6 +60,10 @@ const CATEGORIES = Object.freeze([
                 name: "Poultry",
                 summary: "Chicken and other table birds.",
                 status: CATEGORY_STATUS.CATALOGUE,
+                marketplace: Object.freeze({
+                    category: "Poultry & Eggs",
+                    subcategory: "Poultry",
+                }),
                 media: null,
             }),
             Object.freeze({
@@ -67,6 +71,10 @@ const CATEGORIES = Object.freeze([
                 name: "Cattle",
                 summary: "Beef and other cattle products.",
                 status: CATEGORY_STATUS.CATALOGUE,
+                marketplace: Object.freeze({
+                    category: "Livestock & Meat",
+                    subcategory: "Cattle",
+                }),
                 media: null,
             }),
             Object.freeze({
@@ -74,6 +82,10 @@ const CATEGORIES = Object.freeze([
                 name: "Sheep",
                 summary: "Mutton and other sheep products.",
                 status: CATEGORY_STATUS.CATALOGUE,
+                marketplace: Object.freeze({
+                    category: "Livestock & Meat",
+                    subcategory: "Sheep",
+                }),
                 media: null,
             }),
             Object.freeze({
@@ -81,6 +93,10 @@ const CATEGORIES = Object.freeze([
                 name: "Goats",
                 summary: "Goat meat and other goat products.",
                 status: CATEGORY_STATUS.CATALOGUE,
+                marketplace: Object.freeze({
+                    category: "Livestock & Meat",
+                    subcategory: "Goats",
+                }),
                 media: null,
             }),
         ]),

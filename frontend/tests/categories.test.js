@@ -1,4 +1,4 @@
-import { describeAvailability, describeEmptyState, buildCategoryCards, buildSubcategoryCards, describeCategoryEntry } from "../src/utils/categoryViews.js";
+import { COUNT_STATUS, describeAvailability, describeEmptyState, buildCategoryCards, buildSubcategoryCards, describeCategoryEntry } from "../src/utils/categoryViews.js";
 import { CATEGORY_STATUS, categoryPath, getCategory, getSubcategory, listCategories, listSubcategories, resolveCategoryEntry } from "../src/config/categories.js";
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -112,4 +112,70 @@ test("a category entry describes its availability and empty state", () => {
   assert.equal(view.eyebrow, "Livestock");
   assert.equal(view.availability.label, "No products listed right now");
   assert.equal(view.emptyState.title, "No products listed in Poultry right now");
+});
+
+test("livestock subcategories carry the API category and subcategory filters", () => {
+  assert.deepEqual(getSubcategory("livestock", "poultry").marketplace, {
+    category: "Poultry & Eggs",
+    subcategory: "Poultry",
+  });
+  assert.deepEqual(getSubcategory("livestock", "cattle").marketplace, {
+    category: "Livestock & Meat",
+    subcategory: "Cattle",
+  });
+  assert.deepEqual(getSubcategory("livestock", "sheep").marketplace, {
+    category: "Livestock & Meat",
+    subcategory: "Sheep",
+  });
+  assert.deepEqual(getSubcategory("livestock", "goats").marketplace, {
+    category: "Livestock & Meat",
+    subcategory: "Goats",
+  });
+});
+
+test("unknown counts are never reported as zero", () => {
+  const loading = describeAvailability({
+    status: CATEGORY_STATUS.CATALOGUE,
+    countStatus: COUNT_STATUS.LOADING,
+  });
+  const failed = describeAvailability({
+    status: CATEGORY_STATUS.CATALOGUE,
+    countStatus: COUNT_STATUS.ERROR,
+  });
+
+  assert.equal(loading.label, "Checking availability…");
+  assert.equal(loading.countKnown, false);
+  assert.equal(failed.label, "Availability unavailable");
+  assert.equal(failed.countKnown, false);
+  assert.notEqual(failed.label, "No products listed right now");
+});
+
+test("subcategory cards can show loading and real API counts", () => {
+  const loading = buildSubcategoryCards({
+    category: getCategory("livestock"),
+    subcategoryCountsStatus: COUNT_STATUS.LOADING,
+  });
+  assert.equal(loading[0].availability.label, "Checking availability…");
+  assert.equal(loading[0].availability.orderable, false);
+
+  const ready = buildSubcategoryCards({
+    category: getCategory("livestock"),
+    subcategoryCounts: { poultry: 2, cattle: 1, sheep: 0, goats: 3 },
+  });
+  assert.equal(ready[0].availability.label, "2 products available");
+  assert.equal(ready[1].availability.label, "1 product available");
+  assert.equal(ready[2].availability.label, "No products listed right now");
+  assert.equal(ready[3].availability.label, "3 products available");
+});
+
+test("a livestock subcategory entry uses its listing count", () => {
+  const entry = resolveCategoryEntry("livestock", "cattle");
+  const view = describeCategoryEntry(entry, {
+    subcategoryProductCount: 4,
+    subcategoryProductCountStatus: COUNT_STATUS.READY,
+  });
+
+  assert.equal(view.availability.label, "4 products available");
+  assert.equal(view.availability.orderable, true);
+  assert.equal(view.emptyState, null);
 });

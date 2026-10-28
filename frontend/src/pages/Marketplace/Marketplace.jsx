@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import axios from "axios";
 import { Link, useSearchParams } from "react-router-dom";
 import { useContext } from "react";
 import { StoreContext } from "../../context/StoreContext";
+import MarketplaceProductCard from "../../components/MarketplaceProductCard/MarketplaceProductCard";
+import { fetchPublicProducts } from "../../utils/marketplace.js";
 import "./Marketplace.css";
 
 const CATEGORIES = ["All sectors", "Poultry & Eggs", "Livestock & Meat"];
 const SUBCATEGORIES = ["All livestock", "Poultry", "Cattle", "Sheep", "Goats"];
-const money = (value) => `₦${Number(value || 0).toLocaleString("en-NG")}`;
-const enquiryUrl = (product) => {
-  const vendor = product.vendorId?.businessName || "the listed business";
-  const message = `Hello Elevoni Farms, I would like to enquire about ${product.name} from ${vendor}. Is it available, and what are the delivery arrangements?`;
-  return `https://wa.me/2348135738991?text=${encodeURIComponent(message)}`;
-};
 
 const Marketplace = () => {
   const { url } = useContext(StoreContext);
@@ -36,11 +31,8 @@ const Marketplace = () => {
     // Sync when a new search URL is opened or the user navigates back/forward.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchInput(value);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearch(value.trim());
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSubcategory(searchParams.get("subcategory") || "All livestock");
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(1);
   }, [searchParams]);
 
@@ -55,24 +47,28 @@ const Marketplace = () => {
       setLoading(true);
       setError("");
       try {
-        const params = { limit: 12, page };
-        if (search) params.search = search;
-        if (category !== "All sectors") params.category = category;
-        if (subcategory !== "All livestock") params.subcategory = subcategory;
-        const response = await axios.get(`${url}/api/products`, { params });
+        const result = await fetchPublicProducts({
+          url,
+          page,
+          limit: 12,
+          search,
+          category: category !== "All sectors" ? category : undefined,
+          subcategory: subcategory !== "All livestock" ? subcategory : undefined,
+        });
         if (!current) return;
-        if (response.data?.success !== true || !Array.isArray(response.data.data)) {
-          throw new Error("The marketplace response was not in the expected format.");
-        }
-        setProducts(response.data.data);
-        setTotal(Number(response.data.total) || response.data.data.length);
-        setPages(Number(response.data.pages) || 0);
+        setProducts(result.products);
+        setTotal(result.total);
+        setPages(result.pages);
       } catch (loadError) {
         if (!current) return;
         setProducts([]);
         setTotal(0);
         setPages(0);
-        setError(loadError.response?.data?.message || "We couldn’t load marketplace listings. Please try again.");
+        setError(
+          loadError.response?.data?.message ||
+            loadError.message ||
+            "We couldn’t load marketplace listings. Please try again.",
+        );
       } finally {
         if (current) setLoading(false);
       }
@@ -145,42 +141,7 @@ const Marketplace = () => {
         {!loading && !error && products.length > 0 && (
           <div className="marketplace-grid">
             {products.map((product) => (
-              <article className="marketplace-product-card" key={product._id}>
-                <Link to={`/product/${product._id}`} className="marketplace-product-image" aria-label={`View details for ${product.name}`}>
-                  {product.media?.find((media) => media.type === "image")?.url || product.images?.[0] ? <img src={product.media?.find((media) => media.type === "image")?.url || product.images?.[0]} alt={product.name} loading="lazy" /> : <div className="marketplace-image-placeholder" aria-label="No product image provided"><span aria-hidden="true">✳</span></div>}
-                  <span className="marketplace-product-category">{product.category}</span>
-                </Link>
-                <div className="marketplace-product-content">
-                  <p className="marketplace-vendor-name">{product.vendorId?.businessName || "Vendor details unavailable"}</p>
-                <h3>
-  <Link to={`/product/${product._id}`}>{product.name}</Link>
-</h3>
-
-{product.subcategory && (
-  <p className="marketplace-product-description">
-    Type: {product.subcategory}
-  </p>
-)}
-
-{product.description && (
-  <p className="marketplace-product-description">
-    {product.description}
-  </p>
-)}
-
-<Link
-  to={`/product/${product._id}`}
-  className="marketplace-view-details"
-  aria-label={`View details for ${product.name}`}
->
-  View details <span aria-hidden="true">→</span>
-</Link> <div className="marketplace-product-bottom">
-                    <div><strong>{money(product.price)}</strong><span> / {product.unitOfMeasure || "unit"}</span></div>
-                    <a href={enquiryUrl(product)} target="_blank" rel="noopener noreferrer" className="marketplace-enquire">Enquire <span aria-hidden="true">↗</span></a>
-                  </div>
-                  <p className="marketplace-stock-note">{Number(product.stockQuantity) > 0 ? "Listed stock available · confirm before ordering" : "Ask the vendor to confirm availability"}</p>
-                </div>
-              </article>
+              <MarketplaceProductCard key={product._id} product={product} />
             ))}
           </div>
         )}

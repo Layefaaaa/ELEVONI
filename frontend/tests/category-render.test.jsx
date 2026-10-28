@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { HelmetProvider } from "react-helmet-async";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import CategoryGrid from "../src/components/CategoryGrid/CategoryGrid.jsx";
+import MarketplaceProductCard from "../src/components/MarketplaceProductCard/MarketplaceProductCard.jsx";
 import CategoryPage from "../src/pages/Category/CategoryPage.jsx";
 import Home from "../src/pages/Home/Home.jsx";
 import { StoreContext } from "../src/context/StoreContext.jsx";
@@ -62,7 +63,7 @@ test("the homepage category section uses existing project imagery where it exist
   const markup = renderCategoryGrid([CATALOGUE_PRODUCT]);
 
   assert.match(markup, /<img[^>]*alt="Elevoni smoked catfish"/);
-  assert.match(markup, /category-card-monogram/);
+  assert.match(markup, /<img[^>]*alt="Cattle and goats grazing on a Nigerian farm"/);
 });
 
 test("the homepage category section reports the real catalogue count", () => {  const withProducts = renderCategoryGrid([CATALOGUE_PRODUCT, { ...CATALOGUE_PRODUCT, _id: "fish-2" }]);
@@ -72,10 +73,10 @@ test("the homepage category section reports the real catalogue count", () => {  
   assert.match(withoutProducts, /No products listed right now/);
 });
 
-test("the homepage never presents a planned category as order-ready", () => {
+test("the homepage never presents an unverified livestock count as zero", () => {
   const markup = renderCategoryGrid([CATALOGUE_PRODUCT]);
 
-  assert.match(markup, /No products listed right now/);
+  assert.match(markup, /Checking availability…/);
   assert.doesNotMatch(markup, /Poultry is available/);
 });
 
@@ -93,14 +94,57 @@ test("the livestock landing page exposes poultry, cattle, sheep and goats", () =
   assert.match(markup, /href="\/category\/livestock\/goats"/);
 });
 
-test("a livestock subcategory never shows invented inventory", () => {
+test("a livestock subcategory loads real inventory without inventing it", () => {
   const markup = renderCategoryPage("/category/livestock/poultry");
 
-  assert.match(markup, /Browse Poultry listings/);
-  assert.match(markup, /Only approved listings are shown/);
+  assert.match(markup, /Loading available listings…/);
+  assert.match(markup, /Checking availability…/);
   assert.doesNotMatch(markup, /Add to cart/);
   assert.doesNotMatch(markup, /₦/);
   assert.doesNotMatch(markup, /kg/);
+});
+
+test("the livestock Sell with Elevoni block comes after the subcategory cards", () => {
+  const markup = renderCategoryPage("/category/livestock");
+
+  const subcategoriesPosition = markup.indexOf("Livestock subcategories");
+  const sellPosition = markup.indexOf("Sell with Elevoni");
+
+  assert.ok(subcategoriesPosition > -1, "the livestock subcategories must render");
+  assert.ok(sellPosition > -1, "the Sell with Elevoni block must render");
+  assert.ok(
+    subcategoriesPosition < sellPosition,
+    "subcategory cards must appear before the Sell with Elevoni block",
+  );
+});
+
+test("marketplace cards preserve price, unit, vendor and details actions", () => {
+  const markup = renderToStaticMarkup(
+    <MemoryRouter>
+      <MarketplaceProductCard
+        product={{
+          _id: "listing-1",
+          name: "Broiler Chicken",
+          description: "Farm-raised broiler chicken.",
+          price: 8500,
+          unitOfMeasure: "piece",
+          stockQuantity: 4,
+          category: "Poultry & Eggs",
+          subcategory: "Poultry",
+          images: ["chicken.jpg"],
+          vendorId: { businessName: "Green Acres Farm" },
+        }}
+      />
+    </MemoryRouter>,
+  );
+
+  assert.match(markup, /Green Acres Farm/);
+  assert.match(markup, /Broiler Chicken/);
+  assert.match(markup, /₦8,500/);
+  assert.match(markup, /\/ piece/);
+  assert.match(markup, /href="\/product\/listing-1"/);
+  assert.match(markup, /View details/);
+  assert.match(markup, /Enquire/);
 });
 
 test("the smoked catfish category still shows the live catalogue", () => {
@@ -129,10 +173,10 @@ test("the aquaculture landing page links to the smoked catfish catalogue", () =>
   assert.match(markup, /1 product available/);
 });
 
-test("the other farm products category is labelled as reserved", () => {
+test("a retired category path reports not found instead of rendering inventory", () => {
   const markup = renderCategoryPage("/category/other-farm-products");
 
-  assert.match(markup, /reserved for future expansion/i);
+  assert.match(markup, /Category not found/);
   assert.doesNotMatch(markup, /Add to cart/);
 });
 

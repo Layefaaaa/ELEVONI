@@ -19,11 +19,14 @@ const STUB_EXTENSIONS = [
   ".png",
   ".jpg",
   ".jpeg",
+  ".jfif",
   ".svg",
   ".webp",
+  ".avif",
   ".gif",
   ".mp4",
   ".webm",
+  ".mov",
 ];
 const RESOLUTION_SUFFIXES = ["", ".js", ".jsx", "/index.js", "/index.jsx"];
 
