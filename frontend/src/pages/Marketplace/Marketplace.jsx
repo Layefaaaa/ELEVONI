@@ -6,6 +6,7 @@ import { StoreContext } from "../../context/StoreContext";
 import MarketplaceProductCard from "../../components/MarketplaceProductCard/MarketplaceProductCard";
 import { fetchPublicProducts } from "../../utils/marketplace.js";
 import "./Marketplace.css";
+import marketplace from "../../assets/assets.js"
 
 const CATEGORIES = ["All sectors", "Poultry & Eggs", "Livestock & Meat"];
 const SUBCATEGORIES = ["All livestock", "Poultry", "Cattle", "Sheep", "Goats"];
@@ -92,10 +93,7 @@ const Marketplace = () => {
           <Link to="/sell-with-elevoni" className="marketplace-sell-link">Are you a farmer? Apply to sell <span aria-hidden="true">→</span></Link>
         </div>
         <div className="marketplace-hero-mark" aria-hidden="true">
-          <span className="marketplace-mark-sun" />
-          <span className="marketplace-mark-row marketplace-mark-row-one" />
-          <span className="marketplace-mark-row marketplace-mark-row-two" />
-          <span className="marketplace-mark-row marketplace-mark-row-three" />
+         <img src={marketplace} alt="" />
         </div>
       </section>
 
