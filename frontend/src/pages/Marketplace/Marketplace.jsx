@@ -92,7 +92,7 @@ const Marketplace = () => {
           <p>Explore products listed by vendors whose applications and products have passed the relevant review steps. Confirm availability, final price and delivery arrangements with Elevoni before ordering.</p>
           <Link to="/sell-with-elevoni" className="marketplace-sell-link">Are you a farmer? Apply to sell <span aria-hidden="true">→</span></Link>
         </div>
-        <div className="marketplace-hero-mark" aria-hidden="true">
+        <div>
          <img src={marketplace} alt="" />
         </div>
       </section>
