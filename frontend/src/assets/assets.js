@@ -4,8 +4,6 @@ import smoked_catfish_img3 from './WhatsApp Image 2026-05-04 at 17.01.06 (2).jpe
 
 import smoked_catfish_img4 from './WhatsApp Image 2026-05-04 at 17.01.06.jpeg';
 
-import marketplace from "./Farm-to-Market Animal Delivery.png";
-
 import livestockCategory from "./livestock.jfif";
 
 import other from "./other.jfif";

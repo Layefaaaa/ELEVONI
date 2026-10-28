@@ -6,7 +6,7 @@ import { StoreContext } from "../../context/StoreContext";
 import MarketplaceProductCard from "../../components/MarketplaceProductCard/MarketplaceProductCard";
 import { fetchPublicProducts } from "../../utils/marketplace.js";
 import "./Marketplace.css";
-import marketplace from "../../assets/assets.js"
+import marketplace from "../../assets/Farm-to-Market Animal Delivery.png"
 
 const CATEGORIES = ["All sectors", "Poultry & Eggs", "Livestock & Meat"];
 const SUBCATEGORIES = ["All livestock", "Poultry", "Cattle", "Sheep", "Goats"];
