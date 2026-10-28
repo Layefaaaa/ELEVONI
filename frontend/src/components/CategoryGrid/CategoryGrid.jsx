@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import "./CategoryGrid.css";
 import { assets } from "../../assets/assets";
@@ -64,11 +65,48 @@ const CategoryCard = ({ card }) => {
 };
 
 const CategoryGrid = () => {
-  const { fish_list } = useContext(StoreContext);
+  const { fish_list, url } = useContext(StoreContext);
   const catalogueCount = Array.isArray(fish_list) ? fish_list.length : 0;
 
+  const [livestockCount, setLivestockCount] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchLivestockCount = async () => {
+      try {
+        const response = await axios.get(`${url}/api/products`, {
+          params: {
+            category: "Livestock & Meat",
+            limit: 1,
+            page: 1,
+          },
+        });
+
+        if (!cancelled && response.data?.success === true) {
+          setLivestockCount(Number(response.data.total) || 0);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Failed to fetch livestock listing count:", error);
+          setLivestockCount(0);
+        }
+      }
+    };
+
+    fetchLivestockCount();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [url]);
+
   const categories = listCategories();
-  const cards = buildCategoryCards({ categories, catalogueCount });
+  const cards = buildCategoryCards({
+    categories,
+    catalogueCount,
+    livestockCount: livestockCount ?? 0,
+  });
 
   return (
     <section className="category-section" id="categories" aria-labelledby="category-section-title">
@@ -91,3 +129,4 @@ const CategoryGrid = () => {
 };
 
 export default CategoryGrid;
+ 
