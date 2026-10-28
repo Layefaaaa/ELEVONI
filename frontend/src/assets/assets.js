@@ -57,7 +57,6 @@ export const assets = {
     smoked_catfish_img2,
     smoked_catfish_img3,
     smoked_catfish_img4,
-    marketplace,
 
     logo,
 
