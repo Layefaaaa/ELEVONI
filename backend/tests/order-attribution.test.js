@@ -42,3 +42,13 @@ test("order items can preserve a marketplace seller snapshot", async () => {
     assert.equal(String(order.items[0].vendorId), String(vendorId));
     assert.equal(order.items[0].vendorBusinessName, "Green Acres");
 });
+
+
+test("new house-catalogue order snapshots identify Elevoni as seller without an external vendor ID", async () => {
+    const { buildOrderSnapshot } = await import("../controllers/orderPricing.js");
+    const fish = { _id: "fish-house-1", name: "Smoked Catfish", price: 25000, pricingMode: "single", pricingTiers: [] };
+    const snapshot = await buildOrderSnapshot([{ productId: fish._id, quantity: 1 }], { find: async () => [fish] });
+    assert.equal(snapshot.items[0].sellerType, "house");
+    assert.equal(snapshot.items[0].sellerBusinessName, "Elevoni Farms");
+    assert.equal(snapshot.items[0].vendorId, null);
+});

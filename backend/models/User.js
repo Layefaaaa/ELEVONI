@@ -1,3 +1,5 @@
+// LEGACY / NOT USED BY ACTIVE API ROUTES. Canonical authentication users live in userModel.js.
+// Retained temporarily for compatibility until deployed database and external imports are audited.
 import mongoose from 'mongoose';
 
 /**

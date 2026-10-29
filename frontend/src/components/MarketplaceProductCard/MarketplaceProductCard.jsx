@@ -2,9 +2,14 @@ import { Link } from "react-router-dom";
 import {
     formatNaira,
     marketplaceEnquiryUrl,
+    logMarketplaceEnquiry,
 } from "../../utils/marketplace.js";
+import { StoreContext } from "../../context/StoreContext";
+import { useContext } from "react";
 
-const MarketplaceProductCard = ({ product }) => {
+const MarketplaceProductCard = ({ product, url: suppliedUrl }) => {
+    const store = useContext(StoreContext);
+    const apiUrl = suppliedUrl || store?.url;
     const image =
         product.media?.find((item) => item.type === "image")?.url ||
         product.images?.[0];
@@ -66,6 +71,7 @@ const MarketplaceProductCard = ({ product }) => {
                         href={marketplaceEnquiryUrl(product)}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => { void logMarketplaceEnquiry({ url: apiUrl, productId: product._id }); }}
                         className="marketplace-enquire"
                     >
                         Enquire <span aria-hidden="true">↗</span>

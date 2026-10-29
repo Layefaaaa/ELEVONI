@@ -117,6 +117,11 @@ const vendorSaleSchema = new mongoose.Schema({
         enum: VENDOR_SALE_FULFILMENT_STATUSES,
         default: "pending"
     },
+    buyerIdentityStatus: {
+        type: String,
+        enum: ["identified", "anonymous", "unknown"],
+        default: "unknown"
+    },
     buyerName: {
         type: String,
         trim: true,
@@ -129,6 +134,9 @@ const vendorSaleSchema = new mongoose.Schema({
         maxlength: 120,
         default: ""
     },
+    buyerState: { type: String, trim: true, maxlength: 100, default: "" },
+    buyerArea: { type: String, trim: true, maxlength: 120, default: "" },
+    saleTime: { type: String, trim: true, validate: { validator: (value) => !value || /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value), message: "Sale time must use HH:MM format" }, default: "" },
     notes: {
         type: String,
         trim: true,

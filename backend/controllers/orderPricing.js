@@ -35,7 +35,12 @@ const buildOrderSnapshot = async (items, ProductModel = fishModel) => {
             quantity,
             unit: "kg",
             unitPrice,
-            lineTotal
+            lineTotal,
+            // This checkout uses the Elevoni-owned smoked-catfish catalogue.
+            // External marketplace listings remain enquiry-based and do not enter this checkout.
+            sellerType: "house",
+            sellerBusinessName: "Elevoni Farms",
+            vendorId: null
         });
     }
     const deliveryFee = subtotal > 0 ? 2500 : 0;

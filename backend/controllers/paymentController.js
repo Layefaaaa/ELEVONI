@@ -3,6 +3,7 @@ import PaystackJS from "paystack-api";
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import { buildOrderSnapshot } from "./orderPricing.js";
+import { buildOrderBuyerSnapshot } from "../services/orderBuyerSnapshot.js";
 
 const paystack = PaystackJS(process.env.PAYSTACK_SECRET_KEY);
 const orderResponse = (order) => ({
@@ -36,6 +37,7 @@ const createPaymentHandlers = ({
                 ...summary,
                 amount: summary.totalAmount,
                 address,
+                ...buildOrderBuyerSnapshot(address),
                 orderStatus: "pending",
                 status: "pending_payment",
                 paymentStatus: "pending",

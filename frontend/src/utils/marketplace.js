@@ -4,6 +4,15 @@ export const MARKETPLACE_PAGE_SIZE = 12;
 
 const LOAD_ERROR = "We couldn’t load marketplace listings. Please try again.";
 
+export const logMarketplaceEnquiry = async ({ url, productId }) => {
+    if (!url || !productId) return;
+    try {
+        await axios.post(`${url}/api/products/enquiry`, { productId }, { timeout: 2500 });
+    } catch {
+        // Enquiry logging is best-effort; it must never block the user's WhatsApp enquiry.
+    }
+};
+
 export const formatNaira = (value) =>
     `₦${Number(value || 0).toLocaleString("en-NG")}`;
 

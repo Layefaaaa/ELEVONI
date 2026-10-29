@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Reviews from "./pages/Reviews/Reviews";
 import Vendors from "./pages/Vendors/Vendors";
 import MarketplaceProducts from "./pages/MarketplaceProducts/MarketplaceProducts";
+import HouseSales from "./pages/HouseSales/HouseSales";
 import { resolveApiBaseUrl } from "./apiBase";
 
 const url = resolveApiBaseUrl();
@@ -34,6 +35,7 @@ const AdminApp = () => {
           <Route path="*" element={<Navigate to="/list" replace />} />
           <Route path="/list" element={<List url={url} />} />
           <Route path="/orders" element={<Order url={url} />} />
+          <Route path="/house-sales" element={<HouseSales url={url} />} />
           <Route path="/reviews" element={<Reviews url={url} />} />
           <Route path="/vendors" element={<Vendors url={url} />} />
           <Route path="/marketplace-products" element={<MarketplaceProducts url={url} />} />

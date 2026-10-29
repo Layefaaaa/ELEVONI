@@ -1,4 +1,5 @@
 import express from "express";
+import { recordMarketplaceEnquiry } from "../controllers/marketplaceEnquiryController.js";
 
 import {
     getPublicProducts,
@@ -22,6 +23,8 @@ const router = express.Router();
 
 // Public product routes
 router.get("/", getPublicProducts);
+// Logs enquiry intent only; it is not a completed order or sale.
+router.post("/enquiry", recordMarketplaceEnquiry);
 
 // Vendor media upload signature
 // The actual media file is uploaded directly to Cloudinary.

@@ -22,6 +22,15 @@ const vendorProfileSchema = new mongoose.Schema({
     location: { type: String, required: true, trim: true, minlength: 2, maxlength: 120 },
     state: { type: String, trim: true, minlength: 2, maxlength: 100 },
     lga: { type: String, trim: true, minlength: 2, maxlength: 100 },
+    // Canonical structured farm address. Top-level state/lga and location stay
+    // for compatibility with existing applications and API clients.
+    farmAddress: {
+        street: { type: String, trim: true, maxlength: 160, default: "" },
+        area: { type: String, trim: true, maxlength: 120, default: "" },
+        lga: { type: String, trim: true, maxlength: 100, default: "" },
+        state: { type: String, trim: true, maxlength: 100, default: "" },
+        country: { type: String, trim: true, maxlength: 80, default: "Nigeria" }
+    },
     productFocus: {
         type: [String],
         enum: VENDOR_PRODUCT_FOCUS,
@@ -38,6 +47,17 @@ const vendorProfileSchema = new mongoose.Schema({
     decisionNote: { type: String, default: "", maxlength: 500 },
     statusHistory: { type: [statusHistorySchema], default: [] }
 }, { timestamps: true });
+
+vendorProfileSchema.pre("validate", function syncFarmAddress() {
+    this.farmAddress = this.farmAddress || {};
+    if (!this.state && this.farmAddress.state) this.state = this.farmAddress.state;
+    if (!this.lga && this.farmAddress.lga) this.lga = this.farmAddress.lga;
+    if (!this.farmAddress.state && this.state) this.farmAddress.state = this.state;
+    if (!this.farmAddress.lga && this.lga) this.farmAddress.lga = this.lga;
+    if (!this.farmAddress.area && this.location) this.farmAddress.area = this.location;
+    if (!this.location && this.farmAddress.area) this.location = this.farmAddress.area;
+    if (!this.farmAddress.country) this.farmAddress.country = "Nigeria";
+});
 
 vendorProfileSchema.index({ status: 1, createdAt: -1 });
 vendorProfileSchema.index({ state: 1, lga: 1, status: 1 });

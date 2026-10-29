@@ -51,6 +51,7 @@ export const registerVendor = async (req, res) => {
             location: fields.location,
             state: fields.state,
             lga: fields.lga,
+            farmAddress: { area: fields.location, state: fields.state, lga: fields.lga, country: "Nigeria" },
             productFocus: fields.productFocus,
             description: fields.description,
             status: "pending",
@@ -93,6 +94,7 @@ export const applyAsVendor = async (req, res) => {
             location: fields.location,
             state: fields.state,
             lga: fields.lga,
+            farmAddress: { area: fields.location, state: fields.state, lga: fields.lga, country: "Nigeria" },
             productFocus: fields.productFocus,
             description: fields.description,
             status: "pending",
@@ -215,10 +217,11 @@ export const getAllApprovedVendors = async (req, res) => {
                 ] }
             ];
         }
-        const profiles = await vendorProfileModel.find(filter, "businessName location state lga productFocus description status createdAt", { sort: { createdAt: -1 } });
+        const profiles = await vendorProfileModel.find(filter, "businessName location state lga farmAddress productFocus description status createdAt", { sort: { createdAt: -1 } });
         return res.status(200).json({ success: true, count: profiles.length, data: profiles.map((profile) => ({
             id: profile._id, businessName: profile.businessName,
-            location: profile.location, state: profile.state || "", lga: profile.lga || "", productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
+            location: profile.location, state: profile.state || profile.farmAddress?.state || "", lga: profile.lga || profile.farmAddress?.lga || "",
+            farmAddress: { street: profile.farmAddress?.street || "", area: profile.farmAddress?.area || profile.location || "", state: profile.state || profile.farmAddress?.state || "", lga: profile.lga || profile.farmAddress?.lga || "", country: profile.farmAddress?.country || "Nigeria" }, productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
         })) });
     } catch {
         return sendServerError(res, "Unable to load approved vendors");
@@ -232,7 +235,8 @@ export const getApprovedVendorById = async (req, res) => {
         if (!profile) return res.status(404).json({ success: false, message: "Approved farm/vendor profile not found" });
         return res.status(200).json({ success: true, data: {
             id: profile._id, businessName: profile.businessName,
-            location: profile.location, state: profile.state || "", lga: profile.lga || "", productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
+            location: profile.location, state: profile.state || profile.farmAddress?.state || "", lga: profile.lga || profile.farmAddress?.lga || "",
+            farmAddress: { street: profile.farmAddress?.street || "", area: profile.farmAddress?.area || profile.location || "", state: profile.state || profile.farmAddress?.state || "", lga: profile.lga || profile.farmAddress?.lga || "", country: profile.farmAddress?.country || "Nigeria" }, productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
         } });
     } catch {
         return sendServerError(res, "Unable to load approved vendor");

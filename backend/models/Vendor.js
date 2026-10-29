@@ -1,3 +1,5 @@
+// LEGACY / NOT USED BY ACTIVE API ROUTES. Canonical vendor data lives in vendorProfileModel.js.
+// Retained temporarily for compatibility until deployed database and external imports are audited.
 import mongoose from 'mongoose';
 
 /**

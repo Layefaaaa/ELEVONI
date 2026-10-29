@@ -1,6 +1,7 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import { buildOrderSnapshot } from "./orderPricing.js";
+import { buildOrderBuyerSnapshot } from "../services/orderBuyerSnapshot.js";
 import { buildPaginationMeta, countMatching, parsePagination } from "../services/pagination.js";
 
 const ORDER_STATUSES = ["pending_confirmation", "confirmed", "processing", "out_for_delivery", "delivered", "cancelled"];
@@ -28,6 +29,7 @@ const createOrderHandlers = ({ OrderModel = orderModel, UserModel = userModel, s
                 ...summary,
                 amount: summary.totalAmount,
                 address,
+                ...buildOrderBuyerSnapshot(address),
                 orderStatus: "pending_confirmation",
                 status: "pending_confirmation",
                 paymentStatus: "unpaid",

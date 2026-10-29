@@ -72,7 +72,6 @@ export const assets = {
     livestockCategory
 };
 
-
 export const shop_list = [{
     product_name: "Smoked Fish",
     category: "Smoked"

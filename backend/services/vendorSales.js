@@ -212,6 +212,28 @@ const prepareVendorSale = async (body = {}, {
         return { error: buyerContactResult.error, status: 400 };
     }
 
+    const buyerStateResult = optionalText(body.buyerState, 100, "Buyer state");
+    if (buyerStateResult.error) return { error: buyerStateResult.error, status: 400 };
+
+    const buyerAreaResult = optionalText(body.buyerArea, 120, "Buyer area or town");
+    if (buyerAreaResult.error) return { error: buyerAreaResult.error, status: 400 };
+
+    const buyerIdentityStatus = trimmedText(body.buyerIdentityStatus || (buyerNameResult.value || buyerContactResult.value ? "identified" : "unknown"));
+    if (!["identified", "anonymous", "unknown"].includes(buyerIdentityStatus)) {
+        return { error: "Choose a valid buyer identification option", status: 400 };
+    }
+    if (buyerIdentityStatus === "identified" && !buyerNameResult.value && !buyerContactResult.value) {
+        return { error: "For an identified buyer, enter a name or contact detail", status: 400 };
+    }
+    if (buyerIdentityStatus === "anonymous" && (buyerNameResult.value || buyerContactResult.value)) {
+        return { error: "Anonymous buyer records must not include a name or contact detail", status: 400 };
+    }
+
+    const saleTime = trimmedText(body.saleTime);
+    if (saleTime && !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(saleTime)) {
+        return { error: "Enter sale time in HH:MM format", status: 400 };
+    }
+
     const notesResult = optionalText(body.notes, MAX_NOTES_LENGTH, "Notes");
 
     if (notesResult.error) {
@@ -298,8 +320,12 @@ const prepareVendorSale = async (body = {}, {
             paymentStatus,
             amountReceived,
             fulfilmentStatus,
+            buyerIdentityStatus,
             buyerName: buyerNameResult.value,
             buyerContact: buyerContactResult.value,
+            buyerState: buyerStateResult.value,
+            buyerArea: buyerAreaResult.value,
+            saleTime,
             notes: notesResult.value,
             recordSource: "farmer_reported",
             verificationStatus: "unverified"

@@ -92,12 +92,16 @@ const createBlankForm = () => ({
     quantity: "",
     unitPrice: "",
     saleDate: todayInputValue(),
+    saleTime: "",
     salesChannel: "phone",
     paymentStatus: "paid",
     amountReceived: "",
     fulfilmentStatus: "pending",
+    buyerIdentityStatus: "identified",
     buyerName: "",
     buyerContact: "",
+    buyerState: "",
+    buyerArea: "",
     notes: "",
 });
 
@@ -447,6 +451,18 @@ const SalesLog = () => {
             }
         }
 
+        if (form.saleTime && !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(form.saleTime)) {
+            errors.saleTime = "Enter the time in HH:MM format.";
+        }
+
+        if (form.buyerIdentityStatus === "identified" && !form.buyerName.trim() && !form.buyerContact.trim()) {
+            errors.buyerName = "For an identified buyer, enter a name or contact detail.";
+        }
+
+        if (form.buyerIdentityStatus === "anonymous" && (form.buyerName.trim() || form.buyerContact.trim())) {
+            errors.buyerIdentityStatus = "Clear buyer name and contact for anonymous sales.";
+        }
+
         if (form.buyerName.trim().length > 120) {
             errors.buyerName = "Buyer name must be 120 characters or fewer.";
         }
@@ -455,6 +471,9 @@ const SalesLog = () => {
             errors.buyerContact =
                 "Buyer contact must be 120 characters or fewer.";
         }
+
+        if (form.buyerState.trim().length > 100) errors.buyerState = "Buyer state must be 100 characters or fewer.";
+        if (form.buyerArea.trim().length > 120) errors.buyerArea = "Buyer area or town must be 120 characters or fewer.";
 
         if (form.notes.trim().length > 1000) {
             errors.notes = "Notes must be 1,000 characters or fewer.";
@@ -493,12 +512,16 @@ const SalesLog = () => {
             quantity: Number(form.quantity),
             unitPrice: Number(form.unitPrice),
             saleDate: form.saleDate,
+            saleTime: form.saleTime,
             salesChannel: form.salesChannel,
             paymentStatus: form.paymentStatus,
             amountReceived,
             fulfilmentStatus: form.fulfilmentStatus,
+            buyerIdentityStatus: form.buyerIdentityStatus,
             buyerName: form.buyerName.trim(),
             buyerContact: form.buyerContact.trim(),
+            buyerState: form.buyerState.trim(),
+            buyerArea: form.buyerArea.trim(),
             notes: form.notes.trim(),
         };
 
@@ -1015,6 +1038,11 @@ const SalesLog = () => {
                             </div>
 
                             <div className="sales-field">
+                                <label htmlFor="sale-time">Sale time (optional)</label>
+                                <input id="sale-time" name="saleTime" type="time" value={form.saleTime} onChange={updateField} aria-invalid={Boolean(fieldErrors.saleTime)} />
+                                <FieldError id="sale-time-error" message={fieldErrors.saleTime} />
+                            </div>
+                            <div className="sales-field">
                                 <label htmlFor="sale-channel">
                                     Sales channel
                                 </label>
@@ -1147,10 +1175,24 @@ const SalesLog = () => {
 
                         <details className="sales-details">
                             <summary>
-                                Add buyer details or notes (optional)
+                                Buyer identity, location and notes
                             </summary>
 
                             <div className="sales-details-body">
+                                <div className="sales-field">
+                                    <label htmlFor="sale-buyer-identity">Buyer identification</label>
+                                    <select id="sale-buyer-identity" name="buyerIdentityStatus" value={form.buyerIdentityStatus} onChange={(event) => {
+                                        const value = event.target.value;
+                                        setForm((current) => ({ ...current, buyerIdentityStatus: value, ...(value === "anonymous" ? { buyerName: "", buyerContact: "" } : {}) }));
+                                        clearFieldError("buyerIdentityStatus");
+                                    }}>
+                                        <option value="identified">Identified buyer</option>
+                                        <option value="anonymous">Anonymous buyer</option>
+                                        <option value="unknown">Identity unknown</option>
+                                    </select>
+                                    <p className="sales-field-note">For identified buyers, enter a name or contact so repeat purchases can be matched. Do not invent missing details.</p>
+                                    <FieldError id="sale-buyer-identity-error" message={fieldErrors.buyerIdentityStatus} />
+                                </div>
                                 <div className="sales-form-row">
                                     <div className="sales-field">
                                         <label htmlFor="sale-buyer-name">
@@ -1205,6 +1247,18 @@ const SalesLog = () => {
                                     </div>
                                 </div>
 
+                                <div className="sales-form-row">
+                                    <div className="sales-field">
+                                        <label htmlFor="sale-buyer-state">Buyer state (optional)</label>
+                                        <input id="sale-buyer-state" name="buyerState" value={form.buyerState} onChange={updateField} maxLength={100} />
+                                        <FieldError id="sale-buyer-state-error" message={fieldErrors.buyerState} />
+                                    </div>
+                                    <div className="sales-field">
+                                        <label htmlFor="sale-buyer-area">Buyer town / area (optional)</label>
+                                        <input id="sale-buyer-area" name="buyerArea" value={form.buyerArea} onChange={updateField} maxLength={120} />
+                                        <FieldError id="sale-buyer-area-error" message={fieldErrors.buyerArea} />
+                                    </div>
+                                </div>
                                 <div className="sales-field">
                                     <label htmlFor="sale-notes">Notes</label>
                                     <textarea
@@ -1405,10 +1459,12 @@ const SalesLog = () => {
                                                     </div>
                                                 </dl>
 
-                                                {sale.buyerName && (
+                                                {(sale.buyerName || sale.buyerContact || sale.buyerArea || sale.buyerState || sale.buyerIdentityStatus) && (
                                                     <p className="sales-history-buyer">
-                                                        Buyer:{" "}
-                                                        {sale.buyerName}
+                                                        Buyer: {sale.buyerName || (sale.buyerIdentityStatus === "anonymous" ? "Anonymous" : "Identity unknown")}
+                                                        {sale.buyerContact ? ` · ${sale.buyerContact}` : ""}
+                                                        {(sale.buyerArea || sale.buyerState) ? ` · ${[sale.buyerArea, sale.buyerState].filter(Boolean).join(", ")}` : ""}
+                                                        {sale.saleTime ? ` · ${sale.saleTime}` : ""}
                                                     </p>
                                                 )}
                                             </article>

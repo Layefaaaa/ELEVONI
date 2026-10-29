@@ -4,6 +4,8 @@ const orderItemSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "fish" },
     vendorId: { type: mongoose.Schema.Types.ObjectId, ref: "vendorProfile" },
     vendorBusinessName: { type: String, trim: true, maxlength: 120 },
+    sellerType: { type: String, enum: ["house", "vendor", "unknown"], default: "unknown" },
+    sellerBusinessName: { type: String, trim: true, maxlength: 120 },
     name: { type: String, required: true },
     quantity: { type: Number, required: true, min: 1 },
     unit: { type: String, default: "kg" },
@@ -20,6 +22,11 @@ const orderSchema = new mongoose.Schema({
     amount: { type: Number, required: true, min: 0 },
     currency: { type: String, default: "NGN" },
     address: { type: Object, required: true },
+    buyerIdentityStatus: { type: String, enum: ["identified", "anonymous", "unknown"], default: "unknown" },
+    buyerName: { type: String, trim: true, maxlength: 160, default: "" },
+    buyerContact: { type: String, trim: true, maxlength: 120, default: "" },
+    buyerState: { type: String, trim: true, maxlength: 100, default: "" },
+    buyerArea: { type: String, trim: true, maxlength: 120, default: "" },
     // Keep status/payment fields for compatibility with existing records and clients.
     status: { type: String, default: "Fish Processing" },
     orderStatus: {
