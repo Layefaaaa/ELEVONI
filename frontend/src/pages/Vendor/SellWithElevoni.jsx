@@ -28,6 +28,8 @@ const emptyRegistration = {
   contactName: "",
   phone: "",
   location: "",
+  state: "",
+  lga: "",
   productFocus: [],
   description: "",
 };
@@ -37,6 +39,8 @@ const emptyApplication = {
   contactName: "",
   phone: "",
   location: "",
+  state: "",
+  lga: "",
   productFocus: [],
   description: "",
 };

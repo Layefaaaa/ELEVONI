@@ -26,6 +26,8 @@ const baseValues = {
   contactName: "",
   phone: "",
   location: "",
+  state: "",
+  lga: "",
   productFocus: [],
   description: "",
 };
@@ -52,6 +54,8 @@ test("new vendor form collects all required backend fields", () => {
   assert.match(markup, /name="businessName"/);
   assert.match(markup, /name="contactName"/);
   assert.match(markup, /name="phone"/);
+  assert.match(markup, /name="state"/);
+  assert.match(markup, /name="lga"/);
   assert.match(markup, /name="location"/);
   assert.match(markup, /name="productFocus"/);
   assert.match(markup, /name="description"/);
@@ -129,6 +133,30 @@ test("status card shows pending state and states approval does not publish", () 
   assert.match(markup, /does not verify stock/i);
   assert.match(markup, /publish products/i);
   assert.match(markup, /enable checkout/i);
+});
+
+test("status card prefers State and LGA and falls back to legacy location", () => {
+  const application = {
+    id: "v-location",
+    businessName: "Ada Farms",
+    contactName: "Ada Okoye",
+    email: "ada@example.com",
+    phone: "+2348012345678",
+    location: "Abuja",
+    state: "FCT",
+    lga: "Abuja Municipal",
+    productFocus: ["poultry"],
+    description: "",
+    status: "pending",
+    submittedAt: "2026-10-01T09:30:00.000Z",
+  };
+  const structured = renderToStaticMarkup(<VendorStatusCard application={application} />);
+  assert.match(structured, /Abuja Municipal, FCT/);
+  assert.match(structured, /Abuja Municipal, FCT · Abuja/);
+
+  const legacy = renderToStaticMarkup(<VendorStatusCard application={{ ...application, state: undefined, lga: undefined }} />);
+  assert.match(legacy, /Abuja/);
+  assert.doesNotMatch(legacy, /Abuja Municipal/);
 });
 
 test("status card renders all states with appropriate guidance", () => {

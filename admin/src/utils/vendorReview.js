@@ -156,6 +156,13 @@ const vendorFocusLabel = (focus) => {
     .join(", ");
 };
 
+const formatVendorLocation = (vendor) => {
+  const structured = [vendor?.lga, vendor?.state].filter(Boolean).join(", ");
+  const location = vendor?.location || "";
+  if (!structured) return location;
+  return location ? `${structured} · ${location}` : structured;
+};
+
 const formatSubmittedAt = (value) => {
   if (!value) return "Unknown";
   const date = new Date(value);
@@ -189,6 +196,7 @@ export {
   decisionsForStatus,
   emptyListMessage,
   formatSubmittedAt,
+  formatVendorLocation,
   readApiError,
   readReviewResult,
   readVendorDetail,

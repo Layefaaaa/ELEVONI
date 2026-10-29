@@ -185,7 +185,9 @@ const addProfile = (overrides = {}) => {
         contactName: "Ada Okoye",
         email: "ada@example.com",
         phone: "+2348135738991",
-        location: "Enugu",
+        location: "Enugu town",
+        state: "Enugu",
+        lga: "Enugu North",
         productFocus: ["poultry"],
         description: "",
         status: "pending",
@@ -208,7 +210,9 @@ const validRegistration = (overrides = {}) => ({
     businessName: "Green Acres Farm",
     contactName: "Ada Okoye",
     phone: "+2348135738991",
-    location: "Enugu",
+    location: "Enugu town",
+    state: "Enugu",
+    lga: "Enugu North",
     productFocus: ["poultry", "goats"],
     description: "We raise poultry and goats.",
     ...overrides
@@ -218,7 +222,9 @@ const validApplication = (overrides = {}) => ({
     businessName: "Green Acres Farm",
     contactName: "Ada Okoye",
     phone: "+2348135738991",
-    location: "Enugu",
+    location: "Enugu town",
+    state: "Enugu",
+    lga: "Enugu North",
     productFocus: ["poultry", "goats"],
     description: "We raise poultry and goats.",
     ...overrides
@@ -299,6 +305,10 @@ test("public registration ignores attempted role, status and review metadata inj
     assert.equal(res.status, 201);
     assert.equal(res.body.user.role, "customer");
     assert.equal(res.body.application.status, "pending");
+    assert.equal(res.body.application.state, "Enugu");
+    assert.equal(res.body.application.lga, "Enugu North");
+    assert.equal(profiles[0].state, "Enugu");
+    assert.equal(profiles[0].lga, "Enugu North");
     assert.equal(profiles[0].status, "pending");
     assert.equal(profiles[0].reviewedBy, null);
     assert.equal(profiles[0].decisionNote, "");
@@ -328,6 +338,8 @@ test("invalid business fields are rejected before any account is created", async
         validRegistration({ phone: "abc" }),
         validRegistration({ businessName: "A" }),
         validRegistration({ location: "" }),
+        validRegistration({ state: "" }),
+        validRegistration({ lga: "" }),
         validRegistration({ description: "x".repeat(1001) })
     ];
 
@@ -451,12 +463,12 @@ test("application requires a customer session", async() => {
     });
     assert.equal(admin.status, 403);
 
-    const forgedRole = await request("/api/vendor/apply", {
+    const vendorRole = await request("/api/vendor/apply", {
         method: "POST",
         token: tokenFor(String(account._id), "vendor"),
         body: validApplication()
     });
-    assert.equal(forgedRole.status, 401);
+    assert.equal(vendorRole.status, 403);
 
     const expired = await request("/api/vendor/apply", {
         method: "POST",

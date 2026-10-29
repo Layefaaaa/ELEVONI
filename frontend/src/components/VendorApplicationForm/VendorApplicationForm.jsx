@@ -68,7 +68,7 @@ const VendorApplicationForm = ({
           <p>{Object.keys(errors).length} {Object.keys(errors).length === 1 ? "issue needs" : "issues need"} your attention before you can continue:</p>
           <ul>
             {Object.entries(errors).map(([key, message]) => {
-              const labels = { name: "Your full name", email: "Email address", password: "Password", businessName: "Business or farm name", contactName: "Contact name", phone: "Phone number", location: "Location", productFocus: "Livestock focus", description: "Business description" };
+              const labels = { name: "Your full name", email: "Email address", password: "Password", businessName: "Business or farm name", contactName: "Contact name", phone: "Phone number", location: "Location", state: "State", lga: "Local government area", productFocus: "Livestock focus", description: "Business description" };
               const target = key === "productFocus" ? "vendor-productFocus-poultry" : `vendor-${key}`;
               return <li key={key}><a href={`#${target}`} onClick={(event) => { event.preventDefault(); document.getElementById(target)?.focus(); document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "center" }); }}>{labels[key] || key}: {message}</a></li>;
             })}
@@ -137,6 +137,22 @@ const VendorApplicationForm = ({
           value={values.phone}
           error={errors.phone}
           autoComplete="tel"
+          onChange={onChange}
+        />
+        <Field
+          name="state"
+          label="State"
+          value={values.state}
+          error={errors.state}
+          autoComplete="address-level1"
+          onChange={onChange}
+        />
+        <Field
+          name="lga"
+          label="Local government area (LGA)"
+          value={values.lga}
+          error={errors.lga}
+          autoComplete="address-level2"
           onChange={onChange}
         />
         <Field

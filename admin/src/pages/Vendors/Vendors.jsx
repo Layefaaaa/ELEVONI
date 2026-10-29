@@ -14,6 +14,7 @@ import {
   decisionsForStatus,
   emptyListMessage,
   formatSubmittedAt,
+  formatVendorLocation,
   readApiError,
   readReviewResult,
   readVendorDetail,
@@ -206,7 +207,7 @@ const Vendors = ({ url }) => {
                       {application.contactName} &middot; {application.phone}
                     </p>
                     <p className="vendor-card-line">
-                      {application.location} &middot; {vendorFocusLabel(application.productFocus)}
+                      {formatVendorLocation(application)} &middot; {vendorFocusLabel(application.productFocus)}
                     </p>
                     <p className="vendor-card-meta">
                       Submitted {formatSubmittedAt(application.submittedAt)}
@@ -288,7 +289,7 @@ const Vendors = ({ url }) => {
                 </div>
                 <div>
                   <dt>Location</dt>
-                  <dd>{selected.location}</dd>
+                  <dd>{formatVendorLocation(selected)}</dd>
                 </div>
                 <div>
                   <dt>Livestock focus</dt>

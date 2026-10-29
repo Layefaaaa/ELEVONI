@@ -79,6 +79,12 @@ const validateRegistration = (data = {}) => {
   if (trimmed(data.location).length < 2 || trimmed(data.location).length > MAX_LOCATION) {
     errors.location = "Enter a location between 2 and 120 characters";
   }
+  if (trimmed(data.state).length < 2 || trimmed(data.state).length > 100) {
+    errors.state = "Enter a state between 2 and 100 characters";
+  }
+  if (trimmed(data.lga).length < 2 || trimmed(data.lga).length > 100) {
+    errors.lga = "Enter a local government area between 2 and 100 characters";
+  }
   if (!Array.isArray(data.productFocus) || data.productFocus.length === 0) {
     errors.productFocus = "Select at least one livestock product focus";
   }
@@ -101,6 +107,12 @@ const validateApplication = (data = {}) => {
   if (trimmed(data.location).length < 2 || trimmed(data.location).length > MAX_LOCATION) {
     errors.location = "Enter a location between 2 and 120 characters";
   }
+  if (trimmed(data.state).length < 2 || trimmed(data.state).length > 100) {
+    errors.state = "Enter a state between 2 and 100 characters";
+  }
+  if (trimmed(data.lga).length < 2 || trimmed(data.lga).length > 100) {
+    errors.lga = "Enter a local government area between 2 and 100 characters";
+  }
   if (!Array.isArray(data.productFocus) || data.productFocus.length === 0) {
     errors.productFocus = "Select at least one livestock product focus";
   }
@@ -119,6 +131,8 @@ const toRegistrationPayload = (data = {}) => ({
   contactName: trimmed(data.contactName),
   phone: trimmed(data.phone),
   location: trimmed(data.location),
+  state: trimmed(data.state),
+  lga: trimmed(data.lga),
   productFocus: Array.isArray(data.productFocus)
     ? data.productFocus
         .filter((item) => typeof item === "string")
@@ -133,6 +147,8 @@ const toApplicationPayload = (data = {}) => ({
   contactName: trimmed(data.contactName),
   phone: trimmed(data.phone),
   location: trimmed(data.location),
+  state: trimmed(data.state),
+  lga: trimmed(data.lga),
   productFocus: Array.isArray(data.productFocus)
     ? data.productFocus
         .filter((item) => typeof item === "string")

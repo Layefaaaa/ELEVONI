@@ -10,6 +10,7 @@ import {
   decisionsForStatus,
   emptyListMessage,
   formatSubmittedAt,
+  formatVendorLocation,
   readApiError,
   readReviewResult,
   readVendorDetail,
@@ -208,6 +209,16 @@ test("livestock focus is human readable", () => {
   assert.equal(vendorFocusLabel(["cattle"]), "Cattle");
   assert.equal(vendorFocusLabel([]), "Not specified");
   assert.equal(vendorFocusLabel(undefined), "Not specified");
+});
+
+test("vendor location keeps State/LGA and the freeform location", () => {
+  assert.equal(
+    formatVendorLocation({ lga: "Abuja Municipal", state: "FCT", location: "Garki" }),
+    "Abuja Municipal, FCT · Garki"
+  );
+  assert.equal(formatVendorLocation({ location: "Enugu town" }), "Enugu town");
+  assert.equal(formatVendorLocation({ lga: "Abuja Municipal", state: "FCT" }), "Abuja Municipal, FCT");
+  assert.equal(formatVendorLocation({}), "");
 });
 
 test("submission dates are formatted or clearly unknown", () => {

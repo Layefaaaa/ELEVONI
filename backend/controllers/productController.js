@@ -106,7 +106,7 @@ export const getPublicProducts = async(req, res, next) => {
 
         const [products, total] = await Promise.all([
             Product.find(filter)
-            .populate("vendorId", "businessName location description productFocus status")
+            .populate("vendorId", "businessName location state lga description productFocus status")
             .sort({ isFeatured: -1, createdAt: -1 })
             .limit(limitNumber)
             .skip((pageNumber - 1) * limitNumber),
@@ -133,7 +133,7 @@ export const getProductById = async(req, res, next) => {
         }
 
         const product = await Product.findById(req.params.id)
-            .populate("vendorId", "businessName location description productFocus status");
+            .populate("vendorId", "businessName location state lga description productFocus status");
 
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
@@ -521,7 +521,7 @@ export const adminGetAllProducts = async(req, res, next) => {
         }
 
         const products = await Product.find(filter)
-            .populate("vendorId", "businessName contactName email phone location")
+            .populate("vendorId", "businessName contactName email phone location state lga status")
             .sort({ createdAt: -1 });
 
         return res.status(200).json({ success: true, count: products.length, data: products });

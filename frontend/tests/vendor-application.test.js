@@ -27,6 +27,8 @@ test("registration validation requires full name, email, password and business d
   assert.ok(result.errors.contactName);
   assert.ok(result.errors.phone);
   assert.ok(result.errors.location);
+  assert.ok(result.errors.state);
+  assert.ok(result.errors.lga);
   assert.ok(result.errors.productFocus);
 });
 
@@ -69,6 +71,8 @@ test("application validation accepts a valid payload", () => {
     contactName: "Ada Okoye",
     phone: "+2348012345678",
     location: "Abuja",
+    state: "FCT",
+    lga: "Abuja Municipal",
     productFocus: ["poultry", "goats"],
     description: "Free-range birds",
   });
@@ -85,6 +89,8 @@ test("registration payload trims values and lowercases email and focus", () => {
     contactName: "  Ada  ",
     phone: "  +234 801 234 5678  ",
     location: "  Abuja  ",
+    state: " FCT ",
+    lga: " Abuja Municipal ",
     productFocus: ["  Poultry ", "GOATS"],
     description: "  Healthy birds  ",
   });
@@ -92,6 +98,8 @@ test("registration payload trims values and lowercases email and focus", () => {
   assert.equal(payload.email, "ada@example.com");
   assert.equal(payload.businessName, "Ada Farms");
   assert.equal(payload.contactName, "Ada");
+  assert.equal(payload.state, "FCT");
+  assert.equal(payload.lga, "Abuja Municipal");
   assert.deepEqual(payload.productFocus, ["poultry", "goats"]);
   assert.equal(payload.description, "Healthy birds");
 });
@@ -101,7 +109,9 @@ test("application payload trims and normalises focus", () => {
     businessName: "  Green Acres  ",
     contactName: "  Tunde  ",
     phone: "+2340000000000",
-    location: "Lagos",
+    location: "Lagos Island",
+    state: "Lagos",
+    lga: "Lagos Island",
     productFocus: ["CATTLE"],
     description: "   ",
   });
@@ -141,6 +151,8 @@ test("a vendor application is only rendered from the applicant-facing view witho
     email: "ada@example.com",
     phone: "+2348012345678",
     location: "Abuja",
+    state: "FCT",
+    lga: "Abuja Municipal",
     productFocus: ["poultry"],
     description: "Free-range",
     status: "pending",

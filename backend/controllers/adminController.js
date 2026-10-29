@@ -15,7 +15,7 @@ export const getAllVendors = async (req, res, next) => {
       }
       filter.status = req.query.status;
     }
-    const vendors = await vendorProfileModel.find(filter, "businessName contactName email phone location productFocus description status reviewedAt createdAt", { sort: { createdAt: -1 } });
+    const vendors = await vendorProfileModel.find(filter, "businessName contactName email phone location state lga productFocus description status reviewedAt createdAt", { sort: { createdAt: -1 } });
     return res.status(200).json({ success: true, count: vendors.length, data: vendors });
   } catch (error) { return next(error); }
 };

@@ -42,6 +42,8 @@ const INITIAL_FORM = {
   contactName: "",
   phone: "",
   location: "",
+  state: "",
+  lga: "",
   productFocus: [],
   description: "",
 };
@@ -90,6 +92,14 @@ const validateForm = (form, isAuthenticated) => {
 
   if (form.location.trim().length < 2 || form.location.trim().length > 120) {
     errors.location = "Enter a location between 2 and 120 characters.";
+  }
+
+  if (form.state.trim().length < 2 || form.state.trim().length > 100) {
+    errors.state = "Enter your state (2–100 characters).";
+  }
+
+  if (form.lga.trim().length < 2 || form.lga.trim().length > 100) {
+    errors.lga = "Enter your local government area (2–100 characters).";
   }
 
   if (!form.productFocus.length) {
@@ -172,6 +182,8 @@ const Apply = () => {
       contactName: form.contactName.trim(),
       phone: form.phone.trim(),
       location: form.location.trim(),
+      state: form.state.trim(),
+      lga: form.lga.trim(),
       productFocus: form.productFocus,
       description: form.description.trim(),
     };
@@ -274,7 +286,7 @@ const Apply = () => {
               : "Not specified"}
           </p>
           <p>
-            <strong>Location:</strong> {application.location || "Not specified"}
+            <strong>Location:</strong> {[application.lga, application.state].filter(Boolean).join(", ") || application.location || "Not specified"} {application.location && (application.state || application.lga) ? `· ${application.location}` : ""}
           </p>
           <p className="vendor-note">
             Application approval does not itself publish products or enable
@@ -304,7 +316,7 @@ const Apply = () => {
               <p>{Object.keys(errors).length} {Object.keys(errors).length === 1 ? "field needs" : "fields need"} attention. Select an item below to jump to it.</p>
               <ul>
                 {Object.entries(errors).map(([key, error]) => {
-                  const labels = { name: "Full name", email: "Email address", password: "Password", businessName: "Business or farm name", contactName: "Contact person's name", phone: "Phone number", location: "Business location", productFocus: "Product categories", description: "Business description" };
+                  const labels = { name: "Full name", email: "Email address", password: "Password", businessName: "Business or farm name", contactName: "Contact person's name", phone: "Phone number", location: "Business location", state: "State", lga: "Local government area", productFocus: "Product categories", description: "Business description" };
                   const target = key === "productFocus" ? "productFocus-first" : key;
                   return <li key={key}><a href={`#${target}`} onClick={(event) => { event.preventDefault(); const field = document.getElementById(target); field?.focus(); field?.scrollIntoView({ behavior: "smooth", block: "center" }); }}>{labels[key] || key}: {error}</a></li>;
                 })}
@@ -435,6 +447,18 @@ const Apply = () => {
             {errors.phone && (
               <p className="vendor-form-error" id="phone-error">{errors.phone}</p>
             )}
+          </div>
+
+          <div className="vendor-form-field">
+            <label htmlFor="state">State</label>
+            <input id="state" name="state" value={form.state} onChange={updateField} aria-invalid={Boolean(errors.state)} aria-describedby={errors.state ? "state-error" : undefined} autoComplete="address-level1" required />
+            {errors.state && <p className="vendor-form-error" id="state-error">{errors.state}</p>}
+          </div>
+
+          <div className="vendor-form-field">
+            <label htmlFor="lga">Local government area (LGA)</label>
+            <input id="lga" name="lga" value={form.lga} onChange={updateField} aria-invalid={Boolean(errors.lga)} aria-describedby={errors.lga ? "lga-error" : undefined} autoComplete="address-level2" required />
+            {errors.lga && <p className="vendor-form-error" id="lga-error">{errors.lga}</p>}
           </div>
 
           <div className="vendor-form-field">

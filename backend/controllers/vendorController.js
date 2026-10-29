@@ -49,6 +49,8 @@ export const registerVendor = async (req, res) => {
             email,
             phone: fields.phone,
             location: fields.location,
+            state: fields.state,
+            lga: fields.lga,
             productFocus: fields.productFocus,
             description: fields.description,
             status: "pending",
@@ -89,6 +91,8 @@ export const applyAsVendor = async (req, res) => {
             email: user.email,
             phone: fields.phone,
             location: fields.location,
+            state: fields.state,
+            lga: fields.lga,
             productFocus: fields.productFocus,
             description: fields.description,
             status: "pending",
@@ -192,13 +196,29 @@ export const getAllApprovedVendors = async (req, res) => {
         const filter = { status: "approved" };
         if (req.query.search) {
             const escaped = String(req.query.search).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-            filter.$or = [{ businessName: new RegExp(escaped, "i") }, { description: new RegExp(escaped, "i") }, { location: new RegExp(escaped, "i") }];
+            filter.$or = [
+                { businessName: new RegExp(escaped, "i") },
+                { description: new RegExp(escaped, "i") },
+                { location: new RegExp(escaped, "i") },
+                { state: new RegExp(escaped, "i") },
+                { lga: new RegExp(escaped, "i") }
+            ];
         }
-        if (req.query.state) filter.location = new RegExp(String(req.query.state).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
-        const profiles = await vendorProfileModel.find(filter, "businessName location productFocus description status createdAt", { sort: { createdAt: -1 } });
+        if (req.query.state) {
+            const escapedState = String(req.query.state).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            filter.$and = [
+                ...(filter.$and || []),
+                { $or: [
+                    { state: new RegExp(`^${escapedState}$`, "i") },
+                    { state: { $exists: false }, location: new RegExp(escapedState, "i") },
+                    { state: "", location: new RegExp(escapedState, "i") }
+                ] }
+            ];
+        }
+        const profiles = await vendorProfileModel.find(filter, "businessName location state lga productFocus description status createdAt", { sort: { createdAt: -1 } });
         return res.status(200).json({ success: true, count: profiles.length, data: profiles.map((profile) => ({
             id: profile._id, businessName: profile.businessName,
-            location: profile.location, productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
+            location: profile.location, state: profile.state || "", lga: profile.lga || "", productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
         })) });
     } catch {
         return sendServerError(res, "Unable to load approved vendors");
@@ -212,7 +232,7 @@ export const getApprovedVendorById = async (req, res) => {
         if (!profile) return res.status(404).json({ success: false, message: "Approved farm/vendor profile not found" });
         return res.status(200).json({ success: true, data: {
             id: profile._id, businessName: profile.businessName,
-            location: profile.location, productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
+            location: profile.location, state: profile.state || "", lga: profile.lga || "", productFocus: profile.productFocus || [], description: profile.description || "", status: profile.status
         } });
     } catch {
         return sendServerError(res, "Unable to load approved vendor");

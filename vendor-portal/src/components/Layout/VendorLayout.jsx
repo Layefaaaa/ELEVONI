@@ -18,6 +18,7 @@ const VendorLayout = () => {
           </Link>
           <nav className="vendor-nav" aria-label="Vendor portal navigation">
             <NavLink to="/" end className={({ isActive }) => (isActive ? "active" : undefined)}>Workspace</NavLink>
+            <NavLink to="/sales" className={({ isActive }) => (isActive ? "active" : undefined)}>Sales log</NavLink>
             <NavLink to="/apply" className={({ isActive }) => (isActive ? "active" : undefined)}>Application</NavLink>
             <NavLink to="/login" className={({ isActive }) => (isActive ? "active" : undefined)}>{isAuthenticated ? "Account" : "Sign in"}</NavLink>
           </nav>

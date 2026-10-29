@@ -20,6 +20,8 @@ const vendorProfileSchema = new mongoose.Schema({
     email: { type: String, required: true, trim: true, lowercase: true },
     phone: { type: String, required: true, trim: true },
     location: { type: String, required: true, trim: true, minlength: 2, maxlength: 120 },
+    state: { type: String, trim: true, minlength: 2, maxlength: 100 },
+    lga: { type: String, trim: true, minlength: 2, maxlength: 100 },
     productFocus: {
         type: [String],
         enum: VENDOR_PRODUCT_FOCUS,
@@ -38,6 +40,7 @@ const vendorProfileSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 vendorProfileSchema.index({ status: 1, createdAt: -1 });
+vendorProfileSchema.index({ state: 1, lga: 1, status: 1 });
 
 const vendorProfileModel = mongoose.models.vendorProfile ||
     mongoose.model("vendorProfile", vendorProfileSchema);

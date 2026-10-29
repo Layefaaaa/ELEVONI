@@ -11,6 +11,7 @@ import orderRouter from "./routes/orderRoute.js";
 import paymentRouter from "./routes/paymentRoute.js";
 import vendorRouter from "./routes/vendorRoute.js";
 import vendorDirectoryRoutes from "./routes/vendorRoutes.js";
+import vendorSalesRouter from "./routes/vendorSalesRoute.js";
 import productRoutes from "./routes/productRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -37,6 +38,7 @@ app.use("/api/order", orderRouter);
 app.use("/api/payment", paymentRouter);
 
 // Marketplace and vendor application APIs use vendorProfileModel as the canonical profile.
+app.use("/api/vendor/sales", vendorSalesRouter);
 app.use("/api/vendor", vendorRouter);
 app.use("/api/vendors", vendorDirectoryRoutes);
 app.use("/api/products", productRoutes);

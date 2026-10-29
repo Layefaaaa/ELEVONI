@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -273,7 +273,7 @@ const ItemDetails = () => {
           )}
 
           <p className="item-details-desc">{item.description}</p>
-          {isMarketplaceProduct && item.vendorId && <section className="product-vendor-panel" aria-labelledby="product-vendor-title"><h2 id="product-vendor-title">Listed by {item.vendorId.businessName || "Approved vendor"}</h2>{item.vendorId.location && <p><strong>Location:</strong> {item.vendorId.location}</p>}{item.vendorId.description && <p>{item.vendorId.description}</p>}<p className="vendor-verification-note">{item.vendorId.status === "approved" ? "Vendor application approved by Elevoni" : "Vendor status not available"}</p><p className="marketplace-disclaimer">Marketplace listings are enquiries, not confirmed orders. Confirm availability, final price, payment and delivery arrangements before paying.</p><a className="add-to-cart-btn primary-btn marketplace-detail-enquire" href={`https://wa.me/2348135738991?text=${encodeURIComponent(`Hello Elevoni Farms, I would like to enquire about ${item.name}. Please confirm availability, final price and delivery arrangements.`)}`} target="_blank" rel="noopener noreferrer">Enquire with Elevoni</a></section>}
+          {isMarketplaceProduct && item.vendorId && <section className="product-vendor-panel" aria-labelledby="product-vendor-title"><h2 id="product-vendor-title">Listed by {item.vendorId.businessName || "Approved vendor"}</h2>{(item.vendorId.lga || item.vendorId.state || item.vendorId.location) && <p><strong>Location:</strong> {[item.vendorId.lga, item.vendorId.state].filter(Boolean).join(", ") || item.vendorId.location}{item.vendorId.location && (item.vendorId.state || item.vendorId.lga) ? ` · ${item.vendorId.location}` : ""}</p>}{item.vendorId.description && <p>{item.vendorId.description}</p>}<p className="vendor-verification-note">{item.vendorId.status === "approved" ? "Vendor application approved by Elevoni" : "Vendor status not available"}</p><p className="marketplace-disclaimer">Marketplace listings are enquiries, not confirmed orders. Confirm availability, final price, payment and delivery arrangements before paying.</p><a className="add-to-cart-btn primary-btn marketplace-detail-enquire" href={`https://wa.me/2348135738991?text=${encodeURIComponent(`Hello Elevoni Farms, I would like to enquire about ${item.name}. Please confirm availability, final price and delivery arrangements.`)}`} target="_blank" rel="noopener noreferrer">Enquire with Elevoni</a></section>}
 
           {!isMarketplaceProduct && <form className="item-quantity-form" onSubmit={saveQuantity}>
             <label htmlFor={`detail-quantity-${item._id}`}>Choose quantity <span>(kilograms)</span></label>

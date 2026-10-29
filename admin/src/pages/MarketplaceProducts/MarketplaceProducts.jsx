@@ -7,6 +7,11 @@ import "./MarketplaceProducts.css";
 const FILTERS = ["pending", "approved", "rejected", "all"];
 const label = (status) => ({ pending: "Pending review", approved: "Approved", rejected: "Rejected", all: "All listings" }[status] || status);
 const formatMoney = (value) => `₦${Number(value || 0).toLocaleString("en-NG")}`;
+const vendorLocation = (vendor) => {
+  const structured = [vendor?.lga, vendor?.state].filter(Boolean).join(", ");
+  if (!structured) return vendor?.location || "";
+  return vendor?.location ? `${structured} · ${vendor.location}` : structured;
+};
 
 const MarketplaceProducts = ({ url }) => {
   const [status, setStatus] = useState("pending");
@@ -70,7 +75,7 @@ const MarketplaceProducts = ({ url }) => {
         <p className="moderation-result-count">{products.length} {products.length === 1 ? "listing" : "listings"}</p>
         <div className="moderation-product-list">{visible.map((product) => <article className="moderation-product" key={product._id}>
           <div className="moderation-product-image">{product.images?.[0] ? <img src={product.images[0]} alt="" loading="lazy" /> : <span aria-hidden="true">✳</span>}</div>
-          <div className="moderation-product-info"><div className="moderation-product-top"><h2>{product.name}</h2><span className={`moderation-status moderation-status-${product.status}`}>{label(product.status)}</span></div><p className="moderation-product-vendor">{product.vendorId?.businessName || "No vendor profile linked"} {product.vendorId?.location ? `· ${product.vendorId.location}` : ""}</p><p className="moderation-product-description">{product.description || "No description provided."}</p><div className="moderation-product-meta"><strong>{formatMoney(product.price)} / {product.unitOfMeasure || "unit"}</strong><span>Stock: {product.stockQuantity ?? 0}</span><span>{product.category}</span><span>Vendor: {label(product.vendorId?.status || "unknown")}</span></div>{product.status === "rejected" && product.rejectionReason && <p className="moderation-reason">Previous reason: {product.rejectionReason}</p>}
+          <div className="moderation-product-info"><div className="moderation-product-top"><h2>{product.name}</h2><span className={`moderation-status moderation-status-${product.status}`}>{label(product.status)}</span></div><p className="moderation-product-vendor">{product.vendorId?.businessName || "No vendor profile linked"} {vendorLocation(product.vendorId) ? `· ${vendorLocation(product.vendorId)}` : ""}</p><p className="moderation-product-description">{product.description || "No description provided."}</p><div className="moderation-product-meta"><strong>{formatMoney(product.price)} / {product.unitOfMeasure || "unit"}</strong><span>Stock: {product.stockQuantity ?? 0}</span><span>{product.category}</span><span>Vendor: {label(product.vendorId?.status || "unknown")}</span></div>{product.status === "rejected" && product.rejectionReason && <p className="moderation-reason">Previous reason: {product.rejectionReason}</p>}
             {product.status !== "approved" && <label className="moderation-note-label">Review note / rejection reason<textarea rows="2" value={notes[product._id] || ""} onChange={(event) => setNotes((current) => ({ ...current, [product._id]: event.target.value.slice(0, 500) }))} placeholder="Explain what needs to be fixed, if applicable" /></label>}
             <div className="moderation-actions">{product.status !== "approved" && <button type="button" className="moderation-approve" disabled={Boolean(submitting)} onClick={() => moderate(product, "approved")}>{submitting === product._id ? "Saving…" : "Approve listing"}</button>}{product.status !== "rejected" && <button type="button" className="moderation-reject" disabled={Boolean(submitting)} onClick={() => moderate(product, "rejected")}>Reject</button>}{product.status !== "pending" && <button type="button" className="moderation-secondary" disabled={Boolean(submitting)} onClick={() => moderate(product, "pending")}>Return to pending</button>}</div>
           </div>

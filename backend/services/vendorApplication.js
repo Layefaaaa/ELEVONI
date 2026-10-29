@@ -64,6 +64,16 @@ const validateVendorApplicationFields = (body = {}) => {
         return { error: "Enter a location between 2 and 120 characters" };
     }
 
+    const state = trimmedText(body.state);
+    if (state.length < 2 || state.length > 100) {
+        return { error: "Enter a state between 2 and 100 characters" };
+    }
+
+    const lga = trimmedText(body.lga);
+    if (lga.length < 2 || lga.length > 100) {
+        return { error: "Enter a local government area between 2 and 100 characters" };
+    }
+
     const productFocus = parseProductFocus(body.productFocus);
     if (!productFocus) {
         return { error: "Select at least one livestock product focus" };
@@ -75,7 +85,7 @@ const validateVendorApplicationFields = (body = {}) => {
     }
 
     return {
-        fields: { businessName, contactName, phone, location, productFocus, description }
+        fields: { businessName, contactName, phone, location, state, lga, productFocus, description }
     };
 };
 
@@ -96,6 +106,8 @@ const publicVendorApplication = (profile) => ({
     email: profile.email,
     phone: profile.phone,
     location: profile.location,
+    state: profile.state || "",
+    lga: profile.lga || "",
     productFocus: profile.productFocus || [],
     description: profile.description || "",
     status: profile.status,
@@ -126,6 +138,8 @@ const adminVendorSummary = (profile) => ({
     email: profile.email,
     phone: profile.phone,
     location: profile.location,
+    state: profile.state || "",
+    lga: profile.lga || "",
     productFocus: profile.productFocus || [],
     status: profile.status,
     submittedAt: profile.createdAt,

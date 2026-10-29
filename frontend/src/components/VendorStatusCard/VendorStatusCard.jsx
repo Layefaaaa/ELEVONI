@@ -52,7 +52,7 @@ const VendorStatusCard = ({ application, contactHref = CONTACT_HREF }) => {
         </div>
         <div>
           <dt>Location</dt>
-          <dd>{application.location}</dd>
+          <dd>{[application.lga, application.state].filter(Boolean).join(", ") || application.location}{application.location && (application.state || application.lga) ? ` · ${application.location}` : ""}</dd>
         </div>
         <div>
           <dt>Livestock focus</dt>

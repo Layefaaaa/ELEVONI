@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 const orderItemSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "fish" },
+    vendorId: { type: mongoose.Schema.Types.ObjectId, ref: "vendorProfile" },
+    vendorBusinessName: { type: String, trim: true, maxlength: 120 },
     name: { type: String, required: true },
     quantity: { type: Number, required: true, min: 1 },
     unit: { type: String, default: "kg" },
