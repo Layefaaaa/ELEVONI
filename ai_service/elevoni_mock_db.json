@@ -19,7 +19,9 @@
             "vendor_id": "v101",
             "name": "Live Broiler Chicken",
             "category": "Poultry & Eggs",
-            "price": 4500
+            "price": 4500,
+            "stock_quantity": 50
+        
         },
         {
             "product_id": "p202",
