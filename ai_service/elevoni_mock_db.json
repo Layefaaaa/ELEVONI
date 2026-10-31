@@ -1,0 +1,216 @@
+{
+    "vendors": [
+        {
+            "vendor_id": "v101",
+            "businessName": "Green Pastures Poultry",
+            "state": "FCT Abuja",
+            "lga": "Bwari"
+        },
+        {
+            "vendor_id": "v102",
+            "businessName": "Kano Cattle Syndicate",
+            "state": "Kano",
+            "lga": "Dala"
+        }
+    ],
+    "products": [
+        {
+            "product_id": "p201",
+            "vendor_id": "v101",
+            "name": "Live Broiler Chicken",
+            "category": "Poultry & Eggs",
+            "price": 4500,
+            "stock_quantity": 50
+        
+        },
+        {
+            "product_id": "p202",
+            "vendor_id": "v102",
+            "name": "Adult Ram",
+            "category": "Livestock & Meat",
+            "price": 120000
+        }
+    ],
+    "orders": [
+        {
+            "order_id": "ord_300",
+            "buyer_id": "usr_4",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 2,
+            "total_amount": 9000,
+            "order_date": "2026-10-16T12:39:07.552355",
+            "status": "delivered",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_301",
+            "buyer_id": "usr_4",
+            "vendor_id": "v102",
+            "product_id": "p202",
+            "product_name": "Adult Ram",
+            "quantity": 17,
+            "total_amount": 2040000,
+            "order_date": "2026-10-26T12:39:07.552412",
+            "status": "cancelled",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_302",
+            "buyer_id": "usr_1",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 26,
+            "total_amount": 117000,
+            "order_date": "2026-10-20T12:39:07.552428",
+            "status": "processing",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_303",
+            "buyer_id": "usr_5",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 13,
+            "total_amount": 58500,
+            "order_date": "2026-10-26T12:39:07.552440",
+            "status": "delivered",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_304",
+            "buyer_id": "usr_1",
+            "vendor_id": "v102",
+            "product_id": "p202",
+            "product_name": "Adult Ram",
+            "quantity": 18,
+            "total_amount": 2160000,
+            "order_date": "2026-09-30T12:39:07.552453",
+            "status": "processing",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_305",
+            "buyer_id": "usr_5",
+            "vendor_id": "v102",
+            "product_id": "p202",
+            "product_name": "Adult Ram",
+            "quantity": 5,
+            "total_amount": 600000,
+            "order_date": "2026-09-30T12:39:07.552464",
+            "status": "delivered",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_306",
+            "buyer_id": "usr_5",
+            "vendor_id": "v102",
+            "product_id": "p202",
+            "product_name": "Adult Ram",
+            "quantity": 23,
+            "total_amount": 2760000,
+            "order_date": "2026-10-24T12:39:07.552476",
+            "status": "delivered",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_307",
+            "buyer_id": "usr_2",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 20,
+            "total_amount": 90000,
+            "order_date": "2026-10-28T12:39:07.552487",
+            "status": "processing",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_308",
+            "buyer_id": "usr_2",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 42,
+            "total_amount": 189000,
+            "order_date": "2026-10-09T12:39:07.552499",
+            "status": "processing",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_309",
+            "buyer_id": "usr_1",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 43,
+            "total_amount": 193500,
+            "order_date": "2026-10-02T12:39:07.552511",
+            "status": "cancelled",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_310",
+            "buyer_id": "usr_3",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 15,
+            "total_amount": 67500,
+            "order_date": "2026-10-04T12:39:07.552525",
+            "status": "delivered",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_311",
+            "buyer_id": "usr_3",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 26,
+            "total_amount": 117000,
+            "order_date": "2026-10-21T12:39:07.552537",
+            "status": "cancelled",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_312",
+            "buyer_id": "usr_2",
+            "vendor_id": "v102",
+            "product_id": "p202",
+            "product_name": "Adult Ram",
+            "quantity": 9,
+            "total_amount": 1080000,
+            "order_date": "2026-10-22T12:39:07.552548",
+            "status": "delivered",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_313",
+            "buyer_id": "usr_3",
+            "vendor_id": "v102",
+            "product_id": "p202",
+            "product_name": "Adult Ram",
+            "quantity": 30,
+            "total_amount": 3600000,
+            "order_date": "2026-10-18T12:39:07.552558",
+            "status": "processing",
+            "delivery_state": "FCT Abuja"
+        },
+        {
+            "order_id": "ord_314",
+            "buyer_id": "usr_3",
+            "vendor_id": "v101",
+            "product_id": "p201",
+            "product_name": "Live Broiler Chicken",
+            "quantity": 19,
+            "total_amount": 85500,
+            "order_date": "2026-10-27T12:39:07.552569",
+            "status": "cancelled",
+            "delivery_state": "FCT Abuja"
+        }
+    ]
+}
