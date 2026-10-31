@@ -263,7 +263,7 @@ const PlaceOrder = () => {
           response.data.message || "Could not record order request.",
         );
       const order = response.data.data;
-      const phoneNumber = ELEVONI_WHATSAPP_PHONE;
+      const phoneNumber = "08135738991";
       let message =
         "Hello Elevoni, I would like to confirm this order request.\n\n";
       order.items.forEach((item) => {
