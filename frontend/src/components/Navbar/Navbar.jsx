@@ -118,6 +118,8 @@ const Navbar = ({ setShowLogin }) => {
         <li><Link to="/#fish-display" onClick={handleNavClick}>Smoked catfish</Link></li>
         <li><Link to="/sell-with-elevoni" onClick={handleNavClick} className={`navbar-sell-link ${location.pathname === "/sell-with-elevoni" ? "active" : ""}`}>Sell with Elevoni <span aria-hidden="true">→</span></Link></li>
         <li><Link to="/about" onClick={handleNavClick} className={location.pathname === "/about" ? "active" : ""}>About</Link></li>
+        <li className="mobile-policy-link"><Link to="/delivery" onClick={handleNavClick} className={location.pathname === "/delivery" ? "active" : ""}>Delivery policy</Link></li>
+        <li className="mobile-policy-link"><Link to="/privacy" onClick={handleNavClick} className={location.pathname === "/privacy" ? "active" : ""}>Privacy policy</Link></li>
       </ul>
 
       <div className="navbar-right">

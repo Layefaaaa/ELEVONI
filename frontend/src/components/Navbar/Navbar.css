@@ -203,3 +203,9 @@
 .navbar-menu .navbar-sell-link::after { display:none; }
 .navbar-menu .navbar-sell-link:hover,.navbar-menu .navbar-sell-link.active { background:var(--elevoni-sage-soft); color:var(--elevoni-ink); }
 @media(max-width:750px) { .navbar-menu .navbar-sell-link { padding:11px 13px; } }
+
+/* Legal and fulfilment pages are included in the compact mobile app drawer. */
+.mobile-policy-link { display: none; }
+@media (max-width: 750px) {
+  .navbar-menu .mobile-policy-link { display: list-item; }
+}
