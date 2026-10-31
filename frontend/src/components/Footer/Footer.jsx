@@ -54,7 +54,7 @@ const Footer = () => {
         <div className="footer-content-right">
           <h2>GET IN TOUCH</h2>
           <ul>
-            <li><a href={`tel:${ELEVONI_ENQUIRY_PHONE_DISPLAY}`}>{ELEVONI_ENQUIRY_PHONE_DISPLAY}</a></li>
+            <li>08135738991</li>
             <li>Feedoh001@gmail.com</li>
             <li>Abuja, Nigeria</li>
           </ul>
