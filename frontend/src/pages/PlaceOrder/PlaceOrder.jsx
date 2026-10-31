@@ -1,3 +1,4 @@
+import { ELEVONI_WHATSAPP_PHONE } from "../../config/contact.js";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import "./PlaceOrder.css";
 import { StoreContext } from "../../context/StoreContext";
@@ -19,6 +20,7 @@ const PlaceOrder = () => {
     country: "",
     phone: "",
   });
+  const [saveInformation, setSaveInformation] = useState(false);
   const [quote, setQuote] = useState(null);
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [quoteError, setQuoteError] = useState("");
@@ -36,6 +38,52 @@ const PlaceOrder = () => {
         })),
     [fish_list, cartItems],
   );
+
+  useEffect(() => {
+    let active = true;
+    if (!token) return undefined;
+
+    axios.get(url + "/api/user/me", { headers: { token } })
+      .then((response) => {
+        if (!active || response.data?.success !== true) return;
+        const user = response.data.user || {};
+        const saved = user.checkoutProfile;
+        if (saved && typeof saved === "object") {
+          setData((previous) => ({
+            ...previous,
+            ...Object.fromEntries(
+              ["firstName", "lastName", "email", "street", "city", "state", "country", "phone"]
+                .filter((field) => typeof saved[field] === "string")
+                .map((field) => [field, saved[field]])
+            ),
+          }));
+        } else if (typeof user.email === "string") {
+          setData((previous) => ({ ...previous, email: previous.email || user.email }));
+        }
+      })
+      .catch(() => {
+        // Checkout remains usable if profile prefill is temporarily unavailable.
+      });
+
+    return () => { active = false; };
+  }, [token, url]);
+
+  const saveCheckoutInformation = async () => {
+    if (!saveInformation) return;
+    try {
+      await axios.put(
+        url + "/api/user/checkout-profile",
+        { checkoutProfile: data },
+        { headers: { token } },
+      );
+      toast.success("Your checkout information was saved for next time.");
+    } catch (error) {
+      toast.warning(
+        error.response?.data?.message ||
+        "Your order can continue, but we couldn't save your information.",
+      );
+    }
+  };
 
   useEffect(() => {
     let active = true;
@@ -113,6 +161,7 @@ const PlaceOrder = () => {
     setIsSubmitting(true);
     const loadingToast = toast.loading("Preparing your order...");
     try {
+      await saveCheckoutInformation();
       const response = await axios.post(
         url + "/api/payment/initialize",
         { items: orderItems, address: data },
@@ -203,6 +252,7 @@ const PlaceOrder = () => {
     setIsSubmitting(true);
     const loadingToast = toast.loading("Recording your order request...");
     try {
+      await saveCheckoutInformation();
       const response = await axios.post(
         url + "/api/order/place",
         { items: orderItems, address: data },
@@ -213,7 +263,7 @@ const PlaceOrder = () => {
           response.data.message || "Could not record order request.",
         );
       const order = response.data.data;
-      const phoneNumber = "2348135738991";
+      const phoneNumber = ELEVONI_WHATSAPP_PHONE;
       let message =
         "Hello Elevoni, I would like to confirm this order request.\n\n";
       order.items.forEach((item) => {
@@ -358,6 +408,17 @@ const PlaceOrder = () => {
           onChange={onChangeHandler}
           required
         />
+        <label className="save-checkout-information">
+          <input
+            type="checkbox"
+            checked={saveInformation}
+            onChange={(event) => setSaveInformation(event.target.checked)}
+          />
+          <span>
+            <strong>Save my information for future orders</strong>
+            <small>Save your details securely so you can check out faster next time.</small>
+          </span>
+        </label>
       </div>
       <div className="place-order-right">
         <div className="cart-total">

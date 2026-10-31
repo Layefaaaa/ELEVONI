@@ -2,6 +2,7 @@ import React from "react";
 import "./Footer.css";
 import { assets } from "../../assets/assets";
 import { Link } from "react-router-dom";
+import { ELEVONI_ENQUIRY_PHONE_DISPLAY } from "../../config/contact.js";
 
 const Footer = () => {
   return (
@@ -53,7 +54,7 @@ const Footer = () => {
         <div className="footer-content-right">
           <h2>GET IN TOUCH</h2>
           <ul>
-            <li>+234 813 573 8991</li>
+            <li><a href={`tel:${ELEVONI_ENQUIRY_PHONE_DISPLAY}`}>{ELEVONI_ENQUIRY_PHONE_DISPLAY}</a></li>
             <li>Feedoh001@gmail.com</li>
             <li>Abuja, Nigeria</li>
           </ul>

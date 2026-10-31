@@ -4,9 +4,10 @@ import {
     registerUser,
     googleLogin,
     completeGoogleSignup,
-    currentUser
+    currentUser,
+    updateCheckoutProfile
 } from "../controllers/userController.js";
-import authMiddleware from "../middleware/auth.js";
+import authMiddleware, { requireRole } from "../middleware/auth.js";
 
 const userRouter = express.Router();
 
@@ -15,5 +16,6 @@ userRouter.post("/login", loginUser);
 userRouter.post("/google", express.urlencoded({ extended: false }), googleLogin);
 userRouter.post("/google/complete-signup", completeGoogleSignup);
 userRouter.get("/me", authMiddleware, currentUser);
+userRouter.put("/checkout-profile", authMiddleware, requireRole("customer"), updateCheckoutProfile);
 
 export default userRouter;

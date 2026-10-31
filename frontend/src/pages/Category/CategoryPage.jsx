@@ -1,3 +1,4 @@
+import { ELEVONI_WHATSAPP_PHONE } from "../../config/contact.js";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
@@ -22,7 +23,7 @@ import {
 const NO_CHILDREN = Object.freeze([]);
 
 const enquiryLink = (name) =>
-  `https://wa.me/2348135738991?text=${encodeURIComponent(
+  `https://wa.me/${ELEVONI_WHATSAPP_PHONE}?text=${encodeURIComponent(
     `Hello Elevoni Farms, I would like to ask about ${name}.`,
   )}`;
 

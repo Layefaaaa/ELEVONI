@@ -139,3 +139,21 @@ textarea,
 select {
     font-size: 16px !important;
 }
+/* Keep the application inside the visual viewport without constraining carousels. */
+#root,
+.app,
+.app > * {
+    min-width: 0;
+}
+
+@media (max-width: 750px) {
+    .app {
+        padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@supports (padding: max(0px)) {
+    body {
+        padding-top: env(safe-area-inset-top, 0px);
+    }
+}

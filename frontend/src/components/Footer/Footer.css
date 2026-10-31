@@ -14,3 +14,8 @@
 .footer-copyright { width: min(100%, 1240px); color: var(--elevoni-muted); text-align: left; font-size: 11px; }
 @media (max-width: 750px) { .footer { align-items: flex-start; padding: 44px 22px 24px; } .footer-content { grid-template-columns: 1fr 1fr; gap: 30px 22px; } .footer-content-left { grid-column: 1 / -1; } .footer-copyright { text-align: left; } }
 @media (max-width: 440px) { .footer-content { grid-template-columns: 1fr; } .footer-content-left { grid-column: auto; } }
+@media (max-width: 750px) {
+    .footer {
+        display: none;
+    }
+}

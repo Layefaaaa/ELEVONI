@@ -1,3 +1,4 @@
+import { ELEVONI_WHATSAPP_PHONE } from "../../config/contact.js";
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import "./MyOrders.css";
 import { StoreContext } from "../../context/StoreContext";
@@ -45,7 +46,7 @@ const MyOrders = () => {
   }, [token, fetchOrders]);
 
   const handleTrackOnWhatsApp = (order) => {
-    const phoneNumber = "2348135738991";
+    const phoneNumber = ELEVONI_WHATSAPP_PHONE;
 
     const itemsText = Array.isArray(order.items)
       ? order.items.map((item) => `${item.name} x ${item.quantity}`).join(", ")

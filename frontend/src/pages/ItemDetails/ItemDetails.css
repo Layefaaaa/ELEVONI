@@ -509,3 +509,14 @@
         padding: 14px;
     }
 }
+.video-thumbnail-fallback {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    padding: 5px;
+    background: #f4f5f2;
+    color: var(--elevoni-muted);
+    font-size: 9px;
+    text-align: center;
+}

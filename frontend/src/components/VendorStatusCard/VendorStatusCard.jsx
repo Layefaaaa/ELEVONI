@@ -1,3 +1,4 @@
+import { ELEVONI_WHATSAPP_PHONE } from "../../config/contact.js";
 import {
   formatSubmittedAt,
   statusCopy,
@@ -13,7 +14,7 @@ const focusLabel = (focus) => {
 };
 
 const CONTACT_HREF =
-  "https://wa.me/2348135738991?text=" +
+  `https://wa.me/${ELEVONI_WHATSAPP_PHONE}?text=` +
   encodeURIComponent("Hello Elevoni Farms, I have a question about my vendor application.");
 
 const FALLBACK_COPY = {

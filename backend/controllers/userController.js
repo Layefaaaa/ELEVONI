@@ -10,6 +10,7 @@ import {
     registerCustomerAccount
 } from "../services/accountRegistration.js";
 import { createSessionToken, publicUser } from "../services/session.js";
+import { buildCheckoutProfile } from "../services/checkoutProfile.js";
 
 const GOOGLE_SIGNUP_CONTINUATION_TTL_MS = 10 * 60 * 1000;
 
@@ -687,11 +688,53 @@ const completeGoogleSignup = async(req, res) => {
     }
 };
 
+const updateCheckoutProfile = async(req, res) => {
+    const source = req.body && typeof req.body === "object" ? req.body : {};
+    const profileInput = source.checkoutProfile && typeof source.checkoutProfile === "object" ?
+        source.checkoutProfile :
+        source;
+    const result = buildCheckoutProfile(profileInput);
+
+    if (result.error) {
+        return res.status(400).json({
+            success: false,
+            message: result.error
+        });
+    }
+
+    try {
+        const user = await userModel.findByIdAndUpdate(
+            req.auth.userId,
+            { $set: { checkoutProfile: result.value } },
+            { new: true, runValidators: true }
+        ).select("name email role checkoutProfile");
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Account not found"
+            });
+        }
+
+        return res.json({
+            success: true,
+            message: "Checkout information saved",
+            user
+        });
+    } catch (error) {
+        console.error("Checkout profile update failed:", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "Unable to save checkout information"
+        });
+    }
+};
+
 const currentUser = async(req, res) => {
     try {
         const user = await userModel
             .findById(req.auth.userId)
-            .select("name email role");
+            .select("name email role checkoutProfile");
 
         if (!user) {
             return res.status(401).json({
@@ -716,5 +759,6 @@ export {
     registerUser,
     googleLogin,
     completeGoogleSignup,
-    currentUser
+    currentUser,
+    updateCheckoutProfile
 };

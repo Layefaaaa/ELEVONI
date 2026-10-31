@@ -1,3 +1,4 @@
+import { ELEVONI_WHATSAPP_PHONE } from "../config/contact.js";
 import axios from "axios";
 
 export const MARKETPLACE_PAGE_SIZE = 12;
@@ -19,7 +20,7 @@ export const formatNaira = (value) =>
 export const marketplaceEnquiryUrl = (product) => {
     const vendor = product.vendorId?.businessName || "the listed business";
     const message = `Hello Elevoni Farms, I would like to enquire about ${product.name} from ${vendor}. Is it available, and what are the delivery arrangements?`;
-    return `https://wa.me/2348135738991?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/${ELEVONI_WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
 };
 
 export const fetchPublicProducts = async ({

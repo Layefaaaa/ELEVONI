@@ -18,3 +18,41 @@
 .custom-divider span { padding: 0; }
 @media (max-width: 800px) { .place-order { grid-template-columns: 1fr; gap: 28px; margin: 34px auto 68px; } .place-order-right .cart-total { padding: 20px; } }
 @media (max-width: 480px) { .place-order-left .title { margin-bottom: 20px; font-size: 24px; } .place-order-left .multi-fields { flex-direction: column; gap: 0; } }
+.save-checkout-information {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    width: 100%;
+    margin-top: 4px;
+    padding: 13px 14px;
+    border: 1px solid var(--elevoni-line);
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.save-checkout-information input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--elevoni-sage);
+}
+
+.save-checkout-information span {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.save-checkout-information strong {
+    color: var(--elevoni-ink);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.save-checkout-information small {
+    color: var(--elevoni-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}

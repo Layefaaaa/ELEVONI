@@ -21,6 +21,7 @@ import SellWithElevoni from "./pages/Vendor/SellWithElevoni";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import Success from "./components/SuccessPage/Success";
 import ReactGA from "./analytics";
+import MobileBottomNav from "./components/MobileBottomNav";
 
 ReactGA.send({
   hitType: "pageview",
@@ -89,6 +90,7 @@ const App = () => {
         </Routes>
       </div>
       <Footer />
+      <MobileBottomNav setShowLogin={handleSetShowLogin} />
     </HelmetProvider>
   );
 };
