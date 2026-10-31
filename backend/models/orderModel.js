@@ -31,7 +31,7 @@ const orderSchema = new mongoose.Schema({
     status: { type: String, default: "Fish Processing" },
     orderStatus: {
         type: String,
-        enum: ["pending", "pending_confirmation", "confirmed", "processing", "out_for_delivery", "delivered", "cancelled", "failed"]
+        enum: ["pending", "pending confirmation", "confirmed", "processing", "out_for_delivery", "delivered", "cancelled", "failed"]
     },
     paymentStatus: { type: String, enum: ["pending", "successful", "failed", "unpaid"] },
     paymentMethod: { type: String, enum: ["paystack", "whatsapp_manual"] },
@@ -42,10 +42,7 @@ const orderSchema = new mongoose.Schema({
     paidAt: { type: Date }
 }, { timestamps: true });
 
-orderSchema.index(
-    { paymentReference: 1 },
-    { unique: true, partialFilterExpression: { paymentReference: { $type: "string" } } }
-);
+orderSchema.index({ paymentReference: 1 }, { unique: true, partialFilterExpression: { paymentReference: { $type: "string" } } });
 
 const orderModel = mongoose.models.order || mongoose.model("order", orderSchema);
 export default orderModel;

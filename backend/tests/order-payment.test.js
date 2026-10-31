@@ -53,7 +53,7 @@ const initRequest = (body = {}) => ({ auth: { userId: customerId, role: "custome
   assert.equal(saved.payment, false);
   assert.equal(saved.paymentReference, null);
   assert.equal(saved.paymentStatus, "unpaid");
-  assert.equal(saved.orderStatus, "pending_confirmation");
+  assert.equal(saved.orderStatus, "pending confirmation");
   assert.equal(saved.paymentMethod, "whatsapp_manual");
   assert.equal(saved.items[0].unitPrice, 1000);
 });
@@ -70,7 +70,7 @@ test("customers can read only their own order history", async () => {
 
 test("admin order status handler ignores client payment fields and rejects unknown statuses", async () => {
   FakeOrder.reset();
-  FakeOrder.records.push({ _id: "order-1", paymentStatus: "unpaid", payment: false, status: "pending_confirmation" });
+  FakeOrder.records.push({ _id: "order-1", paymentStatus: "unpaid", payment: false, status: "pending confirmation" });
   FakeOrder.findByIdAndUpdate = async (id, update) => { const record = FakeOrder.records.find((entry) => entry._id === id); Object.assign(record, update); return record; };
   const handlers = createOrderHandlers({ OrderModel: FakeOrder, UserModel: fakeUserModel, snapshotOrder });
   const res = response();

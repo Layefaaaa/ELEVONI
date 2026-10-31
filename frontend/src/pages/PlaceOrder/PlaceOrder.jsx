@@ -310,7 +310,7 @@ const PlaceOrder = () => {
         state: {
           orderId: response.data.orderId,
           paymentStatus: "unpaid",
-          orderStatus: "pending_confirmation",
+          orderStatus: "pending confirmation",
         },
       });
     } catch (error) {

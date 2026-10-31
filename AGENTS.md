@@ -294,7 +294,7 @@ Payment may be:
 
 Fulfilment may be:
 
-* pending_confirmation
+* pending confirmation
 * confirmed
 * processing
 * out_for_delivery

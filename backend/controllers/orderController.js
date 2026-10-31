@@ -4,7 +4,7 @@ import { buildOrderSnapshot } from "./orderPricing.js";
 import { buildOrderBuyerSnapshot } from "../services/orderBuyerSnapshot.js";
 import { buildPaginationMeta, countMatching, parsePagination } from "../services/pagination.js";
 
-const ORDER_STATUSES = ["pending_confirmation", "confirmed", "processing", "out_for_delivery", "delivered", "cancelled"];
+const ORDER_STATUSES = ["pending confirmation", "confirmed", "processing", "out_for_delivery", "delivered", "cancelled"];
 
 const createOrderHandlers = ({ OrderModel = orderModel, UserModel = userModel, snapshotOrder = buildOrderSnapshot } = {}) => {
     const quoteOrder = async (req, res) => {
@@ -30,8 +30,8 @@ const createOrderHandlers = ({ OrderModel = orderModel, UserModel = userModel, s
                 amount: summary.totalAmount,
                 address,
                 ...buildOrderBuyerSnapshot(address),
-                orderStatus: "pending_confirmation",
-                status: "pending_confirmation",
+                orderStatus: "pending confirmation",
+                status: "pending confirmation",
                 paymentStatus: "unpaid",
                 paymentMethod: "whatsapp_manual",
                 source: "whatsapp_manual",
