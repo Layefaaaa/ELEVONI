@@ -38,6 +38,17 @@ const readGoogleRedirectOutcome = () => {
   return { code, intent: params.get("google_auth_intent") === "sign_up" ? "sign_up" : "sign_in" };
 };
 
+// Hide the large footer in app-like installations (native Capacitor and installed PWA),
+// while keeping it visible on ordinary mobile and desktop browsers.
+const isInstalledApp = () => {
+  const isNative = Boolean(window.Capacitor?.isNativePlatform?.());
+  const isStandalonePwa =
+    window.matchMedia?.("(display-mode: standalone)").matches ||
+    window.matchMedia?.("(display-mode: fullscreen)").matches ||
+    window.navigator.standalone === true; // iOS Home Screen PWA
+  return isNative || isStandalonePwa;
+};
+
 const App = () => {
   const [googleRedirectOutcome, setGoogleRedirectOutcome] = useState(readGoogleRedirectOutcome);
   const [showLogin, setShowLogin] = useState(() => Boolean(readGoogleRedirectOutcome()));
@@ -89,7 +100,7 @@ const App = () => {
           <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
       </div>
-      <Footer />
+      {!isInstalledApp() && <Footer />}
       <MobileBottomNav setShowLogin={handleSetShowLogin} />
     </HelmetProvider>
   );
