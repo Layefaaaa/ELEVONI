@@ -1,0 +1,32 @@
+{
+  "id": "/",
+  "name": "Elevoni Farms",
+  "short_name": "Elevoni",
+  "description": "Explore agricultural marketplace listings and shop Elevoni smoked catfish directly.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7c8760",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/elevoni-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/elevoni-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/elevoni-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

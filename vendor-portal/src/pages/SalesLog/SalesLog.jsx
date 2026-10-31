@@ -1174,9 +1174,7 @@ const SalesLog = () => {
                         </div>
 
                         <details className="sales-details">
-                            <summary>
-                                Buyer identity, location and notes
-                            </summary>
+                            <summary>Add more details (optional)</summary>
 
                             <div className="sales-details-body">
                                 <div className="sales-field">
@@ -1249,16 +1247,62 @@ const SalesLog = () => {
 
                                 <div className="sales-form-row">
                                     <div className="sales-field">
-                                        <label htmlFor="sale-buyer-state">Buyer state (optional)</label>
-                                        <input id="sale-buyer-state" name="buyerState" value={form.buyerState} onChange={updateField} maxLength={100} />
-                                        <FieldError id="sale-buyer-state-error" message={fieldErrors.buyerState} />
+                                        <label htmlFor="sale-buyer-state">
+                                            Buyer state
+                                        </label>
+                                        <input
+                                            id="sale-buyer-state"
+                                            name="buyerState"
+                                            value={form.buyerState}
+                                            onChange={updateField}
+                                            maxLength={100}
+                                            autoComplete="address-level1"
+                                            placeholder="e.g. FCT"
+                                            aria-invalid={Boolean(
+                                                fieldErrors.buyerState,
+                                            )}
+                                            aria-describedby={
+                                                fieldErrors.buyerState
+                                                    ? "sale-buyer-state-error"
+                                                    : undefined
+                                            }
+                                        />
+                                        <FieldError
+                                            id="sale-buyer-state-error"
+                                            message={fieldErrors.buyerState}
+                                        />
                                     </div>
                                     <div className="sales-field">
-                                        <label htmlFor="sale-buyer-area">Buyer town / area (optional)</label>
-                                        <input id="sale-buyer-area" name="buyerArea" value={form.buyerArea} onChange={updateField} maxLength={120} />
-                                        <FieldError id="sale-buyer-area-error" message={fieldErrors.buyerArea} />
+                                        <label htmlFor="sale-buyer-area">
+                                            Buyer area / town
+                                        </label>
+                                        <input
+                                            id="sale-buyer-area"
+                                            name="buyerArea"
+                                            value={form.buyerArea}
+                                            onChange={updateField}
+                                            maxLength={120}
+                                            autoComplete="address-level2"
+                                            placeholder="e.g. Gwarinpa"
+                                            aria-invalid={Boolean(
+                                                fieldErrors.buyerArea,
+                                            )}
+                                            aria-describedby={
+                                                fieldErrors.buyerArea
+                                                    ? "sale-buyer-area-error"
+                                                    : undefined
+                                            }
+                                        />
+                                        <FieldError
+                                            id="sale-buyer-area-error"
+                                            message={fieldErrors.buyerArea}
+                                        />
                                     </div>
                                 </div>
+                                <p className="sales-field-note">
+                                    Optional. Use a state and town or area only;
+                                    do not enter a full street address.
+                                </p>
                                 <div className="sales-field">
                                     <label htmlFor="sale-notes">Notes</label>
                                     <textarea
@@ -1463,7 +1507,9 @@ const SalesLog = () => {
                                                     <p className="sales-history-buyer">
                                                         Buyer: {sale.buyerName || (sale.buyerIdentityStatus === "anonymous" ? "Anonymous" : "Identity unknown")}
                                                         {sale.buyerContact ? ` · ${sale.buyerContact}` : ""}
-                                                        {(sale.buyerArea || sale.buyerState) ? ` · ${[sale.buyerArea, sale.buyerState].filter(Boolean).join(", ")}` : ""}
+                                                        {(sale.buyerArea || sale.buyerState)
+                                                            ? ` · Location: ${[sale.buyerArea, sale.buyerState].filter(Boolean).join(", ")}`
+                                                            : ""}
                                                         {sale.saleTime ? ` · ${sale.saleTime}` : ""}
                                                     </p>
                                                 )}

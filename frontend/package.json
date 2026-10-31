@@ -11,6 +11,9 @@
     "test": "node --import ./tests/helpers/register.mjs --test \"tests/*.test.js\" \"tests/*.test.jsx\""
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/cli": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
     "axios": "^1.18.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",

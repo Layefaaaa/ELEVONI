@@ -244,6 +244,150 @@ test("unlisted products require name and unit and store no catalogue reference",
     }
 });
 
+test("buyer state and area are trimmed, persisted and returned", async () => {
+    const stubs = stubModels();
+
+    try {
+        const req = request({
+            body: baseBody({
+                buyerState: "  FCT  ",
+                buyerArea: "  Gwarinpa  ",
+                vendorId: "other-vendor"
+            })
+        });
+        const res = response();
+
+        await createVendorSale(req, res, failOnNext);
+
+        assert.equal(res.statusCode, 201);
+        const created = stubs.calls.create[0];
+        assert.equal(created.buyerState, "FCT");
+        assert.equal(created.buyerArea, "Gwarinpa");
+        assert.equal(String(created.vendorId), "vendor-1");
+        assert.equal(res.body.data.buyerState, "FCT");
+        assert.equal(res.body.data.buyerArea, "Gwarinpa");
+        assert.equal(String(res.body.data.vendorId), "vendor-1");
+    } finally {
+        stubs.restore();
+    }
+});
+
+test("buyer location is optional and older records remain valid", async () => {
+    const stubs = stubModels();
+
+    try {
+        const res = response();
+
+        await createVendorSale(
+            request({ body: baseBody() }),
+            res,
+            failOnNext
+        );
+
+        assert.equal(res.statusCode, 201);
+        assert.equal(stubs.calls.create[0].buyerState, "");
+        assert.equal(stubs.calls.create[0].buyerArea, "");
+        assert.equal(res.body.data.buyerState, "");
+        assert.equal(res.body.data.buyerArea, "");
+
+        const oldSale = new vendorSaleModel({
+            vendorId: new mongoose.Types.ObjectId(),
+            submissionReference: "old-sale-ref-0001",
+            productName: "Old sale",
+            unit: "kg",
+            quantity: 1,
+            unitPrice: 100,
+            totalAmount: 100,
+            saleDate: new Date("2025-01-01"),
+            salesChannel: "phone",
+            paymentStatus: "paid",
+            amountReceived: 100
+        });
+
+        assert.equal(await oldSale.validate(), undefined);
+        assert.equal(oldSale.buyerState, "");
+        assert.equal(oldSale.buyerArea, "");
+    } finally {
+        stubs.restore();
+    }
+});
+
+test("buyer state and area reject invalid types and overlong values", async () => {
+    for (const value of [123, {}, [], true]) {
+        const result = await prepareVendorSale(
+            baseBody({ buyerState: value }),
+            { vendorId: "vendor-1" }
+        );
+        assert.match(result.error, /Buyer state must be text/);
+    }
+
+    const invalidArea = await prepareVendorSale(
+        baseBody({ buyerArea: 123 }),
+        { vendorId: "vendor-1" }
+    );
+    assert.match(invalidArea.error, /Buyer area or town must be text/);
+
+    const longState = await prepareVendorSale(
+        baseBody({ buyerState: "x".repeat(101) }),
+        { vendorId: "vendor-1" }
+    );
+    assert.match(
+        longState.error,
+        /Buyer state must not exceed 100 characters/
+    );
+
+    const longArea = await prepareVendorSale(
+        baseBody({ buyerArea: "x".repeat(121) }),
+        { vendorId: "vendor-1" }
+    );
+    assert.match(
+        longArea.error,
+        /Buyer area or town must not exceed 120 characters/
+    );
+
+    const whitespace = await prepareVendorSale(
+        baseBody({ buyerState: "   ", buyerArea: "\t" }),
+        { vendorId: "vendor-1" }
+    );
+    assert.equal(whitespace.error, undefined);
+    assert.equal(whitespace.sale.buyerState, "");
+    assert.equal(whitespace.sale.buyerArea, "");
+});
+
+test("buyer location does not weaken vendor isolation", async () => {
+    const stubs = stubModels({
+        sales: [
+            {
+                _id: "sale-1",
+                vendorId: "vendor-1",
+                buyerState: "FCT",
+                buyerArea: "Gwarinpa"
+            }
+        ]
+    });
+
+    try {
+        const res = response();
+
+        await listVendorSales(
+            request({
+                vendorId: "vendor-1",
+                query: { vendorId: "vendor-2" }
+            }),
+            res,
+            failOnNext
+        );
+
+        assert.equal(res.statusCode, 200);
+        assert.deepEqual(stubs.calls.find[0], { vendorId: "vendor-1" });
+        assert.deepEqual(stubs.calls.count[0], { vendorId: "vendor-1" });
+        assert.equal(res.body.data[0].buyerState, "FCT");
+        assert.equal(res.body.data[0].buyerArea, "Gwarinpa");
+    } finally {
+        stubs.restore();
+    }
+});
+
 test("create ignores client vendor, totals, currency and provenance", async () => {
     const stubs = stubModels();
 

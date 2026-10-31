@@ -530,6 +530,8 @@
     margin: 10px 0 0;
     color: #6b7365;
     font-size: 11px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
 }
 
 .sales-pagination {

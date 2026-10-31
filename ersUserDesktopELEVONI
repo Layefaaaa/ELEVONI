@@ -1,0 +1,21 @@
+warning: in the working copy of 'C:\Users\User\Desktop\ELEVONI-PWA\frontend\index.html', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git "a/C:\\Users\\User\\Desktop\\ELEVONI\\frontend\\index.html" "b/C:\\Users\\User\\Desktop\\ELEVONI-PWA\\frontend\\index.html"[m
+[1mindex 301ff93..8df7511 100644[m
+[1m--- "a/C:\\Users\\User\\Desktop\\ELEVONI\\frontend\\index.html"[m
+[1m+++ "b/C:\\Users\\User\\Desktop\\ELEVONI-PWA\\frontend\\index.html"[m
+[36m@@ -4,7 +4,14 @@[m
+ <head>[m
+     <meta charset="UTF-8" />[m
+     <link rel="icon" type="image/png" href="/favicon.png" />[m
+[31m-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />[m
+[32m+[m[32m    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />[m
+[32m+[m[32m    <meta name="theme-color" content="#7c8760" />[m
+[32m+[m[32m    <meta name="mobile-web-app-capable" content="yes" />[m
+[32m+[m[32m    <meta name="apple-mobile-web-app-capable" content="yes" />[m
+[32m+[m[32m    <meta name="apple-mobile-web-app-status-bar-style" content="default" />[m
+[32m+[m[32m    <meta name="apple-mobile-web-app-title" content="Elevoni" />[m
+[32m+[m[32m    <link rel="manifest" href="/manifest.webmanifest" />[m
+[32m+[m[32m    <link rel="apple-touch-icon" href="/icons/elevoni-192.png" />[m
+     <meta name="google-site-verification" content="nqm47-ZEpgm_LFABzWW6pZgMl-kZjvYvO6mhipsUk9g" />[m
+     <meta name="description"[m
+         content="Explore agricultural marketplace listings and shop Elevoni smoked catfish directly. Confirm availability and delivery before ordering.">[m
