@@ -7,7 +7,7 @@ import Pagination from "../../components/Pagination/Pagination";
 
 const PAGE_SIZE = 20;
 const statuses = ["pending confirmation", "confirmed", "processing", "out_for_delivery", "delivered", "cancelled"];
-const label = (value) => ({ pending confirmation: "Pending confirmation", confirmed: "Confirmed", processing: "Processing", out_for_delivery: "Out for delivery", delivered: "Delivered", cancelled: "Cancelled", pending: "Awaiting payment", failed: "Failed" }[value] || value || "Unknown");
+const label = (value) => ({ pending_confirmation: "Pending confirmation", confirmed: "Confirmed", processing: "Processing", out_for_delivery: "Out for delivery", delivered: "Delivered", cancelled: "Cancelled", pending: "Awaiting payment", failed: "Failed" }[value] || value || "Unknown");
 const legacyStatus = (value) => ({ "Fish Processing": "processing", "Out for delivery": "out_for_delivery", Delivered: "delivered" }[value] || "pending confirmation");
 
 const Order = ({ url }) => {
