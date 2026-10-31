@@ -293,7 +293,7 @@ const PlaceOrder = () => {
         ", " +
         data.country;
       window.open(
-        "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message),
+        "https://wa.me/" + {phoneNumber} + "?text=" + encodeURIComponent(message),
         "_blank",
         "noopener,noreferrer",
       );
