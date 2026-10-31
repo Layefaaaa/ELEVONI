@@ -1,4 +1,4 @@
-const CACHE_NAME = "elevoni-app-shell-v2";
+const CACHE_NAME = "elevoni-app-shell-v3";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -7,6 +7,10 @@ const APP_SHELL = [
   "/icons/elevoni-192.png",
   "/icons/elevoni-512.png",
   "/icons/elevoni-maskable-512.png",
+  "/apple-splash-1179x2556.png",
+  "/apple-splash-1290x2796.png",
+  "/apple-splash-2048x2732.png",
+  "/apple-splash-2732x2048.png",
 ];
 
 async function getBuildAssets() {
