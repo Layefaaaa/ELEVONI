@@ -263,7 +263,7 @@ const PlaceOrder = () => {
           response.data.message || "Could not record order request.",
         );
       const order = response.data.data;
-      const phoneNumber = "08135738991";
+      const phoneNumber = ELEVONI_WHATSAPP_PHONE;
       let message =
         "Hello Elevoni, I would like to confirm this order request.\n\n";
       order.items.forEach((item) => {
@@ -293,7 +293,7 @@ const PlaceOrder = () => {
         ", " +
         data.country;
       window.open(
-        "https://wa.me/" + {phoneNumber} + "?text=" + encodeURIComponent(message),
+        "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message),
         "_blank",
         "noopener,noreferrer",
       );
@@ -310,7 +310,7 @@ const PlaceOrder = () => {
         state: {
           orderId: response.data.orderId,
           paymentStatus: "unpaid",
-          orderStatus: "pending confirmation",
+          orderStatus: "pending_confirmation",
         },
       });
     } catch (error) {
